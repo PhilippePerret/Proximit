@@ -1,0 +1,51 @@
+form {
+  padding:1em;
+  border:1px solid #BBBBBB;
+  border-radius: 1em;
+  width: 80%;
+  position: fixed;
+  right: 1em;
+  top: 5em;
+  background-color: white;
+  max-width: 25%;
+}
+form * {
+  font-size:inherit;
+}
+form div.title {
+  opacity: 0.5;
+  font-weight: bold;
+  margin-bottom:1em;
+  font-variant:small-caps;
+}
+
+form div.row:not(.buttons) {
+  border:1px solid #EEEEEE;
+  margin-top:8px;
+}
+form div.row > input,
+form div.row > textarea,
+form div.row > select,
+form div.row > select > option {
+  width: 90%;
+  padding: 6px 12px;
+}
+
+form div.row > textarea {
+  resize:none;
+}
+form div.row > textarea.medium {
+  height: 3em;
+}
+
+form div.row.buttons {
+  margin-top: 1em;
+  text-align:right;
+}
+
+form div.row.buttons button {
+  margin-left: 1em;
+}
+form div.row.buttons button.btn-cancel {
+  float: left;
+}

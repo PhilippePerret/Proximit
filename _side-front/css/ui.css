@@ -1,0 +1,115 @@
+body {
+  display: grid;
+  grid-template-columns: 30% 30% 40%;
+  grid-template-rows: 40px auto 32px;
+  width: 100%;
+  min-height:814px;
+  /* border: 1px dashed red; */
+  margin:0;
+  padding:0;
+}
+
+body > section#header {
+  grid-column:1/4;
+  grid-row:1;
+  background-color: #182863;
+  color: #449eaf;
+  padding-left:1em;
+  padding-right:2em;
+  position:fixed;
+  top:0;left:0;
+  width:calc(100% - 2em);
+  height:36px;
+  line-height:36px;
+  z-index: 100;
+}
+body > section#header h1 {
+  margin:0; padding:0;
+  font-weight: normal;
+}
+
+body > section#footer {
+  grid-column: 1/4;
+  grid-row:3;
+  position: fixed;
+  bottom:0; left:0;
+  width:calc(100% - 16px);
+  /* width:100%; */
+  padding:2px 8px;
+  background-color:#EEEEEE;
+  border-top:1px solid #BBBBBB;
+  text-align:right;
+  z-index: 100;
+}
+body > section#footer span#message {
+  display: inline-block;
+  width:400px;
+  font-size:11.1pt;
+  background-color: black;
+  color:white;
+  text-align:left;
+  margin-left:2em;
+  padding:1px 8px 2px;
+}
+body > section#footer span#message.warning {
+  color:#ff8484;
+}
+body > section#footer span#message.notice {
+  color:#4adaff;
+}
+body > section#footer span#message.green {
+  color:#24d424;
+}
+
+section#footer button#btn-search {
+  width: 90px;
+}
+
+body > section#left-column,
+body > section#middle-column,
+body > section#right-column
+{
+  /* border: 1px dashed green; */
+  grid-row:2;
+  width: 100%;
+  z-index: 1;
+}
+
+body > section#middle-column,
+body > section#right-column
+{
+  /* border: 1px dashed green; */
+  /* max-height:500px; */
+  max-height:750px;
+  overflow-y: scroll;
+}
+
+body > section#left-column {
+  grid-column: 1;
+  border-right: 1px solid black;
+}
+body > section#middle-column {
+  grid-column: 2;
+  padding-left:8px;
+}
+body > section#right-column {
+  grid-column: 3;
+  padding-left:16px;
+}
+
+body > div#aide {
+  position: fixed;
+  top:0;left:0;
+  padding:2em;
+  z-index: 100;
+  background-color:white;
+  box-shadow: 10px 10px 10px;
+  font-family:'Avenir Next';
+  width: 540px;
+  max-height: 300px;
+  overflow: auto;
+}
+body > div#aide a.btn-close {
+  cursor:pointer;
+  font-family:Arial;
+}

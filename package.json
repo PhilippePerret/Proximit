@@ -1,0 +1,25 @@
+{
+  "name": "proximit",
+  "productName": "Proximit",
+  "version": "0.0.1",
+  "description": "Application desktop et CLI pour analyser et modifier les proximités de mots dans un texte provenant de source aussi diverses que Scrivener, Word, un texte brut, etc.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron .",
+    "start-update": "UPDATE_MAIN_HTML=true electron .",
+    "build": "electron-packager . --platform=darwin --icon=icons/app --asar --out=built --overwrite",
+    "dev": "electron . --debug"
+  },
+  "author": "Philippe Perret <philippe.perret@yahoo.fr>",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^6.0.0",
+    "electron-packager": "^14.0.4"
+  },
+  "dependencies": {
+    "glob": "^7.1.4",
+    "jquery": "^3.4.1",
+    "mysql2": "^1.6.5"
+  }
+}
