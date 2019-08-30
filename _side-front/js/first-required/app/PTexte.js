@@ -16,15 +16,40 @@ class PTexte {
   static get current(){return this._current}
 
   /**
+
+    Méthode principale, appelée par le menu "Analyse > Analyser le texte" qui
+    lance la procédure d'analyse du texte courant.
+    Pour le moment, elle demande à choisir le texte s'il n'y a pas de texte
+    courant mais plus tard, le menu sera désactivé
+  **/
+  static analyseCurrent(){
+    if ( undefined === this.current ) this.chooseText()
+    if ( undefined === this.current ) return ; // annulation
+    execFile(`./bin/analyse_texte.rb`, [PTexte.current.path], (err, stdout, stderr) => {
+      if (err) {
+        console.error(err)
+        throw(err)
+      } else {
+        // Rappel : se trouve dans le stdout tout ce qui a été envoyé
+        // par puts dans le script.
+        console.log("Retour de l'exécution de l'analyse : ", stdout)
+        // On réaffiche tout de suite les infos, pour savoir ce qu'a
+        // pu faire l'analyse
+        PTexte.current.writeState()
+      }
+    })
+  }
+
+  /**
     Méthode appelée quand on joue le menu "Fichier > Choisir le texte…"
   **/
-  static open(){
+  static chooseText(){
     let choix = IO.choose({
       message:'Choisir le texte à analyser ou voir…',
       file:true, extensions:['odt','txt','text','rtf','doc','docx','md','scriv']
     })[0]
     if ( !choix ) return // aucun fichier choisi
-    this.execOpen(choix)
+    this.open(choix)
     Prefs.save()
   }
 
@@ -36,7 +61,7 @@ class PTexte {
     À l'ouverture d'un texte, on procède seulement à l'affichage de son
     état d'analyse et de correction (en tout cas pour le moment)
   **/
-  static execOpen(pth){
+  static open(pth){
     this._current = new PTexte({path: pth})
     this._current.writeState()
   }
@@ -92,6 +117,7 @@ class PTexte {
       console.log("Le texte n'a pas encore été analysé.")
     }
     let conteneur = Dom.createDiv({id:'cont-infos-texte', class:'container-data'})
+    conteneur.innerHTML = ''
     UI.rightColumn.append(conteneur)
     // Le nom du texte (affixe)
     this.writeRowInfo(true, 'Nom du texte', this.affixe, conteneur)

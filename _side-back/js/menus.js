@@ -25,7 +25,7 @@ const ObjMenus = {
               label: 'Choisir le texte…'
             , accelerator: 'CmdOrCtrl+O'
             , enabled: true
-            , click:function(){execJS("PTexte.open()")}
+            , click:function(){execJS("PTexte.chooseText.call(PTexte)")}
           }
         , { type:'separator' }
         , { role: 'quit' }
@@ -42,7 +42,7 @@ const ObjMenus = {
             , accelerator: 'CmdOrCtrl+A'
             , enabled: true // Plus tard, dépendra de présence de texte ou non
             , click:function(){
-                execJS("IO.choose()")
+                execJS("PTexte.analyseCurrent.call(PTexte)")
               }
           }
         ]

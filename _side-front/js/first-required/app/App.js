@@ -8,7 +8,7 @@ const App = {
     Prefs.load()
     // $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
     if ( Prefs.get('load_last_on_start') ) {
-      PTexte.execOpen(Prefs.get('path_texte'))
+      PTexte.open(Prefs.get('path_texte'))
     }
     console.log("<- App.init")
   }

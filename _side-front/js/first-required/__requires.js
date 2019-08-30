@@ -5,7 +5,9 @@ const fs        = require('fs')
 const glob      = require('glob')
 const {app}     = require('electron').remote
 const exec      = require('child_process').execSync
-const execFile  = require('child_process').execFileSync
+const execFileS = require('child_process').execFileSync
+const execFile  = require('child_process').execFile
+
 const {clipboard} = require('electron')
 const remote    = require('electron').remote
 const Dialog    = remote.dialog
