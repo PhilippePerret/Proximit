@@ -16,10 +16,8 @@ const debug = /--debug/.test(process.argv[2])
 if (process.mas) app.setName('Electron APIs')
 
 // La fenêtre principale
-let mainWindow = null
-
+global.mainW = null
 global.ObjMenus = require('./_side-back/js/menus')
-
 
 // Fonction appelée en bas de ce module, pour initialiser l'application
 function initialize () {
@@ -66,22 +64,24 @@ function initialize () {
     // }
 
     // On ouvre la fenêtre principale…
-    mainWindow = new BrowserWindow(windowOptions)
+    mainW = new BrowserWindow(windowOptions)
     // Et on charge dedans le fichier principal
 
     // Chargement d'un fichier html
-    mainWindow.loadURL(path.join('file://', __dirname, '/_side-front/main.html'))
+    mainW.loadURL(path.join('file://', __dirname, '/_side-front/main.html'))
+    // Pour debugger
+    mainW.webContents.openDevTools()
 
     // Launch fullscreen with DevTools open, usage: npm run debug
     if (debug) {
-      mainWindow.webContents.openDevTools()
-      mainWindow.maximize()
+      mainW.webContents.openDevTools()
+      mainW.maximize()
       require('devtron').install()
     }
 
     // Quand on ferme la fenêtre, on détruit l'instance
-    mainWindow.on('closed', () => {
-      mainWindow = null
+    mainW.on('closed', () => {
+      mainW = null
     })
   }
 
@@ -107,7 +107,7 @@ function initialize () {
     de fenêtre que si elle a été détruite (sur mac, donc)
   **/
   app.on('activate', () => {
-    if (mainWindow === null) {
+    if (mainW === null) {
       createWindow()
     }
   })
@@ -126,9 +126,9 @@ function makeSingleInstance () {
   app.requestSingleInstanceLock()
 
   app.on('second-instance', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore()
-      mainWindow.focus()
+    if (mainW) {
+      if (mainW.isMinimized()) mainW.restore()
+      mainW.focus()
     }
   })
 }

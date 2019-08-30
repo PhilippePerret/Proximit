@@ -1,0 +1,56 @@
+'use strict'
+/**
+  |
+  | Prefs.js
+  | version 1.0.0
+  |
+  | Note : pour les valeurs propres à l'application courante, voir
+  | le fichier then-required/app/preferences.js
+**/
+
+const Prefs = {
+
+  /**
+    retourne la préférence d'identifiant +pref_id+ ou sa valeur par défaut
+  **/
+  get(pref_id) {
+    return this.data[pref_id] || eval(this.app_data[pref_id])
+  }
+
+  /**
+    Charge les préférences (à mettre dans la procédure d'initialisation)
+  **/
+, load(){
+    if ( fs.existsSync(this.path) ) {
+      this.data = require(this.path)
+    } else {
+      console.log("Le fichier '%s' n'existe pas, je ne peux pas le charger", this.path)
+      this.data = {}
+    }
+    console.log("Prefs.data = ", this.data)
+  }
+
+
+  /**
+    Enregistrement du fichier des préférences de l'application
+  **/
+, save(){
+    if ( undefined === this.app_data ) {
+      throw("Il est impératif de définir le Prefs.data_keys propre à l'application.")
+    }
+    for (var k in this.app_data){
+      if ( undefined === this.data[k] ) {
+        var v = eval(this.app_data[k])
+        Object.assign(this.data, {[k]: v})
+      }
+    }
+    fs.writeFileSync(this.path, JSON.stringify(this.data))
+  }
+
+
+}
+Object.defineProperties(Prefs,{
+  path:{get(){
+    return path.join(app.getPath('userData'), 'preferences.json')
+  }}
+})

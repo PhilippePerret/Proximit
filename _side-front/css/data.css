@@ -1,0 +1,30 @@
+
+.container-data {
+
+}
+.container-data > div.row-data {
+  border:1px solid #DDDDDD;
+  display: grid;
+  grid-template-columns: 200px auto;
+  grid-template-rows: auto;
+  font-size: 0.95em;
+}
+
+.container-data > div.row-data > label {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 0;
+}
+.container-data > div.row-data > label > span.coche {
+  font-size:0.7em;
+  padding-left:4px;
+  display:inline-block;
+  width:22px;
+}
+.container-data > div.row-data > label > span.label {
+  opacity: 0.5;
+}
+.container-data > div.row-data > span {
+  grid-column: 2;
+  grid-row: 1;
+}

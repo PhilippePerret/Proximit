@@ -15,9 +15,14 @@ const UI = {
   }
 
 , init(){
-
+    console.log("-> UI.init")
+    // L'application peut définir la méthode `UI.build` dans app_UI du
+    // dossier `required-then/js/app`
+    console.log("typeof(this.build) = ", typeof(this.build))
+    if ('function' == typeof(this.build)) this.build.call(this)
     this.observe()
 
+    console.log("<- UI.init")
   }
 
 , setDimensions(){
