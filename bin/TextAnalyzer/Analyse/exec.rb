@@ -12,10 +12,10 @@ class Analyse
   def exec
 
     # Initialisation de l'analyse
-    init_analyse
+    init_analyse || return
 
     # On prend les fichiers donnés en argument et on en fabrique un seul
-    assemble_texts_of_paths
+    assemble_texts_of_paths || return
 
     # On procède à l'analyse
     texte_entier.proceed_analyse

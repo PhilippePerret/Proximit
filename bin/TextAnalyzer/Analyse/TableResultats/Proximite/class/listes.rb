@@ -9,6 +9,8 @@ class Proximite
     def init(ianalyse)
       # On initialise les listes de proximité
       prepare_liste_rectifiees
+      # Si le texte définit une liste de proximité proche, on la prépare
+      # également.
       prepare_liste_proximites_projet(ianalyse)
     end
     # /init
@@ -20,7 +22,6 @@ class Proximite
         liste_mots.each {|mot| hash_mots.merge!(mot => k_distance)}
       end
       TextAnalyzer::PROXIMITES_MAX[:mots] = hash_mots
-      #/fin de boucle sur toutes les distances rectifiées
     end
     # /prepare_liste_rectifiees
 
@@ -33,7 +34,7 @@ class Proximite
 
       proximite_maximale = -1
       File.open(custom_proximites_file_path,'rb').each do |line|
-        line.start_with?('#') && next
+        next if line.start_with?('#')
         if line =~ /[0-9]+/
           proximite_maximale = line.to_i
         else

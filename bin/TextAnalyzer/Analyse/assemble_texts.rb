@@ -4,10 +4,13 @@ class Analyse
 
   # = main =
   #
-  # Analyse des paths transmises
+  # Assemble en un seul fichier le texte de tous les paths fournis
+  #
+  # @return true/false
+  #         Suivant que tout s'est bien passé (true) ou non (false)
   #
   def assemble_texts_of_paths
-    self.files = Hash.new
+    self.files = {}
     nombre_traited = 0
     paths_count = paths.count
     paths.each_with_index do |path, path_index|
@@ -26,6 +29,10 @@ class Analyse
     paths_count == nombre_traited || rt('textanalyzer.errors.nb_doc2treate_unmatch', {nb_expected: paths_count, nb_treated: nombre_traited})
     # Une erreur est produite si aucun texte n'est fourni
     raise("Aucun texte analysable n'a été fourni") if nombre_traited == 0
+  rescue Exception => e
+    error(e)
+    return false
+  else
     return true
   end
   # /assemble_texts_of_paths

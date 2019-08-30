@@ -1,13 +1,11 @@
-#!/usr/bin/env ruby # -wKU
+#!/usr/bin/env ruby
 # encoding: UTF-8
-
-puts "Version #{RUBY_VERSION}"
-puts "Je vais procéder à l'analyse du texte #{ARGV[0]}."
 
 THISFOLDER = File.dirname(__FILE__)
 
 # Requérir tout le dossier
 Dir["#{THISFOLDER}/TextAnalyzer/**/*.rb"].each{|m| require m}
 
+# On analyse les paths donnés en argument
 analyse = TextAnalyzer::Analyse.new(paths: ARGV)
 analyse.exec

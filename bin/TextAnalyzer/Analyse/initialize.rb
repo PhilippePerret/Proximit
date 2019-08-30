@@ -23,13 +23,30 @@ class Analyse
   end
 
   # Initialisation de l'analyse
+  # ---------------------------
+  # Appelée au tout début, avant de procéder à l'analyse proprement dite
   def init_analyse
     @data = Data.new(self)
-    data.paths= paths
+
+    # Données générales pour l'analyse
+    data.paths = paths
     data.started_at = Time.now
+
+    # Pour initialiser les "listes rectifiées" et les listes
+    # de proximités propres au projet.
     TableResultats::Proximite.init(self)
-    table_resultats.init
-    texte_entier.init
+
+    # Remet tous les compteurs à zéro
+    table_resultats.reset
+
+    # Remet les compteurs à zéro, détruit le fichier
+    # s'il existe déjà
+    texte_entier.reset
+  rescue Exception => e
+    error(e)
+    return false
+  else
+    return true
   end
 
   # RETURN true si les données connues sont valides, pour pouvoir passer

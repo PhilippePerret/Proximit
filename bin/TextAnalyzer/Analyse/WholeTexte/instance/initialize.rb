@@ -15,7 +15,7 @@ class WholeText
     self.analyse = instance_analyse
   end
 
-  def init
+  def reset
     File.unlink(path) if File.exist?(path)
     @content  = nil
     @length   = 0
