@@ -25,6 +25,7 @@ class Analyse
   # Initialisation de l'analyse
   # ---------------------------
   # Appelée au tout début, avant de procéder à l'analyse proprement dite
+  #
   def init_analyse
     @data = Data.new(self)
 
@@ -85,6 +86,8 @@ class Analyse
       self.paths = data[:paths]
     end
 
+    dbg('analyse.paths', paths.inspect)
+
     # Le dossier de l'analyse. Il doit être possible de le déterminer
     # dès l'instanciation.
     # + le premier fichier à analyser
@@ -99,11 +102,15 @@ class Analyse
         raise("Impossible de déterminer le dossier des fichiers de l'analyse…")
       end
 
+    dbg("analyse.folder", folder)
+
     # Le dossier (plus caché) qui va contenir tous les fichiers produits par
     # l'analyse. C'est l'affixe du premier fichier auxquel est ajouté '_prox'
     # Note : ça n'est pas ici qu'on le construit (pour respecter la fonction
     # des méthodes — celle-ci doit juste servir à récupérer les données)
-    self.prox_folder = "#{File.basename(first_path,File.extname(first_path))}_prox"
+    self.prox_folder = File.join(folder,"#{File.basename(first_path,File.extname(first_path))}_prox")
+
+    dbg('analyse.prox_folder', prox_folder)
 
     # D'autres informations qui ont pu être passées par les données
     {

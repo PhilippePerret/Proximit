@@ -3,13 +3,10 @@ class TextAnalyzer
 class Analyse
 class WholeText
 
-  # Note : attention, la propriété `analyse` existe, c'est l'instance
-  # de l'analyse contenant le fichier.
-  def proceed_analyse
-    # = Lemmatisation du texte =
+  # Procède à la décomposition du texte complet. On doit obtenir une liste
+  # complète des mots, avec leur canon.
+  def decompose
     lemmatize
-    # Relève des mots dans le fichier unique contenant tout le texte
-    # cf. fichier 'releve_mots.rb'
     releve_mots
   end
 

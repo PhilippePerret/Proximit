@@ -17,8 +17,12 @@ class Analyse
     # On prend les fichiers donnés en argument et on en fabrique un seul
     assemble_texts_of_paths || return
 
-    # On procède à l'analyse
-    texte_entier.proceed_analyse
+    # On procède à l'analyse du texte. Ça consiste en :
+    #   - lemmatisation
+    #   - la relève des mots dans le fichier lématisé
+    texte_entier.decompose
+
+    return
 
     # Calcul des proximités
     table_resultats.calcule_proximites

@@ -2,7 +2,7 @@
 class TextAnalyzer
 class << self
   def current_version
-    File.read(Scrivener.fpath('TEXTANALYZER_VERSION')).strip
+    @current_version ||= App.data[:version]
   end
   alias :version :current_version
 end #/<< self

@@ -32,6 +32,6 @@ def read_from_file(pth, options = nil)
     res = res.symbolize_keys if res.respond_to?(:symbolize_keys)
     res
   else
-    File.open(pth,'rb'){|f| rf.read}
+    File.open(pth,'rb'){|rf| rf.read}
   end
 end

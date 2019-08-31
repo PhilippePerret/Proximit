@@ -14,7 +14,7 @@ class WholeText
     'nous', 'vous', 'elle',
     'elles'
     ]
-  AFTER_TIRET_BADS = Hash.new
+  AFTER_TIRET_BADS = {}
 
   class << self
 
