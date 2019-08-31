@@ -7,7 +7,7 @@ class Analyse
 
   # {String} Le chemin d'accès au dossier qui contiendra le dossier
   # prox de l'analyse.
-  attr_writer :folder
+  attr_accessor :folder
 
   # {Array} des paths de fichier (String) à analyser et
   # {Array} des fichiers (instances TextAnalyzer::File) à analyser

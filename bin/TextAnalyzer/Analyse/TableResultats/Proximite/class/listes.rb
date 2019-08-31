@@ -17,7 +17,7 @@ class Proximite
 
     def prepare_liste_rectifiees
       h = TextAnalyzer::PROXIMITES_MAX
-      hash_mots = Hash.new
+      hash_mots = {}
       h.each do |k_distance, liste_mots|
         liste_mots.each {|mot| hash_mots.merge!(mot => k_distance)}
       end

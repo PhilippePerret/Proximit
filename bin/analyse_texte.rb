@@ -4,6 +4,7 @@
 THISFOLDER = File.dirname(__FILE__)
 
 # Requérir tout le dossier
+Dir["#{THISFOLDER}/first_required/**/*.rb"].each{|m|require m}
 Dir["#{THISFOLDER}/TextAnalyzer/**/*.rb"].each{|m| require m}
 
 # On analyse les paths donnés en argument
