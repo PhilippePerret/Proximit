@@ -25,7 +25,7 @@ class Analyse
 
     dbg('Nombre de fichiers à traiter', paths_count)
     dbg('Nombre de fichiers traités', nombre_traited)
-    dbg('Longueur du texte entier', self.texte.entier.length)
+    dbg('Longueur du texte entier', self.texte_entier.length)
     paths_count == nombre_traited || rt('textanalyzer.errors.nb_doc2treate_unmatch', {nb_expected: paths_count, nb_treated: nombre_traited})
     # Une erreur est produite si aucun texte n'est fourni
     raise("Aucun texte analysable n'a été fourni") if nombre_traited == 0

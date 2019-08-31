@@ -75,7 +75,6 @@ class WholeText
           end
           # On prend ce mot
           TABLE_LEMMATISATION.merge!(original => data_nature_lemma_for(nature).merge(canon: canon))
-          # CLI.dbg("    ---- #{original.downcase} canon-> #{canon}")
         end
       end
     end

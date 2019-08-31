@@ -57,7 +57,6 @@ class Output
     liste_nombres.each do |lib, nombre, sopts|
       ecrit line_nombre('  %s' % lib, nombre, sopts || Hash.new)
     end
-    ecrit CLI.separator(return: false, tab: '  ')
 
     # On finit par écrire l'aide
     ecrit messages_aide

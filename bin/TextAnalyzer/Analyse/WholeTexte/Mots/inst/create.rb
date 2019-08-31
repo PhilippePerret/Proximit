@@ -13,7 +13,6 @@ class Mots
   def create data_mot
     imot = TextAnalyzer::Analyse::WholeText::Mot.new(data_mot)
     self.items ||= Hash.new
-    # CLI.dbg('-- Création du mot d’index %i' % [imot.index])
     self.items.merge!(imot.index => imot)
     return imot
   end

@@ -10,10 +10,13 @@ end
 
 def error msg
   puts "#{Time.now.to_i}--- ERREUR: #{msg}"
+  if msg.respond_to?(:backtrace)
+    puts msg.backtrace
+  end
 end
 
-def dbg msg
-  puts "#{Time.now.to_i}--- DBG: #{msg}"
+def dbg label, valeur
+  puts "#{Time.now.to_i}--- Valeur de '#{label}': #{valeur.inspect}"
 end
 
 class Messagerie

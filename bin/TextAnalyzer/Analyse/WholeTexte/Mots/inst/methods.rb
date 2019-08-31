@@ -9,7 +9,6 @@ class Mots
 
   # Pour récupérer un mot
   def get_by_index mot_id
-    # CLI.debug_entry(' (mot_id = %i)' % mot_id)
     self.items[mot_id]
   end
   alias :[] :get_by_index

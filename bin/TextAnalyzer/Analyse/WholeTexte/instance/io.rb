@@ -15,7 +15,7 @@ class WholeText
   end
 
   def yaml_file_path
-    @yaml_file_path ||= File.join(analyse.hidden_folder, 'whole_text.yaml')
+    @yaml_file_path ||= File.join(analyse.prox_folder, 'whole_text.yaml')
   end
 
 end #/WholeText

@@ -11,7 +11,7 @@ class Data
   end
 
   def path
-    @path ||= File.join(analyse.hidden_folder,'data.yaml')
+    @path ||= File.join(analyse.prox_folder,'data.yaml')
   end
   alias :yaml_file_path :path # pour le module YAML
 

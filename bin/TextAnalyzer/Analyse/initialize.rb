@@ -29,8 +29,11 @@ class Analyse
     @data = Data.new(self)
 
     # Données générales pour l'analyse
-    data.paths = paths
+    data.paths      = paths
     data.started_at = Time.now
+
+    # Faire le dossier d'analyse
+    File.exists?(prox_folder) || FileUtils.mkdir_p(prox_folder)
 
     # Pour initialiser les "listes rectifiées" et les listes
     # de proximités propres au projet.
@@ -63,9 +66,7 @@ class Analyse
       File.exist?(p) || raise("Texte introuvable %{pth}" % {pth: p})
       arr_modified_at << File.stat(p).mtime
     end
-
     self.original_doc_modified_at ||= arr_modified_at.max
-    self.folder ||= File.expand_path(File.dirname(self.paths.first))
   end
 
   # Traitement des datas qui sont fournies à l'instanciation de
@@ -75,7 +76,7 @@ class Analyse
   # données fournies. On utilisera la méthode `data_valid?` pour savoir si les
   # données sont valides pour procéder à l'analyse.
   def treate_data data
-    data ||= Hash.new
+    data ||= {}
 
     # Les fichiers à traiter, s'ils sont envoyés lors de l'instanciation
     if data[:path]
@@ -86,14 +87,23 @@ class Analyse
 
     # Le dossier de l'analyse. Il doit être possible de le déterminer
     # dès l'instanciation.
+    # + le premier fichier à analyser
     self.folder =
       if data.key?(:folder)
         data[:folder]
-      elsif self.paths && self.paths.is_a?(Array) && !self.paths.empty?
-        File.expand_path(File.dirname(self.paths.first))
+        self.first_path = Dir["#{data[:folder]}/*.{#{available_extensions.join(',')}}"].first
+      elsif
+        self.first_path = self.paths.first
+        File.expand_path(File.dirname(self.first_path))
       else
-        nil
+        raise("Impossible de déterminer le dossier des fichiers de l'analyse…")
       end
+
+    # Le dossier (plus caché) qui va contenir tous les fichiers produits par
+    # l'analyse. C'est l'affixe du premier fichier auxquel est ajouté '_prox'
+    # Note : ça n'est pas ici qu'on le construit (pour respecter la fonction
+    # des méthodes — celle-ci doit juste servir à récupérer les données)
+    self.prox_folder = "#{File.basename(first_path,File.extname(first_path))}_prox"
 
     # D'autres informations qui ont pu être passées par les données
     {

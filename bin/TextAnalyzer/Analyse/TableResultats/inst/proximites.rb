@@ -17,7 +17,6 @@ class TableResultats
   # Méthode principale calculant les proximités dans le texte
   # Ainsi que les proximités par tranche et la moyenne de proximité
   def calcule_proximites
-    CLI.debug_entry
     total_distances = 0
     # Le total des distances, mais seulement pour les mots qui
     # sont à distance normale maximale (1 page)
@@ -91,7 +90,7 @@ class TableResultats
     end
 
     def items_for_yaml
-      h = Hash.new ; self.each{|k,v| h.merge!(k => v.data_for_yaml)} ; return h
+      h = {} ; self.each{|k,v| h.merge!(k => v.data_for_yaml)} ; return h
     end
     def items_from_yaml(hdata)
       hdata.each do |k, v|

@@ -6,8 +6,20 @@ class Analyse
   include ModuleForFromYaml
 
   # {String} Le chemin d'accès au dossier qui contiendra le dossier
-  # prox de l'analyse.
+  # prox de l'analyse. C'est le dossier qui contient le texte ou le
+  # premier texte lorsque plusieurs sont transmis
   attr_accessor :folder
+
+  # {String} Le chemin d'accès absolu au dossier contenant tous les
+  # éléments de l'analyse
+  # (note : avant, il s'appelait 'hidden_folder')
+  attr_accessor :prox_folder
+
+  # {String} Le premier path, donc le chemin d'accès au premier fichier
+  # si plusieurs sont transmis.
+  # Il permet de déterminer, notamment, le nom et l'emplacement du dossier
+  # qui contiendra tous les éléments de l'analyse.
+  attr_accessor :first_path
 
   # {Array} des paths de fichier (String) à analyser et
   # {Array} des fichiers (instances TextAnalyzer::File) à analyser

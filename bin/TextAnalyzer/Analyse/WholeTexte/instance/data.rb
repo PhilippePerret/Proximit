@@ -28,12 +28,12 @@ class WholeText
 
   # Chemin d'accès au fichier contenant tout le texte
   def path
-    @path ||= File.join(analyse.hidden_folder,'texte_entier.txt')
+    @path ||= File.join(analyse.prox_folder,'texte_entier.txt')
   end
 
   # Chemin d'accès au fichier produit par tree-tagger
   def lemma_file_path
-    @lemma_file_path ||= File.join(analyse.hidden_folder,'texte_entier_lemmatized.txt')
+    @lemma_file_path ||= File.join(analyse.prox_folder,'texte_entier_lemmatized.txt')
   end
 
   # Longueur du texte

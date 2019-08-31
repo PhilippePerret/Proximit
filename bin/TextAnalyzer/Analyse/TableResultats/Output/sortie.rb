@@ -10,17 +10,14 @@ class Output
   attr_accessor :all_resultats_path
 
   def set_filepath_current_format fmt
-    self.all_resultats_path = File.join(analyse.hidden_folder, 'all_resultats.%s' % fmt.to_s)
+    self.all_resultats_path = File.join(analyse.prox_folder, 'all_resultats.%s' % fmt.to_s)
   end
   # = main =
   # Méthode principale qui sort tous les nombres et tous les listings
   def all opts = nil
-    CLI.debug_entry
     defaultize_options(opts)
     set_filepath_current_format(options[:output_format])
-    if CLI.options[:update] || CLI.options[:force] || !File.exist?(all_resultats_path) || parametres_changeants?
-      CLI::Screen.clear
-      CLI::Screen.write_slowly('---> ' + t('commands.proximity.notices.update_running'))
+    if !File.exist?(all_resultats_path) || parametres_changeants?
       ecrit_date_analyse
       table_nombres
       # = Proxmités =
@@ -46,13 +43,13 @@ class Output
     else
       rt('errors.cant_do_that_yet')
     end
-    CLI.debug_exit
   end
 
   # Retourne true si un paramètre doit provoquer l'actualisation de la sortie
   # Par exemple le nombre de mots affichés
+  # On ne s'en sert plus
   def parametres_changeants?
-    return !CLI.params[:mots].nil?
+    return false
   end
   # parametres_changeant?
 

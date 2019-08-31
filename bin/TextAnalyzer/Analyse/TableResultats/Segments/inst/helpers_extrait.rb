@@ -77,8 +77,9 @@ class Segments < Array
     String.send(truncate_method, str, @max_len).join(String::RC)
   end
 
+  # TODO Pour le moment, '@justify' n'est défini nulle part (c'est normal)
   def truncate_method
-    @truncate_method ||= CLI.options[:justify] ? :truncate_and_justify : :truncate
+    @truncate_method ||= @justify ? :truncate_and_justify : :truncate
   end
 
   def line_with_words_and_distance
