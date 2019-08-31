@@ -3,6 +3,7 @@ class TextAnalyzer
 class Analyse
 class WholeText
 
+  MARK_BOT = '__PROX_BOT_PROX__' # Marque de début de texte
   MARK_EOT = '__PROX_EOT_PROX__'
 
   # Méthode qui traite le texte courant et récupère tous
@@ -15,12 +16,17 @@ class WholeText
     # On commence par remplacer tous les caractères non alphanumérique par
     # des espaces (ponctuations, retour chariot), car sinon ils ne seraient
     # pas considérés par le scan.
-    t = self.content
+    #
+    # Note : la marque de début de texte (MARK_BOT) permet de tenir compte
+    # des textes qui commenceraient par des caractères "effacés", des espaces,
+    # etc. qui seraient supprimés plus bas dans la rechercher avec \b...\b
+    t = "#{MARK_BOT} "+
+      self.content
       .gsub(/\r/,'')
       .gsub(/’/,"'")
-      .gsub(/'/,'e ')
+      .gsub(/'/,'e_ ') # les deux caractères ajoutés seront supprimés
       .gsub(/[\“\”]/, '"')
-      .gsub(/[>\+\|\\\/\[\]\{\}\(\)\%«»"\,\n\.\¡\¿\!\?\;\…–—\: ]/, ' ') +
+      .gsub(/[\#>\+\|\\\/\[\]\{\}\(\)\%«»"\,\n\.\¡\¿\!\?\;\…–—\: ]/, ' ') +
       " #{MARK_EOT}"
     # NE SURTOUT PAS METTRE '_' qui sert pour les tags retirés
 
@@ -29,7 +35,7 @@ class WholeText
     t = t.gsub(/\-(#{AFTER_TIRET_BADS_ARR.join('|')})/,' \1')
          .gsub(/\b(#{BEFORE_TIRET_BADS_ARR.join('|')})\-/,'\1 ')
 
-    puts "t = #{t.inspect}"
+    puts "\n\n\n--- texte épuré = #{t.inspect}"
 
 
     # On peut scanner le texte
@@ -46,8 +52,17 @@ class WholeText
     cur_offset = 0
     while aword = all_separated_words.shift
       word = aword.first
-      break if word === MARK_EOT # on ne prend pas le dernier mot
-      if word.strip === ''
+      case word.strip
+      when MARK_BOT
+        # On met le décalage à la longueur de ce qui suit la marque de
+        # début de texte, à laquelle on retire 1 pour l'espace qu'on a
+        # ajouté après la marque pour la séparer d'un éventuel mot qui
+        # commencerait le texte (ce qui est le cas général)
+        cur_offset = all_separated_words.shift.first.length - 1
+        next
+      when MARK_EOT # on ne prend pas le dernier mot, on termine
+        break
+      when ''
         # Si un mot final est en court, on le mémorise
         if final_word
           real_words << {word:final_word, offset:cur_offset}
@@ -56,12 +71,16 @@ class WholeText
         end
         # On ajoute la longueur de la séparation
         cur_offset += word.length
-      elsif word === '-'
+      when '-'
         # un tiret, on doit mettre le prochain mot avec celui-ci
         final_word << word
         final_word << all_separated_words.shift.first
+      when /_$/
+        final_word = word[0..-2]
+        cur_offset -= 1
       else
         # Un vrai mot
+        # puts "-- MOT: '#{word}' OFFSET #{cur_offset}"
         final_word = word
       end
     end
@@ -78,8 +97,6 @@ class WholeText
 
     # Valeurs initiales
     # -----------------
-    # l'offset dans ce document-ci (offset relatif)
-    rel_offset = 0
     # Offset dans le texte total assemblé. On prend sa valeur initiale, à
     # laquelle on ajoutera toujours l'offset du mot courant
     init_current_offset =  tres.current_offset
@@ -92,6 +109,10 @@ class WholeText
       # L'index de mot courant (noter qu'il sert aussi d'ID au mot)
       tres.current_index_mot += 1
 
+      # L'offset du mot correspond à son offset dans le document (calculé
+      # plus haut) auquel on ajoute l'offset du document auquel il appartient.
+      tres.current_offset = init_current_offset + hword[:offset]
+
       mot = self.mots.create({
         analyse:          analyse,
         real:             hword[:word],
@@ -103,9 +124,6 @@ class WholeText
 
       # On ajoute le mot aux résultats
       tres.add_mot(mot)
-
-      # On prend le nouveau décalage
-      tres.current_offset = init_current_offset + hword[:offset]
 
     end #/ fin de la boucle sur tous les mots
 

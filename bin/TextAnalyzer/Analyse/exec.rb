@@ -22,7 +22,7 @@ class Analyse
     #   - la relève des mots dans le fichier lématisé
     texte_entier.decompose
 
-    return
+    # return
 
     # Calcul des proximités
     table_resultats.calcule_proximites

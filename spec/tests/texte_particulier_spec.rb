@@ -15,7 +15,7 @@ describe 'Analyse avec textes particuliers' do
     @resultat = `./bin/analyse_texte.rb "#{full_path}"`
     puts "@resultat = #{@resultat}"
   end
-  it 'a pu tout charger sans erreur', current:true do
+  it 'a pu tout charger sans erreur' do
     expect(@resultat).not_to match('ERREUR')
   end
 
