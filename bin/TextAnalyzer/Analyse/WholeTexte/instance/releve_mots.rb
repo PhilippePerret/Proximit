@@ -35,12 +35,13 @@ class WholeText
     t = t.gsub(/\-(#{AFTER_TIRET_BADS_ARR.join('|')})/,' \1')
          .gsub(/\b(#{BEFORE_TIRET_BADS_ARR.join('|')})\-/,'\1 ')
 
-    puts "\n\n\n--- texte épuré = #{t.inspect}"
-
+    # puts "\n\n\n--- texte épuré = #{t.inspect}"
 
     # On peut scanner le texte
     all_separated_words = t.scan(/\b(.+?)\b/)
-    puts "Tous les mots séparés : #{all_separated_words.inspect}"
+    # puts "Tous les mots séparés : #{all_separated_words.inspect}"
+
+    
     last_index_found = all_separated_words.count - 1
 
     # Contrairement à la version précédente (scrivener), on va travailler

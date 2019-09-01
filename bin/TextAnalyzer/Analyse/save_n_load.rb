@@ -7,7 +7,7 @@ class Analyse
     texte_entier.save
     data.ended_at = Time.now
     data.save
-    self.save
+    self.save # dans le module yaml / sauve en YAML et JSON
   end
   # /save_all
 

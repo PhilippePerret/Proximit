@@ -34,7 +34,6 @@ class TableResultats
         canons:                 {type: YFDATA},
         mots:                   {type: YFDATA},
         proximites:             {type: YFDATA},
-        segments:               {type: YFDATA}
       }
     }
   end
@@ -49,13 +48,6 @@ class TableResultats
   # en valeur la liste des index de tous les mots identiques du texte.
   def mots
     @mots ||= Mots.new(self.analyse)
-  end
-
-  # Liste {Segments} des segments de texte dans le texte total. Chaque segment
-  # peut être un mot ou un inter-mot, comme une ponctuation. Cette liste
-  # de segments permet de reconstituer tout le texte.
-  def segments
-    @segments ||= Segments.new(self.analyse)
   end
 
   # La liste des proximités

@@ -1,31 +1,8 @@
 'use strict'
 
-class TextAnalyzed
-  attr_reader :texte_name
-  attr_reader :resultat
-  def initialize texte_name
-    @texte_name = texte_name
-  end
-  def analyse
-    FileUtils.rm_rf(prox_folder) if File.exists?(prox_folder)
-    full_path = File.expand_path("./spec/support/assets/textes/#{texte_name}")
-    @resultat = `./bin/analyse_texte.rb "#{full_path}"`
-    puts "@resultat = #{@resultat}"
-  end
-  def in_prox_folder relpath
-    File.join(prox_folder,relpath)
-  end
-  def prox_folder
-    @prox_folder ||= File.join(folder_textes,"#{affixe}_prox")
-  end
-  def affixe
-    @affixe ||= File.basename(texte_name,File.extname(texte_name))
-  end
-end
-
 describe 'La relève des mots' do
 
-  it 'affecte les bonnes données aux mots', current:true do
+  it 'affecte les bonnes données aux mots' do
     ana = TextAnalyzed.new('texte_avec_particularites.md')
     ana.analyse
     expect(ana.resultat).not_to match('ERREUR')

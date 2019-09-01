@@ -1,13 +1,17 @@
 # encoding: UTF-8
 =begin
 Pour obtenir quelques éléments de l'application
+
+ATTENTION : ce module est chargé par les tests (avec quelques autres modules
+de l'analyse mais seulement quelques uns)
+
 =end
 class App
 class << self
 
   def data
     @data ||= begin
-      JSON.parse(read_from_file(package_path)).to_sym
+      JSON.parse(File.read(package_path).force_encoding('utf-8')).to_sym
     end
   end
 

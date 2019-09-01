@@ -1,5 +1,10 @@
+# encoding: UTF-8
 =begin
 
+  Normalement, cette méthode ne doit plus servir puisqu'on n'utilise
+  plus les segments, mais on peut s'en servir pour s'en inspirer pour
+  coloriser le texte.
+  
 =end
 class TextAnalyzer
 class Analyse

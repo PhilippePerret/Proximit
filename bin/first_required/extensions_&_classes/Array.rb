@@ -16,7 +16,7 @@ class Array
   # Transforme toutes les clés des tables que peut contenir
   # la liste en clé symboliques
   def to_sym
-    new_arr
+    new_arr = []
     self.each do |v|
       v = v.symbolize_keys if v.respond_to?(:symbolize_keys)
       new_arr << v

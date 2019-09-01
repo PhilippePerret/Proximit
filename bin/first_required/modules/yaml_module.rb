@@ -56,10 +56,12 @@
     Avec ces deux propriétés/méthodes définies, il suffit de faire :
 
         write_in_yaml
+        ou `save`
 
     pour enregistrer les données et
 
         read_from_yam
+        ou `load`
 
     pour les recharger.
 
@@ -130,6 +132,8 @@ module ModuleForFromYaml
   def write_in_yaml
     self.respond_to?(:yaml_file_path) || rt('system.errors.required_instance_method', {method_name: ':yaml_file_path', class_name: self.class.name})
     File.open(yaml_file_path,'wb'){|rf| YAML.dump(data_for_yaml, rf)}
+    # On procède aussi à l'enregistrement du fichier JSON
+    save_as_json
   end
   alias :save :write_in_yaml
 
@@ -148,8 +152,21 @@ module ModuleForFromYaml
     datas: true, no_date: true
   }
 
+  def save_as_json
+    File.open(json_path,'wb'){|f| f.write data_for_json}
+  end
+  # équivalent du path YAML mais pour JSON
+  def json_path
+    @json_path ||= File.join(File.dirname(yaml_file_path),"#{File.basename(yaml_file_path,File.extname(yaml_file_path))}.json")
+  end
+  # Les données au format JSON (maintenant que le module travaille aussi
+  # avec des données JSON)
+  def data_for_json
+    data_for_yaml.to_json
+  end
+
   def data_for_yaml
-    hdata = Hash.new
+    hdata = {}
     # Les données fonctionnelles, qui permettent de connaitre les
     # éléments
     hdata.merge!(
