@@ -39,10 +39,8 @@ const Prefs = {
       throw("Il est impératif de définir le Prefs.data_keys propre à l'application.")
     }
     for (var k in this.app_data){
-      if ( undefined === this.data[k] ) {
-        var v = eval(this.app_data[k])
-        Object.assign(this.data, {[k]: v})
-      }
+      var v = eval(this.app_data[k])
+      Object.assign(this.data, {[k]: v})
     }
     fs.writeFileSync(this.path, JSON.stringify(this.data))
   }

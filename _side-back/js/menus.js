@@ -32,18 +32,26 @@ const ObjMenus = {
         ]
       }
     , {
-        label: 'Analyse'
+        label: 'Texte'
       , enabled: true
       , id: 'menu-analyse'
       , submenu: [
           {
               label: 'Analyser le texte'
-            , id: 'analyse-analyser'
-            , accelerator: 'CmdOrCtrl+A'
+            , id: 'texte-analyser'
+            , accelerator: 'CmdOrCtrl+Shift+A'
             , enabled: true // Plus tard, dépendra de présence de texte ou non
             , click:function(){
                 execJS("PTexte.analyseCurrent.call(PTexte)")
               }
+          }
+        , {type:'separator'}
+        , {
+              label: 'Corriger les proximités'
+            , id: 'texte-correct-proximities'
+            , accelerator: 'CmdOrCtrl+Shift+P'
+            , enabled: true // à corriger plus tard
+            , click:function(){execJS("PTexte.current.correctProximities.call(PTexte.current)")}
           }
         ]
       }

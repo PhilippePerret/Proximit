@@ -1,0 +1,18 @@
+div.portion {
+  font-size: 16.1pt;
+  border:1px solid;
+  border-radius:0.6em;
+  padding:2em;
+  margin:2em;
+}
+
+div.portion span.mot {
+  font-family:inherit;
+  font-size: inherit;
+  border: 1px solid #DDFFDD;
+}
+
+.exergue {
+  font-weight: bold;
+  color: red;
+}

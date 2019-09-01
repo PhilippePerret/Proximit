@@ -32,7 +32,7 @@ class PTexte {
       } else {
         // Rappel : se trouve dans le stdout tout ce qui a été envoyé
         // par puts dans le script.
-        console.log("Retour de l'exécution de l'analyse : ", stdout)
+        // console.log("Retour de l'exécution de l'analyse : ", stdout)
         // On réaffiche tout de suite les infos, pour savoir ce qu'a
         // pu faire l'analyse
         PTexte.current.writeState()
@@ -106,12 +106,55 @@ class PTexte {
   }
 
   /**
+    |
+    | Méthode pour corriger les proximités
+    |
+  **/
+  correctProximities(){
+    // Vérifier qu'on puisse le faire
+    // Chargement du fichier résultats
+    let resultats = require(this.resultats_path)
+    // console.log("résultats : ", resultats)
+    // console.log("Proximités:", proximites)
+    let proximites = resultats.datas.proximites.datas
+
+    Mot.init()
+
+    // On peuple les canons
+    // + peuplement des mots
+    Canon.set(resultats.datas.canons.datas)
+
+    // On peuple les proximités
+    Proximity.set(resultats.datas.proximites.datas)
+    Proximity.show(0)
+    // Affichage de la première proximité
+  }
+
+
+  /**
+    | Retourne la portion de texte depuis le caractère d'offset +fromOffset+
+    | au caractère d'offset +toOffset+ en affichant un minimum de +min+
+    | caractères si ce nombre est précisé.
+    |
+  **/
+  getTextFromTo(fromOffset, toOffset){
+    const len = toOffset - fromOffset
+    const fd  = fs.openSync(this.fulltext_path, 'r');
+    const buf = new Buffer(len)
+    // buf.fill('')
+    const str = fs.readSync(fd, buf, 0, len, fromOffset)
+    console.log("Texte ramené (de %d à %d) : '%s'", fromOffset, toOffset, buf.toString())
+    return buf.toString()
+  }
+
+
+  /**
     Méthode, utilisée normalement à l'ouverture du fichier, écrivant l'état
     de travail sur le texte, pour savoir jusqu'à quel point il a été analysée
     et corrigé.
   **/
   writeState(){
-    if ( fs.existsSync(this.folder) ){
+    if ( fs.existsSync(this.prox_folder) ){
       console.log("Le texte a déjà été analysé")
     } else {
       console.log("Le texte n'a pas encore été analysé.")
@@ -122,8 +165,8 @@ class PTexte {
     // Le nom du texte (affixe)
     this.writeRowInfo(true, 'Nom du texte', this.affixe, conteneur)
     // Existence du dossier affixe_prox
-    const folder_exists = fs.existsSync(this.folder) == true;
-    this.writeRowInfo(folder_exists, `Dossier proximit`, this.folder, conteneur)
+    const folder_exists = fs.existsSync(this.prox_folder) == true;
+    this.writeRowInfo(folder_exists, `Dossier proximit`, this.prox_folder, conteneur)
     if ( folder_exists ) {
       // Le dossier Proximit existe, on regarde ce qu'il contient pour
       // voir ce qu'on peut faire.
@@ -146,8 +189,14 @@ class PTexte {
     container.append(div)
   }
 
+  in_prox(relpath){
+    return path.join(this.prox_folder,relpath)
+  }
+  get fulltext_path(){return this._fulltext_path || (this._fulltext_path = this.in_prox('texte_entier.txt'))}
+  get resultats_path(){return this._resultatspath || (this._resultatspath = this.in_prox('table_resultats.json'))}
+
   // Le path du dossier contenant tous les éléments
-  get folder(){return this._folder || (this._folder = path.join(this.text_folder,`${this.affixe}_prox`))}
+  get prox_folder(){return this._prox_folder || (this._prox_folder = path.join(this.text_folder,`${this.affixe}_prox`))}
 
   // Le path du dossier du fichier texte
   get text_folder(){return this._textfolder || (this._textfolder = path.dirname(this.path))}
