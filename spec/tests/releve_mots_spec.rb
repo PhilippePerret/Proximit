@@ -3,7 +3,7 @@
 describe 'La relève des mots' do
 
   it 'affecte les bonnes données aux mots' do
-    ana = TextAnalyzed.new('texte_avec_particularites.md')
+    ana = TextAnalyzed.new('texte_avec_particularites.md', __FILE__)
     ana.analyse
     expect(ana.resultat).not_to match('ERREUR')
     p = ana.in_prox_folder('whole_text.yaml')

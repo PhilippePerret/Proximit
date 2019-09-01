@@ -57,8 +57,8 @@
                 :sortish: texte
             :nombre_occurences: 1
             :nombre_proximites: 0
-      :created_at: 2019-09-01 11:58:07.721002000 +03:00
-      :updated_at: 2019-09-01 11:58:07.721008000 +03:00
+      :created_at: 2019-09-01 13:25:43.581853000 +03:00
+      :updated_at: 2019-09-01 13:25:43.581854000 +03:00
   :mots:
     :class: TextAnalyzer::Analyse::TableResultats::Mots
     :datas:
@@ -74,15 +74,15 @@
         - 1
         texte:
         - 2
-      :created_at: 2019-09-01 11:58:07.721074000 +03:00
-      :updated_at: 2019-09-01 11:58:07.721078000 +03:00
+      :created_at: 2019-09-01 13:25:43.581889000 +03:00
+      :updated_at: 2019-09-01 13:25:43.581890000 +03:00
   :proximites:
     :class: TextAnalyzer::Analyse::TableResultats::Proximites
     :datas:
       :pourcentage: 0 %
       :nombre: 0
       :items: {}
-      :created_at: 2019-09-01 11:58:07.721146000 +03:00
-      :updated_at: 2019-09-01 11:58:07.721152000 +03:00
-  :created_at: 2019-09-01 11:58:07.721160000 +03:00
-  :updated_at: 2019-09-01 11:58:07.721164000 +03:00
+      :created_at: 2019-09-01 13:25:43.581924000 +03:00
+      :updated_at: 2019-09-01 13:25:43.581925000 +03:00
+  :created_at: 2019-09-01 13:25:43.581931000 +03:00
+  :updated_at: 2019-09-01 13:25:43.581934000 +03:00
