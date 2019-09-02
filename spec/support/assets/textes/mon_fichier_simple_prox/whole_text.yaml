@@ -13,7 +13,10 @@
         0:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 0
+            :id: 0
+            :idP: 
+            :idN: 1
+            :tbw: " "
             :real: Un
             :offset: 0
             :rel_offset: 0
@@ -29,7 +32,10 @@
         1:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 1
+            :id: 1
+            :idP: 0
+            :idN: 2
+            :tbw: " "
             :real: simple
             :offset: 3
             :rel_offset: 3
@@ -45,7 +51,13 @@
         2:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 2
+            :id: 2
+            :idP: 1
+            :idN: 
+            :tbw: |+
+              .
+
+
             :real: texte
             :offset: 10
             :rel_offset: 10
@@ -73,7 +85,7 @@
           - 0
           - 1
           - 2
-      :created_at: 2019-09-01 13:25:43.585325000 +03:00
-      :updated_at: 2019-09-01 13:25:43.585330000 +03:00
-  :created_at: 2019-09-01 13:25:43.585335000 +03:00
-  :updated_at: 2019-09-01 13:25:43.585339000 +03:00
+      :created_at: 2019-09-02 14:33:07.834473000 +03:00
+      :updated_at: 2019-09-02 14:33:07.834474000 +03:00
+  :created_at: 2019-09-02 14:33:07.834475000 +03:00
+  :updated_at: 2019-09-02 14:33:07.834476000 +03:00

@@ -20,56 +20,56 @@ class Proximite
         fixed:              {type: YAPROP},
         erased:             {type: YAPROP},
         ignored:            {type: YAPROP},
-        mot_avant_index:    {type: YIVAR},
-        mot_apres_index:    {type: YIVAR},
+        motA_id:    {type: YIVAR},
+        motB_id:    {type: YIVAR},
         distance:           {type: YIVAR},
         distance_minimale:  {type: YIVAR}
       }
     }
   end
 
-  def mot_avant
-    @mot_avant ||= mot_avant_index ? analyse.get_mot_by_index(mot_avant_index) : nil
+  def motA
+    @motA ||= motA_id ? analyse.get_mot_by_index(motA_id) : nil
   end
-  def mot_apres
-    @mot_apres ||= mot_apres_index ? analyse.get_mot_by_index(mot_apres_index) : nil
+  def motB
+    @motB ||= motB_id ? analyse.get_mot_by_index(motB_id) : nil
   end
 
-  def mot_avant_index
-    @mot_avant_index ||= mot_avant ? mot_avant.index : nil
+  def motA_id
+    @motA_id ||= motA ? motA.id : nil
   end
-  def mot_apres_index
-    @mot_apres_index ||= mot_apres ? mot_apres.index : nil
+  def motB_id
+    @motB_id ||= motB ? motB.id : nil
   end
 
   # retourne la distance, en caractères, entre les deux mots (de la fin
   # du premier au début du deuxième)
   def distance
     @distance ||= begin
-      mot_apres.offset > mot_avant.offset || begin
+      motB.offset > motA.offset || begin
         @distance = 'UNAVAILABLE' # sinon, stack level overflow avec le inspect
         rt('commands.proximity.errors.distance_null', {iprox: self.inspect})
       end
-      mot_apres.offset - (mot_avant.offset + mot_avant.length)
+      motB.offset - (motA.offset + motA.length)
     end
   end
 
   # La distance minimale pour cette proximité
   def distance_minimale
     @distance_minimale ||= begin
-      TextAnalyzer::Analyse::WholeText::Mot.distance_minimale(mot_avant.canon)
+      TextAnalyzer::Analyse::WholeText::Mot.distance_minimale(motA.canon)
     end
   end
 
   # Transforme l'instance en hash, pour l'utilisation par exemple dans les
   # string-interpolation
   # Note : puisque ces valeurs sont destinées à servir pour les interpolations,
-  # on cherche la valeur string qui peut être affichée (cf. les mot_avant et
-  # mot_apres par exemple)
+  # on cherche la valeur string qui peut être affichée (cf. les motA et
+  # motB par exemple)
   def to_h
     {
-      mot_avant: "#{mot_avant.real} [#{mot_avant.index}]",
-      mot_apres: "#{mot_apres.real} [#{mot_apres.index}]",
+      motA: "#{motA.real} [#{motA.index}]",
+      motB: "#{motB.real} [#{motB.index}]",
       distance: distance, distance_minimale: distance_minimale,
       id: id
     }

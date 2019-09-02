@@ -67,7 +67,7 @@ describe 'Lancement d’une analyse' do
     expect(File.exists? ana.analyse_yaml_path).to be true
     expect(ana).to have_correct_resultats_yaml_data({
         current_offset: 11,
-        current_index_mot: 2,
+        current_id_mot: 2,
         last_id_proximite: -1,
         proximites: {datas: {nombre: 0}}
       })

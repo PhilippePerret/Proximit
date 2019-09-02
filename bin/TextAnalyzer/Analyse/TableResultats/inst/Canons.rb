@@ -60,8 +60,8 @@ class TableResultats
       self.merge!(mot.canon => Canon.new(analyse, mot.canon))
     end
 
-    def add_proximite mot_avant, iprox
-      self[mot_avant.canon].add_proximite(iprox)
+    def add_proximite motA, iprox
+      self[motA.canon].add_proximite(iprox)
     end
     # /add_proximite
 

@@ -8,11 +8,11 @@ class TableResultats
     attr_accessor :analyse
 
     # Instanciation d'une nouvelle proximité
-    def initialize ianalyse, id = nil, mot_avant = nil, mot_apres = nil
+    def initialize ianalyse, id = nil, motA = nil, motB = nil
       self.analyse    = ianalyse
       self.id         = id
-      @mot_avant = mot_avant
-      @mot_apres = mot_apres
+      @motA = motA
+      @motB = motB
     end
 
   end #/Proximite

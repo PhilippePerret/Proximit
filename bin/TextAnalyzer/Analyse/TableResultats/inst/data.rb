@@ -11,11 +11,6 @@ class TableResultats
   # propriété mise à 0 à l'initialisation de l'instance TableResultats.
   attr_accessor :current_offset
 
-  # L'index du mot courant traité, quels que soient les documents qu'on
-  # analyse.
-  # DEPRECATED : utiliser :current_id_mot
-  attr_accessor :current_index_mot
-
   # Identifiant du mot courant traité. Au moment de la relève, cet identifiant
   # correspond à l'index du mot dans l'ensembe du texte, tous documents
   # rassemblés.
@@ -35,7 +30,7 @@ class TableResultats
       datas: {
         text_analyzer_version:  {type: YAPROP},
         current_offset:         {type: YAPROP},
-        current_index_mot:      {type: YAPROP},
+        current_id_mot:         {type: YAPROP},
         last_id_proximite:      {type: YAPROP},
         canons:                 {type: YFDATA},
         mots:                   {type: YFDATA},

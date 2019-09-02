@@ -11,15 +11,15 @@ class Mot {
     this.items = {}
   }
   /**
-    Retourne l'instance Mot du mot d'index +idx+
+    Retourne l'instance Mot du mot d'id +mot_id+
   **/
-  static get(idx){
-    return this.items[idx]
+  static get(mot_id){
+    return this.items[mot_id]
   }
 
   static add(dmot) {
     const mot = new Mot(dmot)
-    Object.assign(this.items, {[mot.index]: mot})
+    Object.assign(this.items, {[mot.id]: mot})
   }
 
 
@@ -30,8 +30,8 @@ class Mot {
   static set(datas){
     this.items = {}
     for (var mot in datas.items) {
-      datas.items[mot].forEach( idx => {
-        Object.assign(this.items, {[idx]: new Mot({mot:mot, index:idx})})
+      datas.items[mot].forEach( mot_id => {
+        Object.assign(this.items, {[mot_id]: new Mot({mot:mot, id:mot_id})})
       })
     }
   }
@@ -56,7 +56,7 @@ class Mot {
   onFocus(ev){
     console.log("-> onFocus")
     try {
-      // Ça n'est pas possible, peut-être parce que c'est seulement un 
+      // Ça n'est pas possible, peut-être parce que c'est seulement un
       // span.contentEditable
       $(ev.currentTarget).select()
     } catch (e) {

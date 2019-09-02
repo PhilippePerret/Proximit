@@ -160,13 +160,14 @@ class PTexte {
     |
   **/
   getTextFromTo(fromOffset, toOffset){
-    const len = toOffset - fromOffset
-    const fd  = fs.openSync(this.fulltext_path, 'r');
-    const buf = new Buffer(len)
-    // buf.fill('')
-    const str = fs.readSync(fd, buf, 0, len, fromOffset)
-    // console.log("Texte ramené (de %d à %d) : '%s'", fromOffset, toOffset, buf.toString())
-    return buf.toString()
+    return "Le texte sera calculé autrement"
+    // const len = toOffset - fromOffset
+    // const fd  = fs.openSync(this.fulltext_path, 'r');
+    // const buf = new Buffer(len)
+    // // buf.fill('')
+    // const str = fs.readSync(fd, buf, 0, len, fromOffset)
+    // // console.log("Texte ramené (de %d à %d) : '%s'", fromOffset, toOffset, buf.toString())
+    // return buf.toString()
   }
 
 

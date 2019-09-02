@@ -26,7 +26,7 @@ describe 'La relève des mots' do
     ].each do |dmot|
       m = lesmots[dmot.first][:datas]
       # puts "--- mots[#{dmot.first}] : #{m.inspect}"
-      [:index, :real_init, :offset, :length, :downcase, :canon].each_with_index do |prop, iprop|
+      [:id, :real_init, :offset, :length, :downcase, :canon].each_with_index do |prop, iprop|
         # puts "iprop=#{iprop.inspect}, prop=#{prop.inspect}"
         expect(m[prop]).to eq dmot[iprop]
         # On prend l'extrait du texte correspondant pour voir si ça matche

@@ -16,10 +16,6 @@ class Mot
   # le mot
   attr_accessor :file_id
 
-  # {Integer} Index du mot dans le texte complet
-  # DEPRECATED Utiliser :id maintenant
-  attr_accessor :index
-
   # {Integer} Identifiant du mot, qui correspond, si aucun mot n'est ajouté
   # ou supprimé, à son index dans le texte complet.
   attr_accessor :id
@@ -50,23 +46,22 @@ class Mot
     {
       no_date: true,
       datas: {
-        id:             {type: YAPROP},
-        # index:              {type: YAPROP}, # DEPRECATED
-        idP:            {type: YAPROP}, # signifie "id previous word"
-        idN:            {type: YAPROP}, # signifie "id next word"
-        tbw:            {type: YAPROP}, # signifie "text between word" (cf. ci-dessus)
-        real:           {type: YAPROP},
-        offset:             {type: YAPROP},
-        rel_offset:         {type: YAPROP}, # signifie "relative offset"
-        real_init:          {type: YAPROP},
-        file_id:            {type: YAPROP},
+        id:           {type: YAPROP},
+        idP:          {type: YAPROP}, # signifie "id previous word"
+        idN:          {type: YAPROP}, # signifie "id next word"
+        tbw:          {type: YAPROP}, # signifie "text between word" (cf. ci-dessus)
+        real:         {type: YAPROP},
+        offset:       {type: YAPROP},
+        rel_offset:   {type: YAPROP}, # signifie "relative offset"
+        real_init:    {type: YAPROP},
+        file_id:      {type: YAPROP},
         px_idP:       {type: YAPROP}, # signifie "proximité identifiant previous"
         px_idN:       {type: YAPROP}, # signifie "proximité identifiant next"
-        downcase:           {type: YIVAR},
-        lemma:              {type: YIVAR},
-        canon:              {type: YIVAR},
-        length:             {type: YIVAR},
-        sortish:            {type: YIVAR}
+        downcase:     {type: YIVAR},
+        lemma:        {type: YIVAR},
+        canon:        {type: YIVAR},
+        length:       {type: YIVAR},
+        sortish:      {type: YIVAR}
       }
     }
   end

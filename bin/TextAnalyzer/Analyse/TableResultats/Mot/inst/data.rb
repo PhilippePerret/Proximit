@@ -15,8 +15,8 @@ class Mot
   attr_accessor :sortish
   attr_accessor :data
 
-  # Liste des index du mot
-  attr_accessor :indexes
+  # Liste des IDs du mot (avant, indexes)
+  attr_accessor :ids
 
   def yaml_properties
     {

@@ -13,7 +13,10 @@
         0:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 0
+            :id: 0
+            :idP: 
+            :idN: 1
+            :tbw: " "
             :real: Un
             :offset: 0
             :rel_offset: 0
@@ -29,7 +32,10 @@
         1:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 1
+            :id: 1
+            :idP: 0
+            :idN: 2
+            :tbw: " "
             :real: texte
             :offset: 3
             :rel_offset: 3
@@ -45,7 +51,10 @@
         2:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 2
+            :id: 2
+            :idP: 1
+            :idN: 3
+            :tbw: " "
             :real: avec
             :offset: 9
             :rel_offset: 9
@@ -61,7 +70,10 @@
         3:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 3
+            :id: 3
+            :idP: 2
+            :idN: 4
+            :tbw: " "
             :real: plusieurs
             :offset: 14
             :rel_offset: 14
@@ -77,7 +89,10 @@
         4:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 4
+            :id: 4
+            :idP: 3
+            :idN: 5
+            :tbw: " "
             :real: textes
             :offset: 24
             :rel_offset: 24
@@ -93,7 +108,10 @@
         5:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 5
+            :id: 5
+            :idP: 4
+            :idN: 6
+            :tbw: " "
             :real: pour
             :offset: 31
             :rel_offset: 31
@@ -109,7 +127,10 @@
         6:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 6
+            :id: 6
+            :idP: 5
+            :idN: 7
+            :tbw: " "
             :real: voir
             :offset: 36
             :rel_offset: 36
@@ -125,7 +146,10 @@
         7:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 7
+            :id: 7
+            :idP: 6
+            :idN: 8
+            :tbw: " "
             :real: plusieurs
             :offset: 41
             :rel_offset: 41
@@ -141,7 +165,10 @@
         8:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 8
+            :id: 8
+            :idP: 7
+            :idN: 9
+            :tbw: " "
             :real: proximités
             :offset: 51
             :rel_offset: 51
@@ -157,7 +184,10 @@
         9:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 9
+            :id: 9
+            :idP: 8
+            :idN: 10
+            :tbw: " "
             :real: dans
             :offset: 62
             :rel_offset: 62
@@ -173,7 +203,10 @@
         10:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 10
+            :id: 10
+            :idP: 9
+            :idN: 11
+            :tbw: " "
             :real: le
             :offset: 67
             :rel_offset: 67
@@ -189,7 +222,13 @@
         11:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :index: 11
+            :id: 11
+            :idP: 10
+            :idN: 
+            :tbw: |+
+              .
+
+
             :real: texte
             :offset: 70
             :rel_offset: 70
@@ -226,7 +265,7 @@
           - 8
           - 9
           - 10
-      :created_at: 2019-09-01 17:47:16.329002000 +03:00
-      :updated_at: 2019-09-01 17:47:16.329003000 +03:00
-  :created_at: 2019-09-01 17:47:16.329005000 +03:00
-  :updated_at: 2019-09-01 17:47:16.329006000 +03:00
+      :created_at: 2019-09-02 14:34:35.900299000 +03:00
+      :updated_at: 2019-09-02 14:34:35.900300000 +03:00
+  :created_at: 2019-09-02 14:34:35.900307000 +03:00
+  :updated_at: 2019-09-02 14:34:35.900308000 +03:00

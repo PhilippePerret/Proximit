@@ -132,7 +132,10 @@ class WholeText
         offset:       tres.current_offset,
         rel_offset:   hword[:offset],
         file_id:      current_file_id,
-        tbw:          '', # TODO le texte entre ce mot et le suivant
+        # Les trois nouvelles propriétés qui permettent de connaitre le mot
+        # avant, le mot après, et le texte entre le mot et le mot après, pour
+        # une reconstruction complète du texte à partir des seuls mot.
+        tbw:          '',  # sera renseigné au prochain tour
         idN:          nil, # sera renseigné au prochain tour
         idP:          nil  # sera renseigné juste ci-dessous
       }
@@ -146,7 +149,7 @@ class WholeText
         data_mot.merge!(idP: mot_precedent.id)
         # Pour trouver le texte entre le mot précédent et ce mot
         entre = self.content[mot_precedent.rel_offset+mot_precedent.length...data_mot[:rel_offset]]
-        puts "Entre #{mot_precedent.real} et #{hword[:word]}: '#{entre}'"
+        # puts "Entre #{mot_precedent.real} et #{hword[:word]}: '#{entre}'"
         mot_precedent.tbw = entre
       end
 
@@ -164,7 +167,7 @@ class WholeText
     # Il faut définir le `tbw` du dernier mot, qui correspond à la fin
     # du texte.
     mot_precedent.tbw = self.content[(mot_precedent.rel_offset+mot_precedent.length)...self.content.length]
-    puts "Après le dernier mot '#{mot_precedent.tbw}'"
+    # puts "Après le dernier mot '#{mot_precedent.tbw}'"
 
     # Normalement, il faut ajouter 1 pour obtenir le vrai décalage dans
     # le fichier total, qui prend un retour de chariot en plus à la fin.

@@ -120,17 +120,17 @@ class Proximity {
     div.append(Dom.createSpan({text: dataAround.after}))
     UI.currentProximity
       .clean()
-      .append(Dom.createDiv({text: `Proximité : « ${this.mot_avant.mot} » ⇤ ${this.distance} ⇥ « ${this.mot_apres.mot} » [offsets : ${this.mot_avant.offset} ↹ ${this.mot_apres.offset}]`}))
+      .append(Dom.createDiv({text: `Proximité : « ${this.motA.mot} » ⇤ ${this.distance} ⇥ « ${this.motB.mot} » [offsets : ${this.motA.offset} ↹ ${this.motB.offset}]`}))
       .append(div)
     // Il faut observer les deux mots
     $("#before-word")
-      .on('focus', this.mot_avant.onFocus.bind(this.mot_avant))
-      .on('keypress', this.mot_avant.onKeyPressed.bind(this.mot_avant))
-      .on('blur', this.mot_avant.onBlur.bind(this.mot_avant))
+      .on('focus', this.motA.onFocus.bind(this.motA))
+      .on('keypress', this.motA.onKeyPressed.bind(this.motA))
+      .on('blur', this.motA.onBlur.bind(this.motA))
     $("#after-word")
-      .on('focus', this.mot_apres.onFocus.bind(this.mot_apres))
-      .on('keypress', this.mot_apres.onKeyPressed.bind(this.mot_apres))
-      .on('blur', this.mot_apres.onBlur.bind(this.mot_apres))
+      .on('focus', this.motB.onFocus.bind(this.motB))
+      .on('keypress', this.motB.onKeyPressed.bind(this.motB))
+      .on('blur', this.motB.onBlur.bind(this.motB))
   }
 
   // Retourne le texte comprendant les deux mots
@@ -146,7 +146,7 @@ class Proximity {
     var addedLen = 0
 
     // Longueur de texte qui doit être prise
-    const len = (this.mot_apres.offset + this.mot_apres.length) - this.mot_avant.offset
+    const len = (this.motB.offset + this.motB.length) - this.motA.offset
     // Si une longueur minimale est définie, il faut voir si elle est atteinte
     // par l'intervalle entre les deux mots. Si ce n'est pas le cas, on
     // aggrandit ce qu'on doit prendre autour
@@ -155,46 +155,46 @@ class Proximity {
     }
 
     var meth = PTexte.current.getTextFromTo.bind(PTexte.current)
-    var between = meth(this.mot_avant.offset + this.mot_avant.length, this.mot_apres.offset)
-    var first = this.mot_avant.offset - (AROUND_LENGTH + addedLen)
+    var between = meth(this.motA.offset + this.motA.length, this.motB.offset)
+    var first = this.motA.offset - (AROUND_LENGTH + addedLen)
     first >= 0 || (first = 0)
-    var before  = meth(first, this.mot_avant.offset)
-    var start = this.mot_apres.offset + this.mot_apres.length
+    var before  = meth(first, this.motA.offset)
+    var start = this.motB.offset + this.motB.length
     var after   = meth(start, start + AROUND_LENGTH + addedLen)
     return {
-      before:before, first_word:this.mot_avant.mot, between:between, second_word:this.mot_apres.mot, after:after
+      before:before, first_word:this.motA.mot, between:between, second_word:this.motB.mot, after:after
     }
   }
 
-  get mot_avant(){
-    console.log("-> mot_avant (this.mot_avant_index=%d)", this.mot_avant_index)
-    if (undefined === this._mot_avant){
-      this._mot_avant = Mot.get(this.mot_avant_index)
-      if ( ! this._mot_avant ) {
-        console.error("Impossible l'obtenir le mot d'index %d dans la liste : ", this.mot_avant_index, Mot.items)
+  get motA(){
+    // console.log("-> motA (this.motA_id=%d)", this.motA_id)
+    if (undefined === this._motA){
+      this._motA = Mot.get(this.motA_id)
+      if ( ! this._motA ) {
+        console.error("Impossible d'obtenir le mot d'ID %d dans la liste : ", this.motA_id, Mot.items)
       }
     }
-    return this._mot_avant
+    return this._motA
   }
 
-  get mot_apres(){
-    if (undefined === this._mot_apres) {
-      this._mot_apres = Mot.get(this.mot_apres_index)
-      if ( ! this._mot_apres ) {
-        console.error("Impossible l'obtenir le mot d'index %d dans la liste : ", this.mot_apres_index, Mot.items)
+  get motB(){
+    if (undefined === this._motB) {
+      this._motB = Mot.get(this.motB_id)
+      if ( ! this._motB ) {
+        console.error("Impossible l'obtenir le mot d'index %d dans la liste : ", this.motB_id, Mot.items)
       }
     }
-    return this._mot_apres
+    return this._motB
   }
 
   get properties(){
     return {
-        fixed: {hname: "Proximité corrigée", values: [true,false]}
-      , erased: {hname: "Proximité supprimée", values: [true, false]}
-      , ignored: {hname: "Proximité à ignorer", values: [true, false]}
-      , mot_avant_index: {hname: "Index du premier mot de la proximité"}
-      , mot_apres_index: {hname: "Index du second mot de la proximité"}
-      , distance: {hname: "Distance entre les deux mots"}
+        fixed:      {hname: "Proximité corrigée", values: [true,false]}
+      , erased:     {hname: "Proximité supprimée", values: [true, false]}
+      , ignored:    {hname: "Proximité à ignorer", values: [true, false]}
+      , motA_id:    {hname: "Index du premier mot de la proximité"}
+      , motB_id:    {hname: "Index du second mot de la proximité"}
+      , distance:   {hname: "Distance entre les deux mots"}
       , distance_minimale: {hname: "Distance minimale de proximité (en deça, les mots sont en proximité)"}
       , created_at: {hname: "Date de création de cette proximité"}
       , updated_at: {hname: "Date de modification de cette proximité"}

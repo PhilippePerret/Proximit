@@ -13,7 +13,7 @@ class Mots
   def create data_mot
     imot = TextAnalyzer::Analyse::WholeText::Mot.new(data_mot)
     self.items ||= Hash.new
-    self.items.merge!(imot.index => imot)
+    self.items.merge!(imot.id => imot)
     return imot
   end
 

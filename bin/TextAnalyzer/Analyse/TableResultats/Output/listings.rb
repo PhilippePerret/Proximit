@@ -15,7 +15,7 @@ class Output
     when :'-dist', :'-distance'
       list.sort_by{|iprox| - iprox.distance}
     else # :alpha et autres
-      list.sort_by{|iprox| iprox.mot_avant.real[0..4].downcase.normalize}
+      list.sort_by{|iprox| iprox.motA.real[0..4].downcase.normalize}
     end
   end
   def sorted_list_canons

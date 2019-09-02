@@ -23,13 +23,13 @@ class TableResultats
     total_distances_common = 0
 
     canons.each do |canon, dcanon|
-      dcanon.mots.each_with_index do |mot_apres, mot_idx|
+      dcanon.mots.each_with_index do |motB, mot_idx|
         mot_idx > 0 || next
-        mot_avant = dcanon.mots[mot_idx - 1]
-        mot_apres.trop_proche_de?(mot_avant) || next
+        motA = dcanon.mots[mot_idx - 1]
+        motB.trop_proche_de?(motA) || next
         # Si on passe ici, c'est que le mot imot est trop du mot précédent.
         # On doit donc créer une proximité
-        iprox = Proximite.create(self, mot_avant, mot_apres)
+        iprox = Proximite.create(self, motA, motB)
         iprox.distance > 0 || begin
           rt('commands.proximity.errors.distance_null', {iprox: iprox.inspect})
         end

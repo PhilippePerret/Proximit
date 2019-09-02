@@ -3,12 +3,12 @@
 :datas:
   :text_analyzer_version: 0.1.0
   :current_offset: 127
-  :current_index_mot: -1
+  :current_id_mot: 24
   :last_id_proximite: 0
   :canons:
     :class: TextAnalyzer::Analyse::TableResultats::Canons
     :datas:
-      :pourcentage: 1400 %
+      :pourcentage: 56 %
       :nombre: 14
       :items:
         titre:
@@ -397,8 +397,8 @@
                 :sortish: lourd
             :nombre_occurences: 1
             :nombre_proximites: 0
-      :created_at: 2019-09-02 07:20:14.455587000 +03:00
-      :updated_at: 2019-09-02 07:20:14.455589000 +03:00
+      :created_at: 2019-09-02 14:33:11.615072000 +03:00
+      :updated_at: 2019-09-02 14:33:11.615074000 +03:00
   :mots:
     :class: TextAnalyzer::Analyse::TableResultats::Mots
     :datas:
@@ -421,60 +421,60 @@
       - poids
       - mi
       - lourd
-      :nombre_total_mots: 1
+      :nombre_total_mots: 25
       :items:
         un:
-        - 
-        - 
-        - 
+        - 0
+        - 2
+        - 21
         titre:
-        - 
+        - 1
         vrai:
-        - 
+        - 3
         bout-en-train:
-        - 
+        - 4
         le:
-        - 
-        - 
+        - 5
+        - 9
         été:
-        - 
+        - 6
         tout:
-        - 
+        - 7
         cela:
-        - 
+        - 8
         avale:
-        - 
+        - 10
         direct:
-        - 
-        - 
+        - 11
+        - 13
         et:
-        - 
+        - 12
         pourrais:
-        - 
+        - 14
         je:
-        - 
+        - 15
         voir:
-        - 
+        - 16
         ne:
-        - 
+        - 17
         est:
-        - 
+        - 18
         ce:
-        - 
+        - 19
         pas:
-        - 
+        - 20
         poids:
-        - 
+        - 22
         mi:
-        - 
+        - 23
         lourd:
-        - 
-      :created_at: 2019-09-02 07:20:14.455663000 +03:00
-      :updated_at: 2019-09-02 07:20:14.455664000 +03:00
+        - 24
+      :created_at: 2019-09-02 14:33:11.615117000 +03:00
+      :updated_at: 2019-09-02 14:33:11.615117000 +03:00
   :proximites:
     :class: TextAnalyzer::Analyse::TableResultats::Proximites
     :datas:
-      :pourcentage: 100 %
+      :pourcentage: 4 %
       :nombre: 1
       :items:
         0:
@@ -483,13 +483,13 @@
             :fixed: 
             :erased: 
             :ignored: 
-            :mot_avant_index: 
-            :mot_apres_index: 
+            :motA_id: 11
+            :motB_id: 13
             :distance: 7
             :distance_minimale: 1500.0
-            :created_at: 2019-09-02 07:20:14.455734000 +03:00
-            :updated_at: 2019-09-02 07:20:14.455735000 +03:00
-      :created_at: 2019-09-02 07:20:14.455742000 +03:00
-      :updated_at: 2019-09-02 07:20:14.455743000 +03:00
-  :created_at: 2019-09-02 07:20:14.455745000 +03:00
-  :updated_at: 2019-09-02 07:20:14.455746000 +03:00
+            :created_at: 2019-09-02 14:33:11.615163000 +03:00
+            :updated_at: 2019-09-02 14:33:11.615163000 +03:00
+      :created_at: 2019-09-02 14:33:11.615166000 +03:00
+      :updated_at: 2019-09-02 14:33:11.615167000 +03:00
+  :created_at: 2019-09-02 14:33:11.615168000 +03:00
+  :updated_at: 2019-09-02 14:33:11.615169000 +03:00

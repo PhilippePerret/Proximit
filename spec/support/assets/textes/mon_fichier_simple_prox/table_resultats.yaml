@@ -1,9 +1,9 @@
 ---
 :class: TextAnalyzer::Analyse::TableResultats
 :datas:
-  :text_analyzer_version: 0.0.1
+  :text_analyzer_version: 0.1.0
   :current_offset: 11
-  :current_index_mot: 2
+  :current_id_mot: 2
   :last_id_proximite: -1
   :canons:
     :class: TextAnalyzer::Analyse::TableResultats::Canons
@@ -19,7 +19,10 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 1
+                :id: 1
+                :idP: 0
+                :idN: 2
+                :tbw: " "
                 :real: simple
                 :offset: 3
                 :rel_offset: 3
@@ -42,7 +45,13 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 2
+                :id: 2
+                :idP: 1
+                :idN: 
+                :tbw: |+
+                  .
+
+
                 :real: texte
                 :offset: 10
                 :rel_offset: 10
@@ -57,8 +66,8 @@
                 :sortish: texte
             :nombre_occurences: 1
             :nombre_proximites: 0
-      :created_at: 2019-09-01 13:25:43.581853000 +03:00
-      :updated_at: 2019-09-01 13:25:43.581854000 +03:00
+      :created_at: 2019-09-02 14:33:07.831703000 +03:00
+      :updated_at: 2019-09-02 14:33:07.831705000 +03:00
   :mots:
     :class: TextAnalyzer::Analyse::TableResultats::Mots
     :datas:
@@ -74,15 +83,15 @@
         - 1
         texte:
         - 2
-      :created_at: 2019-09-01 13:25:43.581889000 +03:00
-      :updated_at: 2019-09-01 13:25:43.581890000 +03:00
+      :created_at: 2019-09-02 14:33:07.831736000 +03:00
+      :updated_at: 2019-09-02 14:33:07.831737000 +03:00
   :proximites:
     :class: TextAnalyzer::Analyse::TableResultats::Proximites
     :datas:
       :pourcentage: 0 %
       :nombre: 0
       :items: {}
-      :created_at: 2019-09-01 13:25:43.581924000 +03:00
-      :updated_at: 2019-09-01 13:25:43.581925000 +03:00
-  :created_at: 2019-09-01 13:25:43.581931000 +03:00
-  :updated_at: 2019-09-01 13:25:43.581934000 +03:00
+      :created_at: 2019-09-02 14:33:07.831763000 +03:00
+      :updated_at: 2019-09-02 14:33:07.831764000 +03:00
+  :created_at: 2019-09-02 14:33:07.831766000 +03:00
+  :updated_at: 2019-09-02 14:33:07.831766000 +03:00

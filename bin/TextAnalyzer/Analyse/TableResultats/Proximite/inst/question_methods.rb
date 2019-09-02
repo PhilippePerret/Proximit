@@ -6,7 +6,7 @@ class Proximite
 
   # Retourne TRUE si les deux mots sont dans le même fichier texte
   def in_same_file?
-    @mot_are_in_same_file ||= mot_apres.document == mot_avant.document
+    @mot_are_in_same_file ||= motB.document == motA.document
   end
 
   def fixed?

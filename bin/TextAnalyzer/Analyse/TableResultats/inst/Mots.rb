@@ -61,7 +61,7 @@ class TableResultats
         self.merge!(mot.lemma => Array.new)
       end
       # On ajoute le mot ici dans le hash
-      self[mot.lemma] << mot.index
+      self[mot.lemma] << mot.id
     end
     # /create
 

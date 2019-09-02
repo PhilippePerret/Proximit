@@ -27,11 +27,11 @@ class Canon
   # Pour ajouter la proximitté +iprox+ {...::Proximite} au canon
   def add_proximite iprox
     last_prox     = proximites.last ? analyse.proximites[proximites.last] : nil
-    if last_prox.nil? || iprox.mot_avant.offset > last_prox.mot_avant.offset
+    if last_prox.nil? || iprox.motA.offset > last_prox.motA.offset
       self.proximites << iprox.id
     else
       self.proximites.each_with_index do |pid, indexp|
-        if iprox.mot_avant.offset < analyse.proximites[pid].mot_avant.offset
+        if iprox.motA.offset < analyse.proximites[pid].motA.offset
           self.insert_prox(iprox, indexp) and break
         end
       end
