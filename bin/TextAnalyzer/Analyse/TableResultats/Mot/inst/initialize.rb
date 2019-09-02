@@ -16,14 +16,18 @@ class Mot
       self.downcase = imot.downcase
       self.sortish  = imot.downcase.normalize
       self.data     = data
-      self.indexes  = Array.new
+      # self.indexes  = [] # DEPRECATED
+      self.ids      = []
     end
   end
 
-  # Ajout d'un mot (on ajoute son index. On pourra retrouver le mot avec
-  # <analyse>.mots[<index])
+  # Ajout d'un mot (on ajoute son ID. On pourra retrouver le mot avec
+  # <analyse>.mots[<ID>])
+  # Noter qu'avant on parlait d'index, mais comme des mots peuvent être
+  # ajoutés et retirés, il vaut mieux parler d'identifiant maintenant.
   def << imot
-    self.indexes << imot.index
+    # self.indexes << imot.index
+    self.ids << imot.id
   end
 
 end #/Mot

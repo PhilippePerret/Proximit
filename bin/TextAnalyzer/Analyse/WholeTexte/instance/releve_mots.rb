@@ -28,7 +28,8 @@ class WholeText
       .gsub(/[\“\”]/, '"')
       .gsub(/[\#>\+\|\\\/\[\]\{\}\(\)\%«»"\,\n\.\¡\¿\!\?\;\…–—\: ]/, ' ') +
       " #{MARK_EOT}"
-    # NE SURTOUT PAS METTRE '_' qui sert pour les tags retirés
+    # NE SURTOUT PAS METTRE '_' qui sert pour les tags d'un texte scrivener
+    # retirés
 
     # On traite les mots complexes avec tirets qui doivent être traités
     # séparément comme "pourrais-je" ou "mi-raisin"
@@ -41,7 +42,7 @@ class WholeText
     all_separated_words = t.scan(/\b(.+?)\b/)
     # puts "Tous les mots séparés : #{all_separated_words.inspect}"
 
-    
+
     last_index_found = all_separated_words.count - 1
 
     # Contrairement à la version précédente (scrivener), on va travailler
@@ -51,6 +52,8 @@ class WholeText
     real_words = []
     final_word = nil
     cur_offset = 0
+
+    # Début de la boucle
     while aword = all_separated_words.shift
       word = aword.first
       case word.strip
@@ -104,29 +107,64 @@ class WholeText
     # Identifiant du fichier auquel appartiendra le mot
     current_file_id = get_current_file_id(tres.current_offset)
 
+    # Le premier identifiant/index
+    tres.current_id_mot ||= -1
+
+    # Pour conserver le dernier mot traité afin de :
+    #   - définir la propriété `idP` du mot courant
+    #   - définir la propriété `idN` du mot précédent
+    mot_precedent = nil
+
     # Début de la boucle
     while hword = real_words.shift
-
-      # L'index de mot courant (noter qu'il sert aussi d'ID au mot)
-      tres.current_index_mot += 1
 
       # L'offset du mot correspond à son offset dans le document (calculé
       # plus haut) auquel on ajoute l'offset du document auquel il appartient.
       tres.current_offset = init_current_offset + hword[:offset]
 
-      mot = self.mots.create({
-        analyse:          analyse,
-        real:             hword[:word],
-        offset:           tres.current_offset,
-        relative_offset:  hword[:offset],
-        index:            tres.current_index_mot,
-        file_id:          current_file_id
-      })
+      # On incrémente l'id
+      tres.current_id_mot += 1
+
+      data_mot = {
+        id:           tres.current_id_mot,
+        analyse:      analyse,
+        real:         hword[:word],
+        offset:       tres.current_offset,
+        rel_offset:   hword[:offset],
+        file_id:      current_file_id,
+        tbw:          '', # TODO le texte entre ce mot et le suivant
+        idN:          nil, # sera renseigné au prochain tour
+        idP:          nil  # sera renseigné juste ci-dessous
+      }
+
+      # S'il y a un mot précédent, il faut :
+      #   - lui définir son idN (identifiant du next)
+      #   - lui définir son texte après (tbw - entre les deux mots)
+      #   - définir le idP (identifiant du previous) du mot courant
+      if mot_precedent
+        mot_precedent.idN = tres.current_id_mot
+        data_mot.merge!(idP: mot_precedent.id)
+        # Pour trouver le texte entre le mot précédent et ce mot
+        entre = self.content[mot_precedent.rel_offset+mot_precedent.length...data_mot[:rel_offset]]
+        puts "Entre #{mot_precedent.real} et #{hword[:word]}: '#{entre}'"
+        mot_precedent.tbw = entre
+      end
+
+      # On crée le mot
+      mot = self.mots.create(data_mot)
 
       # On ajoute le mot aux résultats
       tres.add_mot(mot)
 
+      # On conserve ce mot comme précédent pour renseigner le prochain
+      mot_precedent = mot
+
     end #/ fin de la boucle sur tous les mots
+
+    # Il faut définir le `tbw` du dernier mot, qui correspond à la fin
+    # du texte.
+    mot_precedent.tbw = self.content[(mot_precedent.rel_offset+mot_precedent.length)...self.content.length]
+    puts "Après le dernier mot '#{mot_precedent.tbw}'"
 
     # Normalement, il faut ajouter 1 pour obtenir le vrai décalage dans
     # le fichier total, qui prend un retour de chariot en plus à la fin.

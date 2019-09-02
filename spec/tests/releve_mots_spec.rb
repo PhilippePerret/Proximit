@@ -2,9 +2,9 @@
 
 describe 'La relève des mots' do
 
-  it 'affecte les bonnes données aux mots' do
+  it 'affecte les bonnes données aux mots', current:true do
     ana = TextAnalyzed.new('texte_avec_particularites.md', __FILE__)
-    ana.analyse
+    ana.analyse(true)
     expect(ana.resultat).not_to match('ERREUR')
     p = ana.in_prox_folder('whole_text.yaml')
     expect(File.exists? p).to be true

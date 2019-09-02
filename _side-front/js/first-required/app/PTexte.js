@@ -63,7 +63,7 @@ class PTexte {
   **/
   static open(pth){
     this._current = new PTexte({path: pth})
-    this._current.writeState()
+    this._current.init()
   }
 
   /**
@@ -106,26 +106,48 @@ class PTexte {
   }
 
   /**
+    Initialisation du texte courant
+    On charge ses résultats s'il est déjà analysé et on affiche ses informations
+  **/
+  init(){
+    // Chargement du fichier résultats
+    this.resultats = require(this.resultats_path)
+    // Écriture de l'état du texte
+    this.writeState()
+    if (this.isAnalyzed) this.initWhenAnalyzed()
+  }
+
+  /**
+    | Initialisation à faire lorsque le texte a été analysé
+    |
+    | On doit :
+    |   - afficher l'état des proximités
+    |   - proposer les boutons pour voir les proximités
+  **/
+  initWhenAnalyzed(){
+    Mot.init()
+    // On peuple les canons
+    // + peuplement des mots
+    Canon.set(this.resultats.datas.canons.datas)
+    // On peuple les proximités
+    Proximity.set(this.resultats.datas.proximites.datas)
+    Proximity.init(this)
+  }
+
+  /**
     |
     | Méthode pour corriger les proximités
     |
   **/
   correctProximities(){
     // Vérifier qu'on puisse le faire
-    // Chargement du fichier résultats
-    let resultats = require(this.resultats_path)
+    if ( undefined === this.resultats ){
+      return UI.error("Le texte n'a pas encore été analysé. On ne peut pas afficher ses proximités. Jouer le menu « Texte > Analyser… »")
+    }
     // console.log("résultats : ", resultats)
     // console.log("Proximités:", proximites)
-    let proximites = resultats.datas.proximites.datas
-
-    Mot.init()
-
-    // On peuple les canons
-    // + peuplement des mots
-    Canon.set(resultats.datas.canons.datas)
-
-    // On peuple les proximités
-    Proximity.set(resultats.datas.proximites.datas)
+    // let proximites = this.resultats.datas.proximites.datas
+    this.initWhenAnalyzed()
     Proximity.show(0)
     // Affichage de la première proximité
   }
@@ -143,7 +165,7 @@ class PTexte {
     const buf = new Buffer(len)
     // buf.fill('')
     const str = fs.readSync(fd, buf, 0, len, fromOffset)
-    console.log("Texte ramené (de %d à %d) : '%s'", fromOffset, toOffset, buf.toString())
+    // console.log("Texte ramené (de %d à %d) : '%s'", fromOffset, toOffset, buf.toString())
     return buf.toString()
   }
 
@@ -153,42 +175,50 @@ class PTexte {
     de travail sur le texte, pour savoir jusqu'à quel point il a été analysée
     et corrigé.
   **/
-  writeState(){
-    if ( fs.existsSync(this.prox_folder) ){
-      console.log("Le texte a déjà été analysé")
-    } else {
-      console.log("Le texte n'a pas encore été analysé.")
-    }
-    let conteneur = Dom.createDiv({id:'cont-infos-texte', class:'container-data'})
-    conteneur.innerHTML = ''
-    UI.rightColumn.append(conteneur)
+  writeState () {
+    UI.infos_texte.clean()
+    const analyzed = this.isAnalyzed
+    UI.infos_texte.append(analyzed?"Le texte a été analysé":"Le texte n'a pas encore été analysé.")
     // Le nom du texte (affixe)
-    this.writeRowInfo(true, 'Nom du texte', this.affixe, conteneur)
+    this.writeRowInfo(true, 'Nom du texte', this.affixe)
+    // Note : même si le texte n'a pas encore été analysé, on affiche l'état
+    // de présence des fichiers pour infos.
     // Existence du dossier affixe_prox
-    const folder_exists = fs.existsSync(this.prox_folder) == true;
-    this.writeRowInfo(folder_exists, `Dossier proximit`, this.prox_folder, conteneur)
-    if ( folder_exists ) {
+    this.writeRowInfo(analyzed, `Dossier proximit`, path.basename(this.prox_folder))
+    if ( analyzed ) {
       // Le dossier Proximit existe, on regarde ce qu'il contient pour
       // voir ce qu'on peut faire.
-
+      this.writeRowInfo(null, "Date dernière analyse", humanDateFor(this.analyse_date,/*short=*/true))
     } else {
-      this.writeRowInfo(null, "Analyse et correction", "Il faut lancer l'analyse de ce texte.",conteneur)
+      this.writeRowInfo(null, "Analyse et correction", "Il faut lancer l'analyse de ce texte.")
     }
-    // Si pas existence, on peut s'arrêter là
-    // Si existence
+    this.writeRowInfo(fs.existsSync(this.fulltext_path), "Fichier du texte complet", "OK")
+    this.writeRowInfo(fs.existsSync(this.resultats_path), "Fichier intégral des résultats", "OK")
 
   }
 
-  writeRowInfo(coche, label, value, container){
-    var div = Dom.createDiv({class:'row-data'})
-    var lab = Dom.create('LABEL')
-    lab.append(Dom.createSpan({class:'coche',text:coche === null?'':(coche?'✅':'❌')}))
-    lab.append(Dom.createSpan({text: label, class:'label'}))
-    div.append(lab)
-    div.append(Dom.createSpan({text:value}))
-    container.append(div)
+  writeRowInfo(coche, label, value){
+    UI.infos_texte.append(rowData(coche,label,value))
   }
 
+
+  /**
+    | ---------------------------------------------------------------------
+    | Propriétés volatiles
+  **/
+
+  // Retourne la date de la dernière analyse, si le texte a été analysé
+  get analyse_date(){
+    if ( ! this.isAnalyzed ) return
+    return new Date(this.resultats.datas.created_at)
+  }
+
+  // Retourne true si le texte a été analysé
+  get isAnalyzed(){return fs.existsSync(this.prox_folder)}
+
+  /**
+    Propriétés de path
+  **/
   in_prox(relpath){
     return path.join(this.prox_folder,relpath)
   }

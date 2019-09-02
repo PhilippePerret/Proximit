@@ -1,0 +1,31 @@
+body > section#right-column #infos_texte {
+  width:90%;
+}
+
+section#left-column div#current_proximity {
+  /* display:inline-block; */
+  margin:1em;
+}
+
+div#buttons_proximites {
+  display:inline-block;
+  border-radius:1em;
+  padding:0.5em 1em 0.3em;
+  text-align:right;
+  background-color:#4C0707;
+  color:white;
+}
+div#buttons_proximites button {
+  all:unset;
+  font-family: unset;
+  font-size:30pt;
+  padding: 0 4px;
+  border:2px solid transparent;
+}
+
+div#buttons_proximites button:active {
+  background-color:green;
+}
+div#buttons_proximites button:hover {
+  border-color:green;
+}

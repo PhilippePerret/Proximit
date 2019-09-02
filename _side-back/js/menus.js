@@ -37,7 +37,7 @@ const ObjMenus = {
       , id: 'menu-analyse'
       , submenu: [
           {
-              label: 'Analyser le texte'
+              label: 'Analyser'
             , id: 'texte-analyser'
             , accelerator: 'CmdOrCtrl+Shift+A'
             , enabled: true // Plus tard, dépendra de présence de texte ou non

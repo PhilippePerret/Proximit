@@ -15,7 +15,7 @@ class Segments < Array
     # TODO Ici, une erreur sera produite car la méthode #document n'existe pas
     # encore pour Mot. Ce sera un binder-item pour Scrivener, ce sera autre
     # chose (un simple fichier) pour un texte normal.
-    arr << ["--- Document : #{mot_avant.document.title} [#{mot_avant.relative_offset}]", {style: :gris, col: 6}]
+    arr << ["--- Document : #{mot_avant.document.title} [#{mot_avant.rel_offset}]", {style: :gris, col: 6}]
 
     # On remonte autant de segments qu'il faut pour obtenir la longueur voulue
     len = 0
@@ -48,7 +48,7 @@ class Segments < Array
 
     norc = true
     unless in_same_file?
-      arr << [ "--- document : #{mot_apres.document.title} [#{mot_apres.relative_offset}]\n", {style: :gris, col: 6}]
+      arr << [ "--- document : #{mot_apres.document.title} [#{mot_apres.rel_offset}]\n", {style: :gris, col: 6}]
       norc = false
     end
 
@@ -108,9 +108,9 @@ class Segments < Array
   end
 
   def extrait_before_mot_avant(dist)
-    if mot_avant.relative_offset > 0
+    if mot_avant.rel_offset > 0
       s = mot_avant.texte_before(dist).lstrip
-      if mot_avant.relative_offset - dist > 0
+      if mot_avant.rel_offset - dist > 0
         s.prepend('[...] ')
       end
       s
@@ -126,9 +126,9 @@ class Segments < Array
     mot_avant.texte_after(dist)
   end
   def extrait_before_mot_apres(dist)
-    if mot_apres.relative_offset > 0
+    if mot_apres.rel_offset > 0
       s = mot_apres.texte_before(dist).lstrip
-      if mot_apres.relative_offset - dist > 0
+      if mot_apres.rel_offset - dist > 0
         s.prepend('[...] ')
       end
       s

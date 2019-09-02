@@ -13,7 +13,13 @@ class TableResultats
 
   # L'index du mot courant traité, quels que soient les documents qu'on
   # analyse.
+  # DEPRECATED : utiliser :current_id_mot
   attr_accessor :current_index_mot
+
+  # Identifiant du mot courant traité. Au moment de la relève, cet identifiant
+  # correspond à l'index du mot dans l'ensembe du texte, tous documents
+  # rassemblés.
+  attr_accessor :current_id_mot
 
   # Le dernier index pour une proximité
   attr_accessor :last_id_proximite

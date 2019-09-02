@@ -16,11 +16,11 @@
             :index: 0
             :real: Un
             :offset: 0
-            :relative_offset: 0
+            :rel_offset: 0
             :real_init: Un
             :file_id: 0
-            :prox_prev_id: 
-            :prox_next_id: 
+            :px_idP: 
+            :px_idN: 
             :downcase: un
             :lemma: un
             :canon: un
@@ -32,11 +32,11 @@
             :index: 1
             :real: texte
             :offset: 3
-            :relative_offset: 3
+            :rel_offset: 3
             :real_init: texte
             :file_id: 0
-            :prox_prev_id: 
-            :prox_next_id: 0
+            :px_idP: 
+            :px_idN: 0
             :downcase: texte
             :lemma: texte
             :canon: texte
@@ -48,11 +48,11 @@
             :index: 2
             :real: avec
             :offset: 9
-            :relative_offset: 9
+            :rel_offset: 9
             :real_init: avec
             :file_id: 0
-            :prox_prev_id: 
-            :prox_next_id: 
+            :px_idP: 
+            :px_idN: 
             :downcase: avec
             :lemma: avec
             :canon: avec
@@ -64,11 +64,11 @@
             :index: 3
             :real: plusieurs
             :offset: 14
-            :relative_offset: 14
+            :rel_offset: 14
             :real_init: plusieurs
             :file_id: 0
-            :prox_prev_id: 
-            :prox_next_id: 2
+            :px_idP: 
+            :px_idN: 2
             :downcase: plusieurs
             :lemma: plusieurs
             :canon: plusieurs
@@ -80,11 +80,11 @@
             :index: 4
             :real: textes
             :offset: 24
-            :relative_offset: 24
+            :rel_offset: 24
             :real_init: textes
             :file_id: 0
-            :prox_prev_id: 0
-            :prox_next_id: 1
+            :px_idP: 0
+            :px_idN: 1
             :downcase: textes
             :lemma: texte
             :canon: texte
@@ -96,11 +96,11 @@
             :index: 5
             :real: pour
             :offset: 31
-            :relative_offset: 31
+            :rel_offset: 31
             :real_init: pour
             :file_id: 0
-            :prox_prev_id: 
-            :prox_next_id: 
+            :px_idP: 
+            :px_idN: 
             :downcase: pour
             :lemma: pour
             :canon: pour
@@ -112,11 +112,11 @@
             :index: 6
             :real: voir
             :offset: 36
-            :relative_offset: 36
+            :rel_offset: 36
             :real_init: voir
             :file_id: 0
-            :prox_prev_id: 
-            :prox_next_id: 
+            :px_idP: 
+            :px_idN: 
             :downcase: voir
             :lemma: voir
             :canon: voir
@@ -128,11 +128,11 @@
             :index: 7
             :real: plusieurs
             :offset: 41
-            :relative_offset: 41
+            :rel_offset: 41
             :real_init: plusieurs
             :file_id: 0
-            :prox_prev_id: 2
-            :prox_next_id: 
+            :px_idP: 2
+            :px_idN: 
             :downcase: plusieurs
             :lemma: plusieurs
             :canon: plusieurs
@@ -144,11 +144,11 @@
             :index: 8
             :real: proximités
             :offset: 51
-            :relative_offset: 51
+            :rel_offset: 51
             :real_init: proximités
             :file_id: 0
-            :prox_prev_id: 
-            :prox_next_id: 
+            :px_idP: 
+            :px_idN: 
             :downcase: proximités
             :lemma: proximité
             :canon: proximité
@@ -160,11 +160,11 @@
             :index: 9
             :real: dans
             :offset: 62
-            :relative_offset: 62
+            :rel_offset: 62
             :real_init: dans
             :file_id: 0
-            :prox_prev_id: 
-            :prox_next_id: 
+            :px_idP: 
+            :px_idN: 
             :downcase: dans
             :lemma: dans
             :canon: dans
@@ -176,11 +176,11 @@
             :index: 10
             :real: le
             :offset: 67
-            :relative_offset: 67
+            :rel_offset: 67
             :real_init: le
             :file_id: 0
-            :prox_prev_id: 
-            :prox_next_id: 
+            :px_idP: 
+            :px_idN: 
             :downcase: le
             :lemma: le
             :canon: le
@@ -192,11 +192,11 @@
             :index: 11
             :real: texte
             :offset: 70
-            :relative_offset: 70
+            :rel_offset: 70
             :real_init: texte
             :file_id: 0
-            :prox_prev_id: 1
-            :prox_next_id: 
+            :px_idP: 1
+            :px_idN: 
             :downcase: texte
             :lemma: texte
             :canon: texte

@@ -1,14 +1,14 @@
 ---
 :class: TextAnalyzer::Analyse::TableResultats
 :datas:
-  :text_analyzer_version: 0.0.1
+  :text_analyzer_version: 0.1.0
   :current_offset: 127
-  :current_index_mot: 24
+  :current_index_mot: -1
   :last_id_proximite: 0
   :canons:
     :class: TextAnalyzer::Analyse::TableResultats::Canons
     :datas:
-      :pourcentage: 56 %
+      :pourcentage: 1400 %
       :nombre: 14
       :items:
         titre:
@@ -19,14 +19,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 1
+                :id: 1
+                :idP: 0
+                :idN: 2
+                :tbw: "\n\n"
                 :real: titre
                 :offset: 5
-                :relative_offset: 5
+                :rel_offset: 5
                 :real_init: titre
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: titre
                 :lemma: titre
                 :canon: titre
@@ -42,14 +45,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 3
+                :id: 3
+                :idP: 2
+                :idN: 4
+                :tbw: " "
                 :real: vrai
                 :offset: 15
-                :relative_offset: 15
+                :rel_offset: 15
                 :real_init: vrai
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: vrai
                 :lemma: vrai
                 :canon: vrai
@@ -65,14 +71,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 4
+                :id: 4
+                :idP: 3
+                :idN: 5
+                :tbw: ".\n"
                 :real: bout-en-train
                 :offset: 20
-                :relative_offset: 20
+                :rel_offset: 20
                 :real_init: bout-en-train
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: bout-en-train
                 :lemma: bout-en-train
                 :canon: bout-en-train
@@ -88,14 +97,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 6
+                :id: 6
+                :idP: 5
+                :idN: 7
+                :tbw: " "
                 :real: été
                 :offset: 38
-                :relative_offset: 38
+                :rel_offset: 38
                 :real_init: été
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: été
                 :lemma: été
                 :canon: été
@@ -111,14 +123,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 7
+                :id: 7
+                :idP: 6
+                :idN: 8
+                :tbw: " "
                 :real: tout
                 :offset: 42
-                :relative_offset: 42
+                :rel_offset: 42
                 :real_init: tout
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: tout
                 :lemma: tout
                 :canon: tout
@@ -134,14 +149,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 8
+                :id: 8
+                :idP: 7
+                :idN: 9
+                :tbw: ''
                 :real: ça
                 :offset: 47
-                :relative_offset: 47
+                :rel_offset: 47
                 :real_init: ça
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: ça
                 :lemma: cela
                 :canon: cela
@@ -157,14 +175,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 10
+                :id: 10
+                :idP: 9
+                :idN: 11
+                :tbw: " « "
                 :real: avale
                 :offset: 52
-                :relative_offset: 52
+                :rel_offset: 52
                 :real_init: avale
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: avale
                 :lemma: avale
                 :canon: avaler
@@ -181,14 +202,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 11
+                :id: 11
+                :idP: 10
+                :idN: 12
+                :tbw: " » "
                 :real: direct
                 :offset: 60
-                :relative_offset: 60
+                :rel_offset: 60
                 :real_init: direct
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 0
+                :px_idP: 
+                :px_idN: 0
                 :downcase: direct
                 :lemma: direct
                 :canon: direct
@@ -196,14 +220,17 @@
                 :sortish: direct
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 13
+                :id: 13
+                :idP: 12
+                :idN: 14
+                :tbw: "\".\n\n"
                 :real: directe
                 :offset: 73
-                :relative_offset: 73
+                :rel_offset: 73
                 :real_init: directe
                 :file_id: 0
-                :prox_prev_id: 0
-                :prox_next_id: 
+                :px_idP: 0
+                :px_idN: 
                 :downcase: directe
                 :lemma: direct
                 :canon: direct
@@ -219,14 +246,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 14
+                :id: 14
+                :idP: 13
+                :idN: 15
+                :tbw: "-"
                 :real: Pourrais
                 :offset: 84
-                :relative_offset: 84
+                :rel_offset: 84
                 :real_init: Pourrais
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: pourrais
                 :lemma: pourrais
                 :canon: pouvoir
@@ -242,14 +272,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 16
+                :id: 16
+                :idP: 15
+                :idN: 17
+                :tbw: ''
                 :real: voir
                 :offset: 96
-                :relative_offset: 96
+                :rel_offset: 96
                 :real_init: voir
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: voir
                 :lemma: voir
                 :canon: voir
@@ -265,14 +298,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 18
+                :id: 18
+                :idP: 17
+                :idN: 19
+                :tbw: "-"
                 :real: est
                 :offset: 103
-                :relative_offset: 103
+                :rel_offset: 103
                 :real_init: est
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: est
                 :lemma: est
                 :canon: être
@@ -288,14 +324,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 20
+                :id: 20
+                :idP: 19
+                :idN: 21
+                :tbw: " "
                 :real: pas
                 :offset: 110
-                :relative_offset: 110
+                :rel_offset: 110
                 :real_init: pas
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: pas
                 :lemma: pas
                 :canon: pas
@@ -311,14 +350,17 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 22
+                :id: 22
+                :idP: 21
+                :idN: 23
+                :tbw: " "
                 :real: poids
                 :offset: 117
-                :relative_offset: 117
+                :rel_offset: 117
                 :real_init: poids
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: poids
                 :lemma: poids
                 :canon: poids
@@ -334,14 +376,20 @@
             :mots:
             - :class: TextAnalyzer::Analyse::WholeText::Mot
               :datas:
-                :index: 24
+                :id: 24
+                :idP: 23
+                :idN: 
+                :tbw: |2+
+                   ?
+
+
                 :real: lourd
                 :offset: 126
-                :relative_offset: 126
+                :rel_offset: 126
                 :real_init: lourd
                 :file_id: 0
-                :prox_prev_id: 
-                :prox_next_id: 
+                :px_idP: 
+                :px_idN: 
                 :downcase: lourd
                 :lemma: lourd
                 :canon: lourd
@@ -349,8 +397,8 @@
                 :sortish: lourd
             :nombre_occurences: 1
             :nombre_proximites: 0
-      :created_at: 2019-09-01 13:25:47.297583000 +03:00
-      :updated_at: 2019-09-01 13:25:47.297584000 +03:00
+      :created_at: 2019-09-02 07:20:14.455587000 +03:00
+      :updated_at: 2019-09-02 07:20:14.455589000 +03:00
   :mots:
     :class: TextAnalyzer::Analyse::TableResultats::Mots
     :datas:
@@ -373,60 +421,60 @@
       - poids
       - mi
       - lourd
-      :nombre_total_mots: 25
+      :nombre_total_mots: 1
       :items:
         un:
-        - 0
-        - 2
-        - 21
+        - 
+        - 
+        - 
         titre:
-        - 1
+        - 
         vrai:
-        - 3
+        - 
         bout-en-train:
-        - 4
+        - 
         le:
-        - 5
-        - 9
+        - 
+        - 
         été:
-        - 6
+        - 
         tout:
-        - 7
+        - 
         cela:
-        - 8
+        - 
         avale:
-        - 10
+        - 
         direct:
-        - 11
-        - 13
+        - 
+        - 
         et:
-        - 12
+        - 
         pourrais:
-        - 14
+        - 
         je:
-        - 15
+        - 
         voir:
-        - 16
+        - 
         ne:
-        - 17
+        - 
         est:
-        - 18
+        - 
         ce:
-        - 19
+        - 
         pas:
-        - 20
+        - 
         poids:
-        - 22
+        - 
         mi:
-        - 23
+        - 
         lourd:
-        - 24
-      :created_at: 2019-09-01 13:25:47.297646000 +03:00
-      :updated_at: 2019-09-01 13:25:47.297647000 +03:00
+        - 
+      :created_at: 2019-09-02 07:20:14.455663000 +03:00
+      :updated_at: 2019-09-02 07:20:14.455664000 +03:00
   :proximites:
     :class: TextAnalyzer::Analyse::TableResultats::Proximites
     :datas:
-      :pourcentage: 4 %
+      :pourcentage: 100 %
       :nombre: 1
       :items:
         0:
@@ -435,13 +483,13 @@
             :fixed: 
             :erased: 
             :ignored: 
-            :mot_avant_index: 11
-            :mot_apres_index: 13
+            :mot_avant_index: 
+            :mot_apres_index: 
             :distance: 7
             :distance_minimale: 1500.0
-            :created_at: 2019-09-01 13:25:47.297717000 +03:00
-            :updated_at: 2019-09-01 13:25:47.297718000 +03:00
-      :created_at: 2019-09-01 13:25:47.297725000 +03:00
-      :updated_at: 2019-09-01 13:25:47.297725000 +03:00
-  :created_at: 2019-09-01 13:25:47.297727000 +03:00
-  :updated_at: 2019-09-01 13:25:47.297728000 +03:00
+            :created_at: 2019-09-02 07:20:14.455734000 +03:00
+            :updated_at: 2019-09-02 07:20:14.455735000 +03:00
+      :created_at: 2019-09-02 07:20:14.455742000 +03:00
+      :updated_at: 2019-09-02 07:20:14.455743000 +03:00
+  :created_at: 2019-09-02 07:20:14.455745000 +03:00
+  :updated_at: 2019-09-02 07:20:14.455746000 +03:00

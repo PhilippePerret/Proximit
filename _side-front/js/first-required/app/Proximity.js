@@ -20,10 +20,69 @@ class Proximity {
   }
 
   /**
+    Initialisation des proximités
+  **/
+  static init(itext){
+    // l'indice de la proximité courante, affichée
+    this.current_index = -1
+    this.showInfos(itext)
+    this.showButtons(itext)
+  }
+
+  /**
+    | Affichage des infos de proximités du texte +itext+
+  **/
+  static showInfos(itext){
+    UI.infos_proximites
+      .clean()
+      .append(Dom.createDiv({class:'bold', text:'Proximités'}))
+      .append(rowData(null,"Nombre de proximités",itext.resultats.datas.proximites.datas.nombre))
+      .append(rowData(null,"Nombre de mots",itext.resultats.datas.mots.datas.nombre_total_mots))
+      .append(rowData(null,"Nombre de canons",itext.resultats.datas.canons.datas.nombre))
+      .append(rowData(null,"Pourcentage proximités",itext.resultats.datas.proximites.datas.pourcentage))
+      .append(rowData(null,"Proximités corrigés", "à voir"))
+  }
+
+  /**
+    Affichage des boutons pour gérer les proximités
+  **/
+  static showButtons(itext){
+    const my = this
+    UI.buttons_proximites
+      .clean()
+      // .append(Dom.createDiv({text:"[Boutons]"}))
+      // .append(Dom.createButton({text:"⏹⏸⏩⏪"}))
+      .append(Dom.createButton({id:'btn-text-beginning', text:"⏮", title:"Début du texte"}))
+      .append(Dom.createButton({id:'btn-text-end', text:"⏭", title:"Fin du texte"}))
+      .append(Dom.createButton({id:'btn-save-corrections', text:"⏺", title:"Enregistrer les corrections"}))
+      .append(Dom.createButton({id:'btn-prev-prox', text:"◀️", title:"Proximité précédente"}))
+      .append(Dom.createButton({id:'btn-next-prox', text:"▶️", title:"Proximité suivante"}))
+
+    // Il faut les surveiller
+    $('button#btn-next-prox').on('click', my.showNext.bind(my))
+    $('button#btn-prev-prox').on('click', my.showPrev.bind(my))
+  }
+
+  /**
     |
-    | Afficher la proximité d'index +idx+
+    | Pour afficher les proximités
     |
   **/
+  static showPrev(){
+    if ( this.current_index <= 0 ){
+      UI.message("DÉBUT DU TEXTE")
+      return
+    }
+    this.show(this.current_index -= 1)
+  }
+  static showNext(){
+    if ( undefined === this.items[this.current_index + 1]){
+      UI.message("FIN DU TEXTE")
+      return
+    }
+    this.show(this.current_index += 1)
+  }
+  // Afficher la proximité d'index +idx+
   static show(idx){
     this.items[idx].show()
   }
@@ -52,7 +111,6 @@ class Proximity {
     Méthode d'affichage de la proximité
   **/
   show(){
-    UI.leftColumn.append(Dom.createDiv({text: `Proximité entre mot ${this.mot_avant.mot} à mot ${this.mot_apres.mot}.`}))
     var dataAround = this.textAround(500)
     var div = Dom.createDiv({class:'portion'})
     div.append(Dom.createSpan({text: dataAround.before}))
@@ -60,7 +118,10 @@ class Proximity {
     div.append(Dom.createSpan({text: dataAround.between}))
     div.append(Dom.createSpan({id:'after-word', text: dataAround.second_word, contentEditable:'true', class:'mot exergue'}))
     div.append(Dom.createSpan({text: dataAround.after}))
-    UI.leftColumn.append(div)
+    UI.currentProximity
+      .clean()
+      .append(Dom.createDiv({text: `Proximité : « ${this.mot_avant.mot} » ⇤ ${this.distance} ⇥ « ${this.mot_apres.mot} » [offsets : ${this.mot_avant.offset} ↹ ${this.mot_apres.offset}]`}))
+      .append(div)
     // Il faut observer les deux mots
     $("#before-word")
       .on('focus', this.mot_avant.onFocus.bind(this.mot_avant))

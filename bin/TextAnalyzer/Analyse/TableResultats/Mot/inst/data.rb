@@ -24,7 +24,8 @@ class Mot
         real:       {type: YAPROP},
         downcase:   {type: YAPROP},
         sortish:    {type: YAPROP},
-        indexes:    {type: YAPROP},
+        indexes:    {type: YAPROP}, # DEPRECATED
+        ids:        {type: YAPROP},
         data:       {type: YAPROP},
         count:      {type: YIVAR}
       }

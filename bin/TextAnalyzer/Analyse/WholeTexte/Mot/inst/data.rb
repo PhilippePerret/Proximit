@@ -17,30 +17,51 @@ class Mot
   attr_accessor :file_id
 
   # {Integer} Index du mot dans le texte complet
+  # DEPRECATED Utiliser :id maintenant
   attr_accessor :index
+
+  # {Integer} Identifiant du mot, qui correspond, si aucun mot n'est ajouté
+  # ou supprimé, à son index dans le texte complet.
+  attr_accessor :id
+
+  # {Integer} Identifiant du mot précédent et du mot suivant
+  # (s'ils existent)
+  attr_accessor :idP, :idN
+
+  # {String} Portion de texte entre le mot et son suivant, qui est constitué
+  # de ponctuation, de parenthèse, etc. selon les cas. Cette donnée permet de
+  # reconstituer le texte à partir des identifiants des mots, sans passer par
+  # le texte complet.
+  # Signifie "Text Between Words" (donc le texte entre les mots, donc le texte
+  # entre ce mot et le mot suivant)
+  attr_accessor :tbw
 
   # {Integer} Décalage du mot dans le texte (attention : le texte complet,
   # pas le texte du fichier :file).
   attr_accessor :offset
 
   # {Integer} Décalage du mot dans le texte de son fichier
-  attr_accessor :relative_offset
+  attr_accessor :rel_offset
 
-  attr_accessor :prox_prev_id, :prox_next_id
+  attr_accessor :px_idP, :px_idN
 
   # Pour composer la donnée qui sera enregistrée
   def yaml_properties
     {
       no_date: true,
       datas: {
-        index:              {type: YAPROP},
-        real:               {type: YAPROP},
+        id:             {type: YAPROP},
+        # index:              {type: YAPROP}, # DEPRECATED
+        idP:            {type: YAPROP}, # signifie "id previous word"
+        idN:            {type: YAPROP}, # signifie "id next word"
+        tbw:            {type: YAPROP}, # signifie "text between word" (cf. ci-dessus)
+        real:           {type: YAPROP},
         offset:             {type: YAPROP},
-        relative_offset:    {type: YAPROP},
+        rel_offset:         {type: YAPROP}, # signifie "relative offset"
         real_init:          {type: YAPROP},
         file_id:            {type: YAPROP},
-        prox_prev_id:       {type: YAPROP},
-        prox_next_id:       {type: YAPROP},
+        px_idP:       {type: YAPROP}, # signifie "proximité identifiant previous"
+        px_idN:       {type: YAPROP}, # signifie "proximité identifiant next"
         downcase:           {type: YIVAR},
         lemma:              {type: YIVAR},
         canon:              {type: YIVAR},
@@ -93,24 +114,24 @@ class Mot
 
   # RETURN true si le mot est en proximité avec un autre mot
   def en_proximite?
-    prox_prev_id || prox_next_id
+    px_idP || px_idN
   end
 
   def prox_avant
     @prox_avant ||= begin
-      analyse.table_resultats.proximites[prox_prev_id]
+      analyse.table_resultats.proximites[px_idP]
     end
   end
   def prox_avant= iprox
-    self.prox_prev_id = iprox.nil? ? nil : iprox.id
+    self.px_idP = iprox.nil? ? nil : iprox.id
   end
   def prox_apres
     @prox_apres ||= begin
-      analyse.table_resultats.proximites[prox_next_id]
+      analyse.table_resultats.proximites[px_idN]
     end
   end
   def prox_apres= iprox
-    self.prox_next_id = iprox.nil? ? nil : iprox.id
+    self.px_idN = iprox.nil? ? nil : iprox.id
   end
 
   def distance_minimale
