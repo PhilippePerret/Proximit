@@ -29,10 +29,10 @@ class Proximite
   end
 
   def motA
-    @motA ||= motA_id ? analyse.get_mot_by_index(motA_id) : nil
+    @motA ||= motA_id ? analyse.get_mot_by_id(motA_id) : nil
   end
   def motB
-    @motB ||= motB_id ? analyse.get_mot_by_index(motB_id) : nil
+    @motB ||= motB_id ? analyse.get_mot_by_id(motB_id) : nil
   end
 
   def motA_id

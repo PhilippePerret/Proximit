@@ -85,7 +85,9 @@ class Mot
   end
 
   # Forme canonique du mot (lemmatisé). Par exemple, "marcherions" aura
-  # comme forme canonique "marcher"
+  # comme forme canonique "marcher". Si la forme canonique n'existe pas,
+  # on prendra le mot en minuscule (mais est-il vraiment possible que la
+  # forme lémmatisée n'existe pas si tous les mots sont considérés ?…)
   def canon
     @canon ||= (data_lemma ? data_lemma[:canon] : downcase)
   end

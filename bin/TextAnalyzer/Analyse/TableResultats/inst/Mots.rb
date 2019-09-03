@@ -56,10 +56,8 @@ class TableResultats
     # Ici, on ne traite comme unique que les singuliers/pluriels et les
     # masculins/féminins. Par exemple
     def create(mot)
-      # On l'ajoute à la list
-      self.key?(mot.lemma) || begin
-        self.merge!(mot.lemma => Array.new)
-      end
+      # On l'ajoute à la liste en la créant si elle n'existe pas
+      self.merge!(mot.lemma => []) unless self.key?(mot.lemma)
       # On ajoute le mot ici dans le hash
       self[mot.lemma] << mot.id
     end

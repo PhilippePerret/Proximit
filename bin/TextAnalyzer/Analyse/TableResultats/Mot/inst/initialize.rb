@@ -16,7 +16,6 @@ class Mot
       self.downcase = imot.downcase
       self.sortish  = imot.downcase.normalize
       self.data     = data
-      # self.indexes  = [] # DEPRECATED
       self.ids      = []
     end
   end

@@ -53,7 +53,7 @@ class Canon
 
   # Liste des identifiants ({Integer}) des proximités du canon
   def proximites
-    @proximites ||= Array.new
+    @proximites ||= []
   end
 
   def nombre_proximites

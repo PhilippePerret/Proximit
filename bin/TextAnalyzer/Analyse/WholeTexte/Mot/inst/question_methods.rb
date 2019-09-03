@@ -12,11 +12,10 @@ class Mot
   # Retourne true si le mot est traitable
   # Pour le moment, pour qu'un mot soit traitable, il faut :
   #   - que ce soit vraiment un mot
-  #   - que la longueur de sa forme canonique soit de au moins 2 caractères
-  #   TODO Qu'il ne fasse pas partie de la liste des mots exclus (liste
-  #   à inventer)
+  # Note : maintenant on a vraiment besoin de prendre tous les mots pour
+  # pouvoir reconstituer les textes.
   def treatable?
-    @is_treatable ||= real_mot? && canonique.length > 2
+    @is_treatable ||= real_mot?
   end
 
   # Retourne TRUE si le mot courant est trop proche du mot +imot+ {Mot} qui

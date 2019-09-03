@@ -26,7 +26,7 @@ class WholeText
     'lui'   => 'lui' # au lieu de luire
   }
 
-  TABLE_LEMMATISATION = Hash.new
+  TABLE_LEMMATISATION = {}
 
   # Lemmatisation du texte entier
   #

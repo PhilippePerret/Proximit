@@ -133,7 +133,7 @@ class Proximity {
       .on('blur', this.motB.onBlur.bind(this.motB))
   }
 
-  // Retourne le texte comprendant les deux mots
+  // Retourne le texte comprennant les deux mots
   /**
     | Retourne :
     |   - la portion avant le premier mot (:before)
@@ -154,13 +154,44 @@ class Proximity {
       addedLen = Math.round((min - len) / 2)
     }
 
-    var meth = PTexte.current.getTextFromTo.bind(PTexte.current)
-    var between = meth(this.motA.offset + this.motA.length, this.motB.offset)
-    var first = this.motA.offset - (AROUND_LENGTH + addedLen)
-    first >= 0 || (first = 0)
-    var before  = meth(first, this.motA.offset)
-    var start = this.motB.offset + this.motB.length
-    var after   = meth(start, start + AROUND_LENGTH + addedLen)
+    // Pour obtenir le texte entre les deux mots, on boucle depuis l'id
+    // du premier mot (motA), jusqu'à l'id du second (motB) en ajoutant entre
+    // chaque mot l'espace :tbw
+    var next_mot = Mot.get(this.motA.idN) // il doit forcément exister
+    var between = this.motA.tbw // texte entre le motA et le mot suivant
+    while ( next_mot && next_mot.id != this.motB_id ) {
+      between += next_mot.mot
+      between += next_mot.tbw
+      next_mot = Mot.get(next_mot.idN)
+    }
+    // console.log("between = '%s'", between)
+
+    // Reconstitution du texte avant
+    var before = ''
+    // console.log("this.motA.idP = ", this.motA.idP)
+    if ( undefined !== this.motA.idP ) {
+      // <= Il y a un mot avant le premier mot
+      // => On prend la longueur de texte voulue
+      var motref = Mot.get(this.motA.idP)
+      // console.log("motref:", motref)
+      while ( motref && (before.length < AROUND_LENGTH + addedLen) ) {
+        before = motref.mot + motref.tbw + before
+        motref = Mot.get(motref.idP)
+      }
+    }
+    // console.log("Before = '%s'", before)
+
+    // Reconstitution du texte après le second mot (motB)
+    var after = this.motB.tbw
+    if ( undefined !== this.motB.idN) {
+      var motref = Mot.get(this.motB.idN)
+      while ( motref && (after.length < AROUND_LENGTH + addedLen) ) {
+        after += motref.mot + motref.tbw
+        motref = Mot.get(motref.idN)
+      }
+    }
+    // console.log("After = '%s'", after)
+
     return {
       before:before, first_word:this.motA.mot, between:between, second_word:this.motB.mot, after:after
     }
@@ -181,7 +212,7 @@ class Proximity {
     if (undefined === this._motB) {
       this._motB = Mot.get(this.motB_id)
       if ( ! this._motB ) {
-        console.error("Impossible l'obtenir le mot d'index %d dans la liste : ", this.motB_id, Mot.items)
+        console.error("Impossible d'obtenir le mot d'index %d dans la liste : ", this.motB_id, Mot.items)
       }
     }
     return this._motB

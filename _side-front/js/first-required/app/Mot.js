@@ -19,15 +19,16 @@ class Mot {
 
   static add(dmot) {
     const mot = new Mot(dmot)
+    console.log("Ajout du mot %d :", mot.id, mot)
     Object.assign(this.items, {[mot.id]: mot})
   }
-
 
   /**
     Définitions des mots
     On récupère la donnée +items+ du fichier de résultat
   **/
   static set(datas){
+    console.log("-> Mot.set()",datas)
     this.items = {}
     for (var mot in datas.items) {
       datas.items[mot].forEach( mot_id => {
@@ -80,10 +81,11 @@ class Mot {
     const new_mot = ev.currentTarget.innerText.trim()
     if ( new_mot != this.mot ) {
       // <= Le mot a été modifié
-      // => Il faut vérifié s'il crée un problème de proximité
+      // => Il faut vérifier s'il crée un problème de proximité
+      //    Il faut invoquer le module de modification PModif
       //    Si ça n'est pas le cas, on demande à l'utilisateur s'il veut
       //    l'enregistrer et considérer la proximité comme résolue.
-      UI.message("Le mot a été modifié")
+      (new ProxModif(this.mot, new_mot)).analyze()
     }
   }
 

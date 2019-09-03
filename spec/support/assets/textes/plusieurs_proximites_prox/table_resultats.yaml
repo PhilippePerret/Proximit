@@ -8,9 +8,35 @@
   :canons:
     :class: TextAnalyzer::Analyse::TableResultats::Canons
     :datas:
-      :pourcentage: 58.3 %
-      :nombre: 7
+      :pourcentage: 75 %
+      :nombre: 9
       :items:
+        un:
+          :class: TextAnalyzer::Analyse::TableResultats::Canon
+          :datas:
+            :canon: un
+            :proximites: []
+            :mots:
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 0
+                :idP: 
+                :idN: 1
+                :tbw: " "
+                :real: Un
+                :offset: 0
+                :rel_offset: 0
+                :real_init: Un
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: un
+                :lemma: un
+                :canon: un
+                :length: 2
+                :sortish: un
+            :nombre_occurences: 1
+            :nombre_proximites: 0
         texte:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -253,8 +279,34 @@
                 :sortish: dans
             :nombre_occurences: 1
             :nombre_proximites: 0
-      :created_at: 2019-09-02 14:34:35.892149000 +03:00
-      :updated_at: 2019-09-02 14:34:35.892154000 +03:00
+        le:
+          :class: TextAnalyzer::Analyse::TableResultats::Canon
+          :datas:
+            :canon: le
+            :proximites: []
+            :mots:
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 10
+                :idP: 9
+                :idN: 11
+                :tbw: " "
+                :real: le
+                :offset: 67
+                :rel_offset: 67
+                :real_init: le
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: le
+                :lemma: le
+                :canon: le
+                :length: 2
+                :sortish: le
+            :nombre_occurences: 1
+            :nombre_proximites: 0
+      :created_at: 2019-09-02 15:11:16.073201000 +03:00
+      :updated_at: 2019-09-02 15:11:16.073202000 +03:00
   :mots:
     :class: TextAnalyzer::Analyse::TableResultats::Mots
     :datas:
@@ -289,8 +341,8 @@
         - 9
         le:
         - 10
-      :created_at: 2019-09-02 14:34:35.892186000 +03:00
-      :updated_at: 2019-09-02 14:34:35.892187000 +03:00
+      :created_at: 2019-09-02 15:11:16.073235000 +03:00
+      :updated_at: 2019-09-02 15:11:16.073236000 +03:00
   :proximites:
     :class: TextAnalyzer::Analyse::TableResultats::Proximites
     :datas:
@@ -307,8 +359,8 @@
             :motB_id: 4
             :distance: 16
             :distance_minimale: 1500.0
-            :created_at: 2019-09-02 14:34:35.892244000 +03:00
-            :updated_at: 2019-09-02 14:34:35.892244000 +03:00
+            :created_at: 2019-09-02 15:11:16.073281000 +03:00
+            :updated_at: 2019-09-02 15:11:16.073285000 +03:00
         1:
           :class: TextAnalyzer::Analyse::TableResultats::Proximite
           :datas:
@@ -319,8 +371,8 @@
             :motB_id: 11
             :distance: 40
             :distance_minimale: 1500.0
-            :created_at: 2019-09-02 14:34:35.892262000 +03:00
-            :updated_at: 2019-09-02 14:34:35.892262000 +03:00
+            :created_at: 2019-09-02 15:11:16.073303000 +03:00
+            :updated_at: 2019-09-02 15:11:16.073304000 +03:00
         2:
           :class: TextAnalyzer::Analyse::TableResultats::Proximite
           :datas:
@@ -331,9 +383,9 @@
             :motB_id: 7
             :distance: 18
             :distance_minimale: 1500.0
-            :created_at: 2019-09-02 14:34:35.892279000 +03:00
-            :updated_at: 2019-09-02 14:34:35.892280000 +03:00
-      :created_at: 2019-09-02 14:34:35.892283000 +03:00
-      :updated_at: 2019-09-02 14:34:35.892283000 +03:00
-  :created_at: 2019-09-02 14:34:35.892285000 +03:00
-  :updated_at: 2019-09-02 14:34:35.892286000 +03:00
+            :created_at: 2019-09-02 15:11:16.073320000 +03:00
+            :updated_at: 2019-09-02 15:11:16.073320000 +03:00
+      :created_at: 2019-09-02 15:11:16.073323000 +03:00
+      :updated_at: 2019-09-02 15:11:16.073324000 +03:00
+  :created_at: 2019-09-02 15:11:16.073325000 +03:00
+  :updated_at: 2019-09-02 15:11:16.073326000 +03:00

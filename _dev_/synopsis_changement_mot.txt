@@ -1,0 +1,29 @@
+@startuml
+
+start
+
+if (nouveau unique ou plusieurs ?) then (unique)
+  :Mettre le mot dans une liste;
+else (plusieurs mots)
+  :Mettre chaque mot dans la liste;
+endif
+
+repeat
+  :analyse du mot\nQuel canonique ?;
+  if (le canon existe?) then (ok)
+    if (le nouveau mot appartient\nau même canon) then
+      :Ajouter le mot au canon;
+    else (changement de canon)
+      :Retirer le mot\nde son canon;
+      :Ajouter le mot\nau nouveau canon;
+    endif
+  else (NON)
+    :Créer un nouveau canon;
+    :Retirer le mot\nde son canon;
+    :Ajouter le mot\nau nouveau canon;
+  endif
+repeat while (d'autres mots?)
+
+stop
+
+@enduml
