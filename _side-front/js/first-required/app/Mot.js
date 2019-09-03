@@ -8,7 +8,8 @@
 class Mot {
 
   static init(){
-    this.items = {}
+    this.items  = {}
+    this.lastId = -1
   }
   /**
     Retourne l'instance Mot du mot d'id +mot_id+
@@ -19,7 +20,8 @@ class Mot {
 
   static add(dmot) {
     const mot = new Mot(dmot)
-    console.log("Ajout du mot %d :", mot.id, mot)
+    if ( mot.id > this.lastId ) this.lastId = parseInt(mot.id,10)
+    // console.log("Ajout du mot %d :", mot.id, mot)
     Object.assign(this.items, {[mot.id]: mot})
   }
 
@@ -28,7 +30,7 @@ class Mot {
     On récupère la donnée +items+ du fichier de résultat
   **/
   static set(datas){
-    console.log("-> Mot.set()",datas)
+    // console.log("-> Mot.set()",datas)
     this.items = {}
     for (var mot in datas.items) {
       datas.items[mot].forEach( mot_id => {
@@ -37,6 +39,25 @@ class Mot {
     }
   }
 
+  /**
+    Pour créer un nouveau mot à partir de +motstr+
+  **/
+  static createNew(motstr){
+    let datamot = {
+        id:         this.newId()
+      , real_init:  motstr
+      , downcase:   motstr.toLowerCase()
+    }
+    let imot = new Mot(datamot)
+    Object.assign(this.items, {[imot.id]: imot})
+    return imot
+  }
+
+  // Retourne un nouvel identifiant
+  static newId(){
+    if (undefined === this.lastId) this.lastId = -1
+    return (this.lastId += 1)
+  }
 
   /**
     |
@@ -55,7 +76,7 @@ class Mot {
     déjà avant)
   **/
   onFocus(ev){
-    console.log("-> onFocus")
+    // console.log("-> onFocus")
     try {
       // Ça n'est pas possible, peut-être parce que c'est seulement un
       // span.contentEditable

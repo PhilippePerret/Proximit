@@ -112,9 +112,9 @@ class PTexte {
   init(){
     // Chargement du fichier résultats
     this.resultats = require(this.resultats_path)
+    if (this.isAnalyzed) this.initWhenAnalyzed()
     // Écriture de l'état du texte
     this.writeState()
-    if (this.isAnalyzed) this.initWhenAnalyzed()
   }
 
   /**
@@ -152,25 +152,6 @@ class PTexte {
     // Affichage de la première proximité
   }
 
-
-  /**
-    | Retourne la portion de texte depuis le caractère d'offset +fromOffset+
-    | au caractère d'offset +toOffset+ en affichant un minimum de +min+
-    | caractères si ce nombre est précisé.
-    |
-  **/
-  getTextFromTo(fromOffset, toOffset){
-    return "Le texte sera calculé autrement"
-    // const len = toOffset - fromOffset
-    // const fd  = fs.openSync(this.fulltext_path, 'r');
-    // const buf = new Buffer(len)
-    // // buf.fill('')
-    // const str = fs.readSync(fd, buf, 0, len, fromOffset)
-    // // console.log("Texte ramené (de %d à %d) : '%s'", fromOffset, toOffset, buf.toString())
-    // return buf.toString()
-  }
-
-
   /**
     Méthode, utilisée normalement à l'ouverture du fichier, écrivant l'état
     de travail sur le texte, pour savoir jusqu'à quel point il a été analysée
@@ -195,7 +176,7 @@ class PTexte {
     }
     this.writeRowInfo(fs.existsSync(this.fulltext_path), "Fichier du texte complet", "OK")
     this.writeRowInfo(fs.existsSync(this.resultats_path), "Fichier intégral des résultats", "OK")
-
+    this.writeRowInfo(null, "Dernier ID de mot", Mot.lastId)
   }
 
   writeRowInfo(coche, label, value){

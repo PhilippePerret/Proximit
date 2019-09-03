@@ -1,3 +1,12 @@
+* Poursuivre la procédure de correction d'une proximité
+  - pour le moment, j'arrive à trouver ou définir le canon, à créer un nouveau canon si nécessaire, à créer un nouveau mot
+  La procédure de création du nouveau mot laisse à désirer car elle ne définit ni l'offset, ni les idP (mot avant) idN (mot après), tbw (texte entre le mot et le mot suivant), prox_id si le mot se retrouve en proximité avec d'autres mots et peut-être aussi d'autres propriétés
+  De ce que je vois aujourd'hui, il faut encore :
+    - programme Addendum pour enregistrer les modifications opérées au cours du processus
+    - inspecter les proximités des nouveaux mots fournis. S'il y en a, l'indiquer (sans demander confirmation, c'est l'auteur qui décide)
+    - retirer l'ancien mot de son canon
+    - modifier l'instance de proximité en fonction des modifications.
+    
 * Maintenant, tous les mots sont enregistrés dans les canons, même lorsqu'ils sont non traitables (trop courts ou appartenant à des listes exclusions). Cela est nécessaire pour tous les avoir afin de reconstruire le texte correctement.
 
 * Étudier les cas de modification dans le document "Reflexions.md" > « Principe lors de la modification d'une proximité »

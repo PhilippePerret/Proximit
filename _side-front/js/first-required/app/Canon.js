@@ -36,6 +36,22 @@ class Canon {
   }
 
   /**
+    Pour créer un nouveau canon à partir du mot {String} +canon+
+  **/
+  static createNew(canon){
+    let data_canon = {
+        canon: canon
+      , proximites: []
+      , mots:[]
+      , nombre_occurences: 0
+      , nombre_proximites: 0
+    }
+    let instance_canon = new Canon(data_canon)
+    Object.assign(this.items, {[canon]: instance_canon})
+    return instance_canon
+  }
+
+  /**
     | Retourne la forme canonique du mot motstr sous forme d'instance {Canon}
     | Soit ce canon existe déjà soit il faut le créer maintenant pour le mot.
   **/
@@ -49,22 +65,18 @@ class Canon {
       })
       return null
     }
-    let iscan = this.get(canon)
-    if ( undefined === iscan ) {
+    let theCanon = this.get(canon)
+    if ( undefined === theCanon ) {
       // Ce canon n'existe pas, il faut le créer
-      let newCanon = new Canon({
-          canon: canon
-        , proximites: []
-        , mots:[]
-        , nombre_occurences: 0
-        , nombre_proximites: 0
-      })
+      let newCanon = this.createNew(canon)
       // Il faut indiquer que ce canon est une nouvelle donnée à
       // prendre en compte pour le projet, nouvelle donnée qu'on doit
       // tout de suite enregistrer sur fichier.
       Addendum.addCanon(newCanon)
       return newCanon
-    } else { return iscan }
+    } else {
+      return theCanon
+    }
   }
 
   /**
@@ -72,9 +84,11 @@ class Canon {
     il n'a pas été trouvé pas npl-js-tools-french ou tree-tagger-french.
   **/
   static onSetCanon(mot_init, can){
-    canon = mot_init || can // 'mot_init' est null, si on a défini le canon 'can'
+    let canon = mot_init || can // 'mot_init' est null, si on a défini le canon 'can'
+    let newCanon = this.createNew(canon)
     // Il faut ajouter ce canon à la addendum
-    // Addendum.addCanon(newCanon)
+    Addendum.addCanon(newCanon)
+    ProxModif.current.create_single_word_in_canon(canon, newCanon)
   }
 
   /*
@@ -113,5 +127,12 @@ class Canon {
     for ( var id in this.mots ) {
       Mot.add(this.mots[id].datas)
     }
+  }
+
+  /**
+    Pour ajouter le mot +imot+ au canon
+  **/
+  addMot(imot){
+    console.log("Je dois ajouter le mot %s au canon", imot.mot, this)
   }
 }
