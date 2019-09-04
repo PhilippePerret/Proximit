@@ -1,5 +1,6 @@
 'use strict'
 
+const DISTANCE_PROX_DEFAULT = 1500
 const AROUND_LENGTH = 50
 
 /**
@@ -103,7 +104,6 @@ class Proximity {
   **/
   constructor(data){
     this.data = data
-    // on dispatche les données
     for (var k in data) { this[k] = data[k] }
   }
 

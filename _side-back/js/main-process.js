@@ -26,6 +26,7 @@ global.MainBuild = {
     code = code
       .replace(/__CSS__/, this.CSSTags.join("\n"))
       .replace(/__SCRIPTS__/, this.JSTags.join("\n"))
+      .replace(/__MARK_TESTS__/, `<script type="text/javascript">const TESTS=${TESTS_ON?'{tests:[]}':'null'};</script>`)
       .replace(/__ProductName__/g, App.getProductName())
     if (code.match('jquery') && code.match('jquery-ui')){
       // Si les scripts inclus jquery et jquery-ui, il faut ajouter une
@@ -43,7 +44,9 @@ global.MainBuild = {
 
 , buildJSTags(){
     this.JSTags = []
-    for ( var relative of ['first-required', 'then-required'] ){
+    let folders = ['first-required', 'then-required']
+    if ( TESTS_ON ) folders.push('tests')
+    for ( var relative of folders ){
       this.buildJSTagsOfFolder(this.pathOf(`_side-front/js/${relative}`))
     }
   }

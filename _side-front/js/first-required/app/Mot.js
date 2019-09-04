@@ -18,11 +18,16 @@ class Mot {
     return this.items[mot_id]
   }
 
+  /**
+    Ajoute le mot de données +dmot+ en le transformant en instance de mot
+    @return {Mot} l'instance créée.
+  **/
   static add(dmot) {
     const mot = new Mot(dmot)
     if ( mot.id > this.lastId ) this.lastId = parseInt(mot.id,10)
     // console.log("Ajout du mot %d :", mot.id, mot)
     Object.assign(this.items, {[mot.id]: mot})
+    return mot
   }
 
   /**
@@ -66,8 +71,9 @@ class Mot {
   **/
   constructor(data){
     this.data = data
+    // console.log("data du mot : ", data)
     // on dispatche les données
-    for(var k in data){this[k] = data[k]}
+    for ( var k in data ) { this[`_${k}`] = data[k] }
   }
 
   /**
@@ -110,5 +116,54 @@ class Mot {
     }
   }
 
-  get mot(){return this.real_init}
+  // ---------------------------------------------------------------------
+  //  PROPERTIES VOLATILES
+
+  // La proximité avec un mot avant (if any)
+  get proxP(){
+    if (undefined === this._proxp && this.px_idP){
+      this._proxp = Proximity.get(this.px_idP)
+    }
+    return this._proxp
+  }
+
+  // La proximité avec un mot après (if any)
+  get proxN(){
+    if (undefined === this._proxn && this.px_idN){
+      this._proxn = Proximity.get(this.px_idN)
+    }
+    return this._proxn
+  }
+
+  get mot(){return this._real_init}
+
+  // ---------------------------------------------------------------------
+  //  PROPERTIES SAVED
+
+  // Canon du mot
+  get id()          {return this._id}
+  // Forme canonique du mot (= lemma)
+  get canon()       {return this._canon}
+  get real_init()   {return this._real_init}
+  get real()        {return this._real}
+  // Version minuscule du mot
+  get downcase()    {return this._downcase}
+  // Forme lémmatisée du mot
+  get lemma()       {return this._lemma}
+  // Version du mot pour le classement
+  get sortish()     {return this._sortish}
+  // String entre ce mot et le mot suivant
+  get tbw()         {return this._tbw}
+  // Longueur du mot
+  get length()      {return this._length}
+  // Offset absolu (dans tout le texte)
+  get offset()      {return this._offset}
+  // Offset relatif (dans le document file_id)
+  get rel_offset()  {return this._rel_offset}
+  get file_id()     {return this._file_id}
+
+  // Identifiant de la proximité avant (if any)
+  get px_idP(){return this._px_idP}
+  // Identifiant de la proximité après (if any)
+  get px_idN(){return this._px_idN}
 }

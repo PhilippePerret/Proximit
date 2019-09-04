@@ -2,6 +2,7 @@
 # Manuel développeur
 
 * [Principes généraux](#principes_generaux)
+* [Tests](#les_tests)
 * [Obtenir l'instance d'un mot quelconque](#get_mot)
 * [Modification d'une proximité](#modify_a_prox)
 * [Appendum (gestion des modifications)](#laddendum)
@@ -15,6 +16,27 @@
 * Une proximité est définie par deux mots à distance inférieure de la distance minimale par défaut ou la distance minimale personnalisée pour le texte. Le premier mot s'appelle `motA` et le second mot s'appelle `motB`.
 * L'analyse du texte/des mots se fait en back-side, en ruby. Mais une partie est tout de même dévolue à JS pour modifier les données en live.
 * La première analyse, fait côté "serveur", n'est pas modifiée en cours de travail, un Addendum permet de mémoriser les changemens. C'est seulement lorsque l'auteur le décide que le texte est vraiment modifié pour prendre en compte les changements et qu'une nouvelle analyse est produite.
+
+---------------------------------------------------------------------
+
+## Les Tests {#les_tests}
+
+Pour lancer les tests : `npm test`. Noter qu'il faut ensuite rejouer `npm run start-update` pour supprimer le chargement des modules de tests. Dans le cas contraire, ils ne seraient pas joués mais ils seraient chargés.
+
+On utilise ici les `inside_tests` qui jouent les tests de l'intérieur. Pour que ça fonctionne, il faut :
+
+* la librairie `inside_tests.js` dans le dossier `js/tests`,
+* que le `main.html` contienne `<script type="text/javascript">const TESTS={tests:[]}`,
+* que les tests (fichiers dans `js/tests`) définissent les tests à l'aide `TESTS.tests.push(function(){/* ici le test opéré */})`,
+* que le `$(document).ready` appelle la méthode `TESTS.start()`
+
+### Création des tests {#create_tests}
+
+La création des tests se fait dans le dossier `js/tests` et ils s'écrivent comme du javascript normal, sans se prendre la tête.
+
+On peut juste utiliser les méthodes `assert(valeur, message succès, message erreur)` pour produire des succès ou des erreurs dans la console suivant la valeur de `valeur`.
+
+---------------------------------------------------------------------
 
 ## Obtenir l'instance d'un mot quelconque {#get_mot}
 

@@ -5,7 +5,7 @@
   "description": "Application desktop et CLI pour analyser et modifier les proximités de mots dans un texte provenant de source aussi diverses que Scrivener, Word, un texte brut, etc.",
   "main": "app.js",
   "scripts": {
-    "test": "mocha ./spec/features",
+    "test": "TESTS=true electron .",
     "start": "electron .",
     "start-update": "UPDATE_MAIN_HTML=true electron .",
     "build": "electron-packager . --platform=darwin --icon=icons/app --asar --out=built --overwrite",

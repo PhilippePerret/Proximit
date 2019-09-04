@@ -35,13 +35,14 @@ function initialize () {
   ObjMenus.mainMenuBar = Menu.buildFromTemplate(ObjMenus.data_menus)
   Menu.setApplicationMenu(ObjMenus.mainMenuBar)
 
+  global.TESTS_ON = process.env.TESTS
 
   // On doit créer le fichier main.html
   // Utiliser "npm run start-update" pour actualiser le fichier
-  if ( process.env.UPDATE_MAIN_HTML ) {
-    console.log("Actualisation du fichier main.html…")
+  if ( process.env.UPDATE_MAIN_HTML || TESTS_ON ) {
+    console.log(`Actualisation du fichier main.html${TESTS_ON?' pour les tests':''}…`)
     MainBuild.build()
-    console.log("Fichier main.html actualisé")
+    console.log(`Fichier main.html ${TESTS_ON?'préparé pour les tests':'actualisé'}`)
   }
 
 

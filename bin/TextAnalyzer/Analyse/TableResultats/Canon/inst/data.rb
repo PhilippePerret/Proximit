@@ -28,7 +28,8 @@ class Canon
         proximites:         {type: YIVAR},
         mots:               {type: :method},
         nombre_occurences:  {type: YIVAR},
-        nombre_proximites:  {type: YIVAR}
+        nombre_proximites:  {type: YIVAR},
+        distance_minimale:  {type: YIVAR}
       }
     }
   end
