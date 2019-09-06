@@ -19,8 +19,12 @@ const NLP_CONFIG = {
 
 class Canon {
 
-  static set(datas) {
+  static reset(){
     this.items = {}
+  }
+
+  static set(datas) {
+    this.reset()
     // console.log("-> Canon.set()", datas.items)
     for ( var mot in datas.items ) {
       var canon = new Canon(datas.items[mot].datas)
@@ -127,7 +131,7 @@ class Canon {
   constructor(data){
     // console.log("Canon.instance avec", data)
     this.data = data
-    console.log("data canon:", data)
+    // console.log("data canon:", data)
     for ( var k in data ){
       if ( k === 'mots' ) continue ;
       else if ( k === 'distance_minimale' ) this._proxdistance = data[k] ;

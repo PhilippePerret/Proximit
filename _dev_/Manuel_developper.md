@@ -21,14 +21,11 @@
 
 ## Les Tests {#les_tests}
 
-Pour lancer les tests : `npm test`. Noter qu'il faut ensuite rejouer `npm run start-update` pour supprimer le chargement des modules de tests. Dans le cas contraire, ils ne seraient pas joués mais ils seraient chargés.
+Il y a deux types de tests dans **Proximi**, les premiers au niveau de l'analyse de texte, en ruby, effectués par `RSpec`. Il suffit donc, pour les lancer, de jouer `rspec spec/tests` ou `rspec spec/features`.
 
-On utilise ici les `inside_tests` qui jouent les tests de l'intérieur. Pour que ça fonctionne, il faut :
+Les seconds testent le fonctionnement de l'application en intégration et utilisent mes `insite-tests` (version hyper-simplifiée). Cf. le document « Manuel_Inside_Tests.md ».
 
-* la librairie `inside_tests.js` dans le dossier `js/tests`,
-* que le `main.html` contienne `<script type="text/javascript">const TESTS={tests:[]}`,
-* que les tests (fichiers dans `js/tests`) définissent les tests à l'aide `TESTS.tests.push(function(){/* ici le test opéré */})`,
-* que le `$(document).ready` appelle la méthode `TESTS.start()`
+Pour lancer ces seconds tests il suffit de jouer `npm test`.
 
 ### Création des tests {#create_tests}
 

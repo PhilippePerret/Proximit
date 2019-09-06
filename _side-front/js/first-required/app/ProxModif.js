@@ -9,6 +9,11 @@
 class ProxModif {
   static get current()  { return this._current }
   static set current(v) { this._current = v }
+
+  static reset(){
+    delete this._current; this._current = undefined;
+  }
+
   // Instanciation avec l'instance {Mot} du mot modifié, et {String} la valeur
   // du nouveau mot.
   // Note : avant d'appeler cette instanciation, il faut s'assurer que les

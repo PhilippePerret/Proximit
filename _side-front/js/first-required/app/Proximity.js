@@ -14,10 +14,20 @@ class Proximity {
     résultats de l'analyse
   **/
   static set(datas){
-    this.items = {}
+    this.reset()
     for(var idx in datas.items){
       Object.assign(this.items, {[idx]: new Proximity(datas.items[idx].datas)})
     }
+  }
+
+  /**
+    Remise à zéro des proximités
+  **/
+  static reset(){
+    this.current_index = -1
+    this.items = {}
+    UI.infos_proximites.clean()
+    UI.buttons_proximites.clean()
   }
 
   /**

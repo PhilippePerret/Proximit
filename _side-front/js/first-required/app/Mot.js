@@ -8,9 +8,14 @@
 class Mot {
 
   static init(){
+    this.reset()
+  }
+
+  static reset(){
     this.items  = {}
     this.lastId = -1
   }
+
   /**
     Retourne l'instance Mot du mot d'id +mot_id+
   **/

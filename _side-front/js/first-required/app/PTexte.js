@@ -59,11 +59,21 @@ class PTexte {
     l'application.
 
     À l'ouverture d'un texte, on procède seulement à l'affichage de son
-    état d'analyse et de correction (en tout cas pour le moment)
+    état d'analyse et de correction (en tout cas pour le moment).
   **/
   static open(pth){
+    // Il faut tout réinitialiser
+    this.reset()
     this._current = new PTexte({path: pth})
     this._current.init()
+  }
+
+  static reset(){
+    delete this._current; this._current = undefined;
+    Proximity.reset()
+    Canon.reset()
+    Mot.reset()
+    ProxModif.reset()
   }
 
   /**
@@ -110,9 +120,11 @@ class PTexte {
     On charge ses résultats s'il est déjà analysé et on affiche ses informations
   **/
   init(){
-    // Chargement du fichier résultats
-    this.resultats = require(this.resultats_path)
-    if (this.isAnalyzed) this.initWhenAnalyzed()
+    if (this.isAnalyzed){
+      // Chargement du fichier résultats
+      this.resultats = require(this.resultats_path)
+      this.initWhenAnalyzed()
+    }
     // Écriture de l'état du texte
     this.writeState()
   }
@@ -189,6 +201,9 @@ class PTexte {
     | Propriétés volatiles
   **/
 
+  // l'instance addendum du texte courant
+  get addendum(){return this._addendum||(this._addendum = new Addendum(this))}
+
   // Retourne la date de la dernière analyse, si le texte a été analysé
   get analyse_date(){
     if ( ! this.isAnalyzed ) return
@@ -216,6 +231,7 @@ class PTexte {
   // L'affixe du fichier (pour le nom du dossier)
   get affixe(){return this._affixe || (this._affixe = path.basename(this.path,path.extname(this.path)))}
 
+  get name(){return this._name||(this._name = path.basename(this.path))}
   // Le path du texte original
   get path(){return this._path}
 }
