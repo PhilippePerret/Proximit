@@ -23,10 +23,13 @@ class PTexte {
     courant mais plus tard, le menu sera désactivé
   **/
   static analyseCurrent(){
-    if ( undefined === this.current ) this.chooseText()
-    if ( undefined === this.current ) return ; // annulation
+    const my = this
+    if ( undefined === my.current ) my.chooseText()
+    if ( undefined === my.current ) return ; // annulation
+    my.current.analyzed = null
     execFile(`./bin/analyse_texte.rb`, [PTexte.current.path], (err, stdout, stderr) => {
       if (err) {
+        my.current.analyzed = false
         console.error(err)
         throw(err)
       } else {
@@ -35,6 +38,7 @@ class PTexte {
         // console.log("Retour de l'exécution de l'analyse : ", stdout)
         // On réaffiche tout de suite les infos, pour savoir ce qu'a
         // pu faire l'analyse
+        my.current.analyzed = true
         PTexte.current.writeState()
       }
     })

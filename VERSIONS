@@ -1,0 +1,6 @@
+# Versions
+
+## 0.1.1
+
+* Traitement des tests asynchrones (inside-tests),
+* Possibilité d'exclure ou de se focaliser sur certains tests en particulier.

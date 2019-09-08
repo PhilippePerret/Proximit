@@ -1,7 +1,5 @@
 'use strict'
 
-let PTexte = require('./PTexte')
-
 /**
   |
   | Exécute un script JS sur le renderer
