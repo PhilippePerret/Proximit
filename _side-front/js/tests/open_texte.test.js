@@ -1,6 +1,6 @@
 'use strict'
 
-TESTS.add(false, "Test de l'ouverture d'un texte non analysé", ()=>{
+TESTS.add("Test de l'ouverture d'un texte non analysé", ()=>{
   assert('function'===typeof(PTexte.open), "La méthode PTexte.open existe")
 
   // On charge le fichier tests voulu
@@ -37,10 +37,12 @@ TESTS.add(true, "Lancement de l'analyse d'un tout nouveau texte", async function
   }
   fs.writeFileSync(ftexte, texte)
   try {
+    var curTexte = PTexte.current
     PTexte.open(ftexte)
     assert(PTexte.current != null, "Un texte est bien chargé.")
     assert(PTexte.current.name == tname, `Le texte courant est bien le texte "${tname}"`, `Le texte courant devrait être "${tname}", mais c'est ${PTexte.current.name}`)
     assert(fs.existsSync(folderPath)==false,`Le dossier "${folderPath}" n'existe pas.`)
+    assert(curTexte.isAnalyzed === false, "Le texte est bien marqué non analysé.", "Le texte devrait être marqué non analysé (isAnalyzed)")
 
     // === On lance l'analyse du texte ===
     // (pour le moment, comme ce sont des tests simples, on simule l'appui
@@ -54,7 +56,7 @@ TESTS.add(true, "Lancement de l'analyse d'un tout nouveau texte", async function
     // On arrive ici à la fin de l'analyse ou en cas d'échec de l'analyse
 
   } catch (e) {
-    console.error(e)
+    throw(e)
   } finally {
     // À la fin du test, qu'on qu'il arrive, on détruire le texte et le
     // fichier

@@ -51,7 +51,7 @@ Object.assign(TESTS,{
         const isAsync = dtest.function.toString().substring(0,50).split(' ')[0] == 'async'
         if ( isAsync ) {
           // <= Une promise
-          await dtest.function.call()
+          await dtest.function.call().catch((err)=>{throw(err)})
         } else {
           // <= Pas une promise
           dtest.function.call()
@@ -138,7 +138,7 @@ Object.assign(TESTS,{
       console.log(`%c${dfailure.name} : ${dfailure.error_msg}`, "padding-left:2em;color:red;")
       console.log(`%cIN: ${dfailure.filename} AT LINE: ${dfailure.lineNumber}`, "padding-left:22em;font-size:0.91em;color:red;")
     })
-    if ( my.excludedTests ) {
+    if ( my.excludedTests.length ) {
       // <= Des tests ont été exclus
       // => On en indique la liste
       my.title("Tests exclus")
