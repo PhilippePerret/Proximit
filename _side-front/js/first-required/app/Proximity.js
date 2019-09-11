@@ -103,21 +103,21 @@ class Proximity {
   show(){
     var dataAround = this.textAround(500)
     var div = Dom.createDiv({class:'portion'})
-    div.append(Dom.createSpan({text: dataAround.before}))
-    div.append(Dom.createSpan({id:'before-word', text:dataAround.first_word, contentEditable:'true', class:'mot exergue'}))
-    div.append(Dom.createSpan({text: dataAround.between}))
-    div.append(Dom.createSpan({id:'after-word', text: dataAround.second_word, contentEditable:'true', class:'mot exergue'}))
-    div.append(Dom.createSpan({text: dataAround.after}))
+    div.append(Dom.createSpan({id:'before-words', text: dataAround.before}))
+    div.append(Dom.createSpan({id:'word-before', text:dataAround.first_word, contentEditable:'true', class:'mot exergue'}))
+    div.append(Dom.createSpan({id:'between-words', text: dataAround.between}))
+    div.append(Dom.createSpan({id:'word-after', text: dataAround.second_word, contentEditable:'true', class:'mot exergue'}))
+    div.append(Dom.createSpan({id:'after-words', text: dataAround.after}))
     UI.currentProximity
       .clean()
       .append(Dom.createDiv({text: `Proximité : « ${this.motA.mot} » ⇤ ${this.distance} ⇥ « ${this.motB.mot} » [offsets : ${this.motA.offset} ↹ ${this.motB.offset}]`}))
       .append(div)
     // Il faut observer les deux mots
-    $("#before-word")
+    $("#word-before")
       .on('focus', this.motA.onFocus.bind(this.motA))
       .on('keypress', this.motA.onKeyPressed.bind(this.motA))
       .on('blur', this.motA.onBlur.bind(this.motA))
-    $("#after-word")
+    $("#word-after")
       .on('focus', this.motB.onFocus.bind(this.motB))
       .on('keypress', this.motB.onKeyPressed.bind(this.motB))
       .on('blur', this.motB.onBlur.bind(this.motB))
@@ -135,7 +135,8 @@ class Proximity {
   textAround(min){
     var addedLen = 0
 
-    // Longueur de texte qui doit être prise
+    // Longueur de texte qui doit être prise. On la calcule en fonction de
+    // l'éloignement des deux mots, pouor obtenir toujours la distance minimale.
     const len = (this.motB.offset + this.motB.length) - this.motA.offset
     // Si une longueur minimale est définie, il faut voir si elle est atteinte
     // par l'intervalle entre les deux mots. Si ce n'est pas le cas, on
@@ -147,9 +148,13 @@ class Proximity {
     // Pour obtenir le texte entre les deux mots, on boucle depuis l'id
     // du premier mot (motA), jusqu'à l'id du second (motB) en ajoutant entre
     // chaque mot l'espace :tbw
+    console.log("this.motA.idN, this.motA", this.motA.idN, this.motA)
     var next_mot = Mot.get(this.motA.idN) // il doit forcément exister
+    console.log("next_mot = ", next_mot)
     var between = this.motA.tbw // texte entre le motA et le mot suivant
+    console.log("Avant la boucle : next_mot.id:%d, this.motB_id:%d, next_mot", next_mot.id, this.motB_id, next_mot)
     while ( next_mot && next_mot.id != this.motB_id ) {
+      console.log("On rentre dans la boucle avec next_mot = ", next_mot)
       between += next_mot.mot
       between += next_mot.tbw
       next_mot = Mot.get(next_mot.idN)

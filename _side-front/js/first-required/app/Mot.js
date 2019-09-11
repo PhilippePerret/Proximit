@@ -145,8 +145,11 @@ class Mot {
   // ---------------------------------------------------------------------
   //  PROPERTIES SAVED
 
-  // Canon du mot
   get id()          {return this._id}
+  // Identifiant du mot après et avant
+  get idN()         {return this._idN}
+  get idP()         {return this._idP}
+  // Canon du mot
   // Forme canonique du mot (= lemma)
   get canon()       {return this._canon}
   get real_init()   {return this._real_init}

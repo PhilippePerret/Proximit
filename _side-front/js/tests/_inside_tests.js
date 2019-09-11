@@ -227,7 +227,32 @@ function pending(message){
   |
 **/
 const Page = {
+  name: 'Objet pour tester la page courante'
 
+  /**
+    |
+    | Retourne l'élément DOM désigné par +ref+, qui peut être un titre, un
+    | id ou un name
+    |
+    | Si +type+ est indéfini ou "button", on cherchera un bouton par son
+    | contenu (titre).
+    | Si +type+ est indéfini ou "link", on cherchera un lien également par
+    | son titre/texte.
+    |
+  **/
+, get(ref, type){
+    var c = document.querySelector(ref)
+    if ( c ) return c
+    c = document.querySelector(`#${ref}`)
+    if ( c ) return c
+    if ( undefined === type || type == 'button' ) {
+      var tags = document.querySelectorAll('button, input[type="button"], input[type="submit"]')
+      for ( var tag of tags ) { if ( tag.innerHTML == ref ) return tag }
+    } else if ( undefined === type || type == 'link' ) {
+      var tags = document.querySelectorAll('A')
+      for ( var tag of tags ) { if ( tag.innerHTML == ref ) return tag }
+    }
+  }
   /**
     Produit un succès si la balise +tag+ existe avec les attributs et le
     contenu défini par +attrs+
@@ -241,7 +266,7 @@ const Page = {
       :visible      Si true, l'élément doit être visible
       :checked      Si true, l'élément doit être checké
   **/
-  has(tag, attrs, success_message, failure_message){
+, has(tag, attrs, success_message, failure_message){
     let attrs_init = {}
     Object.assign(attrs_init, attrs)
     let onlyResultat = attrs.resOnly
@@ -270,7 +295,7 @@ const Page = {
 
     // Débug
     // console.log("Sélecteur à trouver :", sel)
-    
+
     let el = document.querySelector(sel)
     let ok = !!el
 
@@ -303,4 +328,17 @@ const Page = {
       TESTS.addFailure(failure_message, success_message)
     }
   }
+}
+
+/**
+  Simule le click sur l'élément référencé par +ref+
+  +ref+ peut être le titre du bouton/lien/input-submit/etc., son identifiant ou
+  son name.
+**/
+function click(ref, type){
+  // Dans un premier temps, il faut trouver l'élément
+  let element = Page.get(ref, type)
+  // console.log("élément trouvé : ", element)
+  if ( element ) element.click()
+  else { throw new Error(`Impossible de trouver l'élément référencé par '${ref}'`)}
 }

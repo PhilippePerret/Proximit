@@ -7,10 +7,11 @@
   * [Lancer seulement un test particulier](#run_only_special_tests)
   * [Exclure un ou des tests de l'analyse](#exclude_some_tests)
 * [Construction d'un test](#build_a_test)
+* [Interactions avec la page](#interact_with_page)
 
 ## Todo List/Wish List {#todolist}
 
-* Pouvoir spécifier quel(s) test(s) lancer en particulier.
+* S'assure que c'est bien le module `_inside_tests.js` qui est chargé en tout premier.
 
 ## Description/introduction {#introduction}
 
@@ -24,7 +25,7 @@ Pour lancer les tests : `npm test`. Noter qu'il faut ensuite rejouer `npm run st
 
 On utilise ici les `inside_tests` qui jouent les tests de l'intérieur. Pour que ça fonctionne, il faut :
 
-* la librairie `inside_tests.js` dans le dossier `js/tests`,
+* la librairie `_inside_tests.js` dans le dossier `js/tests`,
 * que le `main.html` contienne `<script type="text/javascript">const TESTS={tests:[]}</script>`,
 * que les tests (fichiers dans `js/tests`) définissent les tests à l'aide `TESTS.add("nom du test", function(){/* ici le test opéré */})`,
 * que le `$(document).ready` appelle la méthode `TESTS.start()` (par exemple par le biais de la méthode `App.init()`).
@@ -70,3 +71,17 @@ TESTS.add("Mon tests", ()=>{
 })
 
 ```
+
+## Interactions avec la page {#interact_with_page}
+
+Plusieurs méthodes existent pour intéragir avec la page HTML.
+
+### `Page.get(<ref>[, <type>])` {#page_get_method}
+
+Pas spécifiquement une méthode d'interaction, mais elle permet de récupérer un élément quelconque de la page, soit avec son sélecteur précis, son identifiant ou son contenu.
+
+`<type>` peut être `button` ou `link` et limitera la recherche à ces éléments s'il est renseigné. Noter que le type `button` recherche dans les `button`, `input[type="button"]` et `input[type="submit"]`.
+
+### `click(<ref>)` {#page_click_method}
+
+Simule un click souris sur l'élément `<ref>`. `<ref>` peut être le sélecteur de l'élément (par exemple `#monIdBouton`), l'identifiant de l'élément (p.e. `monIdBouton`) ou le contenu textuel de l'élément (p.e. `Cliquez-moi !`).

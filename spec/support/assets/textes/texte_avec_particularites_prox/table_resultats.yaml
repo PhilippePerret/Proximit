@@ -1,16 +1,79 @@
 ---
 :class: TextAnalyzer::Analyse::TableResultats
 :datas:
-  :text_analyzer_version: 0.1.0
+  :text_analyzer_version: 0.1.2
   :current_offset: 127
   :current_id_mot: 24
   :last_id_proximite: 0
   :canons:
     :class: TextAnalyzer::Analyse::TableResultats::Canons
     :datas:
-      :pourcentage: 56 %
-      :nombre: 14
+      :pourcentage: 84 %
+      :nombre: 21
       :items:
+        un:
+          :class: TextAnalyzer::Analyse::TableResultats::Canon
+          :datas:
+            :canon: un
+            :proximites: []
+            :mots:
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 0
+                :idP: 
+                :idN: 1
+                :tbw: " "
+                :real: Un
+                :offset: 2
+                :rel_offset: 2
+                :real_init: Un
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: un
+                :lemma: un
+                :canon: un
+                :length: 2
+                :sortish: un
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 2
+                :idP: 1
+                :idN: 3
+                :tbw: " "
+                :real: Un
+                :offset: 12
+                :rel_offset: 12
+                :real_init: Un
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: un
+                :lemma: un
+                :canon: un
+                :length: 2
+                :sortish: un
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 21
+                :idP: 20
+                :idN: 22
+                :tbw: " "
+                :real: un
+                :offset: 114
+                :rel_offset: 114
+                :real_init: un
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: un
+                :lemma: un
+                :canon: un
+                :length: 2
+                :sortish: un
+            :nombre_occurences: 3
+            :nombre_proximites: 0
+            :distance_minimale: 10
         titre:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -37,6 +100,7 @@
                 :sortish: titre
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
         vrai:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -63,6 +127,7 @@
                 :sortish: vrai
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
         bout-en-train:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -74,7 +139,7 @@
                 :id: 4
                 :idP: 3
                 :idN: 5
-                :tbw: ".\n"
+                :tbw: ".\n\n"
                 :real: bout-en-train
                 :offset: 20
                 :rel_offset: 20
@@ -89,6 +154,52 @@
                 :sortish: bout-en-train
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
+        l:
+          :class: TextAnalyzer::Analyse::TableResultats::Canon
+          :datas:
+            :canon: l
+            :proximites: []
+            :mots:
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 5
+                :idP: 4
+                :idN: 6
+                :tbw: "'"
+                :real: L
+                :offset: 36
+                :rel_offset: 36
+                :real_init: L
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: l
+                :lemma: l
+                :canon: l
+                :length: 1
+                :sortish: l
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 9
+                :idP: 8
+                :idN: 10
+                :tbw: "’"
+                :real: l
+                :offset: 50
+                :rel_offset: 50
+                :real_init: l
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: l
+                :lemma: l
+                :canon: l
+                :length: 1
+                :sortish: l
+            :nombre_occurences: 2
+            :nombre_proximites: 0
+            :distance_minimale: 1500.0
         été:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -115,6 +226,7 @@
                 :sortish: ete
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
         tout:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -141,6 +253,7 @@
                 :sortish: tout
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
         cela:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -152,7 +265,7 @@
                 :id: 8
                 :idP: 7
                 :idN: 9
-                :tbw: ''
+                :tbw: " "
                 :real: ça
                 :offset: 47
                 :rel_offset: 47
@@ -167,6 +280,7 @@
                 :sortish: ca
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
         avaler:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -193,6 +307,7 @@
                 :sortish: avale
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
         direct:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -238,6 +353,34 @@
                 :sortish: directe
             :nombre_occurences: 2
             :nombre_proximites: 1
+            :distance_minimale: 1500.0
+        et:
+          :class: TextAnalyzer::Analyse::TableResultats::Canon
+          :datas:
+            :canon: et
+            :proximites: []
+            :mots:
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 12
+                :idP: 11
+                :idN: 13
+                :tbw: ' "'
+                :real: et
+                :offset: 69
+                :rel_offset: 69
+                :real_init: et
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: et
+                :lemma: et
+                :canon: et
+                :length: 2
+                :sortish: et
+            :nombre_occurences: 1
+            :nombre_proximites: 0
+            :distance_minimale: 1500.0
         pouvoir:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -264,6 +407,34 @@
                 :sortish: pourrais
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
+        je:
+          :class: TextAnalyzer::Analyse::TableResultats::Canon
+          :datas:
+            :canon: je
+            :proximites: []
+            :mots:
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 15
+                :idP: 14
+                :idN: 16
+                :tbw: " "
+                :real: je
+                :offset: 93
+                :rel_offset: 93
+                :real_init: je
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: je
+                :lemma: je
+                :canon: je
+                :length: 2
+                :sortish: je
+            :nombre_occurences: 1
+            :nombre_proximites: 0
+            :distance_minimale: 1500.0
         voir:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -275,7 +446,7 @@
                 :id: 16
                 :idP: 15
                 :idN: 17
-                :tbw: ''
+                :tbw: " "
                 :real: voir
                 :offset: 96
                 :rel_offset: 96
@@ -290,6 +461,34 @@
                 :sortish: voir
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
+        n:
+          :class: TextAnalyzer::Analyse::TableResultats::Canon
+          :datas:
+            :canon: n
+            :proximites: []
+            :mots:
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 17
+                :idP: 16
+                :idN: 18
+                :tbw: "'"
+                :real: n
+                :offset: 101
+                :rel_offset: 101
+                :real_init: n
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: n
+                :lemma: n
+                :canon: n
+                :length: 1
+                :sortish: n
+            :nombre_occurences: 1
+            :nombre_proximites: 0
+            :distance_minimale: 1500.0
         être:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -316,6 +515,34 @@
                 :sortish: est
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 10
+        ce:
+          :class: TextAnalyzer::Analyse::TableResultats::Canon
+          :datas:
+            :canon: ce
+            :proximites: []
+            :mots:
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 19
+                :idP: 18
+                :idN: 20
+                :tbw: " "
+                :real: ce
+                :offset: 107
+                :rel_offset: 107
+                :real_init: ce
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: ce
+                :lemma: ce
+                :canon: ce
+                :length: 2
+                :sortish: ce
+            :nombre_occurences: 1
+            :nombre_proximites: 0
+            :distance_minimale: 1500.0
         pas:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -342,6 +569,7 @@
                 :sortish: pas
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 50
         poids:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -368,6 +596,34 @@
                 :sortish: poids
             :nombre_occurences: 1
             :nombre_proximites: 0
+            :distance_minimale: 1500.0
+        mi:
+          :class: TextAnalyzer::Analyse::TableResultats::Canon
+          :datas:
+            :canon: mi
+            :proximites: []
+            :mots:
+            - :class: TextAnalyzer::Analyse::WholeText::Mot
+              :datas:
+                :id: 23
+                :idP: 22
+                :idN: 24
+                :tbw: "-"
+                :real: mi
+                :offset: 123
+                :rel_offset: 123
+                :real_init: mi
+                :file_id: 0
+                :px_idP: 
+                :px_idN: 
+                :downcase: mi
+                :lemma: mi
+                :canon: mi
+                :length: 2
+                :sortish: mi
+            :nombre_occurences: 1
+            :nombre_proximites: 0
+            :distance_minimale: 1500.0
         lourd:
           :class: TextAnalyzer::Analyse::TableResultats::Canon
           :datas:
@@ -397,8 +653,9 @@
                 :sortish: lourd
             :nombre_occurences: 1
             :nombre_proximites: 0
-      :created_at: 2019-09-02 14:33:11.615072000 +03:00
-      :updated_at: 2019-09-02 14:33:11.615074000 +03:00
+            :distance_minimale: 1500.0
+      :created_at: 2019-09-11 15:46:24.768430000 +03:00
+      :updated_at: 2019-09-11 15:46:24.768431000 +03:00
   :mots:
     :class: TextAnalyzer::Analyse::TableResultats::Mots
     :datas:
@@ -414,7 +671,7 @@
       - pourrais
       - je
       - voir
-      - ne
+      - n
       - est
       - ce
       - pas
@@ -433,7 +690,7 @@
         - 3
         bout-en-train:
         - 4
-        le:
+        l:
         - 5
         - 9
         été:
@@ -455,7 +712,7 @@
         - 15
         voir:
         - 16
-        ne:
+        n:
         - 17
         est:
         - 18
@@ -469,8 +726,8 @@
         - 23
         lourd:
         - 24
-      :created_at: 2019-09-02 14:33:11.615117000 +03:00
-      :updated_at: 2019-09-02 14:33:11.615117000 +03:00
+      :created_at: 2019-09-11 15:46:24.768489000 +03:00
+      :updated_at: 2019-09-11 15:46:24.768490000 +03:00
   :proximites:
     :class: TextAnalyzer::Analyse::TableResultats::Proximites
     :datas:
@@ -487,9 +744,9 @@
             :motB_id: 13
             :distance: 7
             :distance_minimale: 1500.0
-            :created_at: 2019-09-02 14:33:11.615163000 +03:00
-            :updated_at: 2019-09-02 14:33:11.615163000 +03:00
-      :created_at: 2019-09-02 14:33:11.615166000 +03:00
-      :updated_at: 2019-09-02 14:33:11.615167000 +03:00
-  :created_at: 2019-09-02 14:33:11.615168000 +03:00
-  :updated_at: 2019-09-02 14:33:11.615169000 +03:00
+            :created_at: 2019-09-11 15:46:24.768541000 +03:00
+            :updated_at: 2019-09-11 15:46:24.768542000 +03:00
+      :created_at: 2019-09-11 15:46:24.768544000 +03:00
+      :updated_at: 2019-09-11 15:46:24.768545000 +03:00
+  :created_at: 2019-09-11 15:46:24.768550000 +03:00
+  :updated_at: 2019-09-11 15:46:24.768550000 +03:00

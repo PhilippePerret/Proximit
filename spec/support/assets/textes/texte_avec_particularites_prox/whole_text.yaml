@@ -92,7 +92,7 @@
             :id: 4
             :idP: 3
             :idN: 5
-            :tbw: ".\n"
+            :tbw: ".\n\n"
             :real: bout-en-train
             :offset: 20
             :rel_offset: 20
@@ -112,18 +112,18 @@
             :idP: 4
             :idN: 6
             :tbw: "'"
-            :real: Le
-            :offset: 35
-            :rel_offset: 35
-            :real_init: Le
+            :real: L
+            :offset: 36
+            :rel_offset: 36
+            :real_init: L
             :file_id: 0
             :px_idP: 
             :px_idN: 
-            :downcase: le
-            :lemma: le
-            :canon: le
-            :length: 2
-            :sortish: le
+            :downcase: l
+            :lemma: l
+            :canon: l
+            :length: 1
+            :sortish: l
         6:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
@@ -168,7 +168,7 @@
             :id: 8
             :idP: 7
             :idN: 9
-            :tbw: ''
+            :tbw: " "
             :real: ça
             :offset: 47
             :rel_offset: 47
@@ -188,18 +188,18 @@
             :idP: 8
             :idN: 10
             :tbw: "’"
-            :real: le
-            :offset: 49
-            :rel_offset: 49
-            :real_init: le
+            :real: l
+            :offset: 50
+            :rel_offset: 50
+            :real_init: l
             :file_id: 0
             :px_idP: 
             :px_idN: 
-            :downcase: le
-            :lemma: le
-            :canon: le
-            :length: 2
-            :sortish: le
+            :downcase: l
+            :lemma: l
+            :canon: l
+            :length: 1
+            :sortish: l
         10:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
@@ -320,7 +320,7 @@
             :id: 16
             :idP: 15
             :idN: 17
-            :tbw: ''
+            :tbw: " "
             :real: voir
             :offset: 96
             :rel_offset: 96
@@ -340,18 +340,18 @@
             :idP: 16
             :idN: 18
             :tbw: "'"
-            :real: ne
-            :offset: 100
-            :rel_offset: 100
-            :real_init: ne
+            :real: n
+            :offset: 101
+            :rel_offset: 101
+            :real_init: n
             :file_id: 0
             :px_idP: 
             :px_idN: 
-            :downcase: ne
-            :lemma: ne
-            :canon: ne
-            :length: 2
-            :sortish: ne
+            :downcase: n
+            :lemma: n
+            :canon: n
+            :length: 1
+            :sortish: n
         18:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
@@ -525,7 +525,7 @@
           - 22
           - 23
           - 24
-      :created_at: 2019-09-02 14:33:11.627723000 +03:00
-      :updated_at: 2019-09-02 14:33:11.627725000 +03:00
-  :created_at: 2019-09-02 14:33:11.627728000 +03:00
-  :updated_at: 2019-09-02 14:33:11.627729000 +03:00
+      :created_at: 2019-09-11 15:46:24.784976000 +03:00
+      :updated_at: 2019-09-11 15:46:24.784978000 +03:00
+  :created_at: 2019-09-11 15:46:24.784980000 +03:00
+  :updated_at: 2019-09-11 15:46:24.784980000 +03:00

@@ -23,8 +23,7 @@ class WholeText
     t = "#{MARK_BOT} "+
       self.content
       .gsub(/\r/,'')
-      .gsub(/’/,"'")
-      .gsub(/'/,'e_ ') # les deux caractères ajoutés seront supprimés
+      .gsub(/['’]/,'e_ ') # les deux caractères ajoutés seront supprimés
       .gsub(/[\“\”]/, '"')
       .gsub(/[\#>\+\|\\\/\[\]\{\}\(\)\%«»"\,\n\.\¡\¿\!\?\;\…–—\: ]/, ' ') +
       " #{MARK_EOT}"
@@ -55,7 +54,9 @@ class WholeText
 
     # Début de la boucle
     while aword = all_separated_words.shift
+
       word = aword.first
+
       case word.strip
       when MARK_BOT
         # On met le décalage à la longueur de ce qui suit la marque de
@@ -80,8 +81,12 @@ class WholeText
         final_word << word
         final_word << all_separated_words.shift.first
       when /_$/
-        final_word = word[0..-2]
-        cur_offset -= 1
+        # Si un texte se termine par un "e_" c'est qu'il s'agit d'un
+        # apostrophe transformé
+        # Note : il est inutile de modifier l'offset (cur_offset) comme je le
+        # faisais avant puisque le mot est raccourci et que cet offset est
+        # calculé par rapport à la longueur du mot.
+        final_word = word[0..-3]
       else
         # Un vrai mot
         # puts "-- MOT: '#{word}' OFFSET #{cur_offset}"
@@ -93,7 +98,7 @@ class WholeText
       real_words << {word:final_word, offset:cur_offset}
     end
 
-    puts "real_words : #{real_words.inspect}"
+    # puts "\n\n---- real_words : #{real_words.inspect}"
 
 
     # On traite enfin tous les mots
@@ -140,6 +145,8 @@ class WholeText
         idP:          nil  # sera renseigné juste ci-dessous
       }
 
+      # puts "data_mot: #{data_mot.inspect}"
+
       # S'il y a un mot précédent, il faut :
       #   - lui définir son idN (identifiant du next)
       #   - lui définir son texte après (tbw - entre les deux mots)
@@ -149,7 +156,7 @@ class WholeText
         data_mot.merge!(idP: mot_precedent.id)
         # Pour trouver le texte entre le mot précédent et ce mot
         entre = self.content[mot_precedent.rel_offset+mot_precedent.length...data_mot[:rel_offset]]
-        # puts "Entre #{mot_precedent.real} et #{hword[:word]}: '#{entre}'"
+        raise "L'entre deux mots ne devrait pas pouvoir être vide…" if entre.length < 1
         mot_precedent.tbw = entre
       end
 

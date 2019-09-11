@@ -4,8 +4,6 @@ TESTS.add("Test de l'ouverture d'un texte non analysé", ()=>{
   assert('function'===typeof(PTexte.open), "La méthode PTexte.open existe")
 
   // On charge le fichier tests voulu
-  // C'est un fichier dont l'analyse n'existe pas, à propos
-  // let path_texte = path.join(remote.app.getAppPath(),'spec','support','assets','textes','test_inside_01.txt')
   let path_texte = TESTS.pathOfTexte('test_inside_01.txt')
   PTexte.open(path_texte)
 
@@ -22,7 +20,7 @@ TESTS.add("Test de l'ouverture d'un texte non analysé", ()=>{
 
 })
 
-TESTS.add(true, "Lancement de l'analyse d'un tout nouveau texte", async function(){
+TESTS.add("Lancement de l'analyse d'un tout nouveau texte", async function(){
   // On crée le nouveau test
   let texte   = "Un texte simple, avec du simple texte."
     , affixe  = `inside_test_${Number(new Date())}`
