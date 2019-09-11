@@ -6,6 +6,27 @@
 **/
 Object.assign(UI,{
   name:'Extension de UI propre à l’application'
+
+  /**
+    Affichage des boutons pour gérer les proximités
+  **/
+, showButtonsProximites(itext){
+    const my = this
+    my.buttons_proximites
+      .clean()
+      // .append(Dom.createDiv({text:"[Boutons]"}))
+      // .append(Dom.createButton({text:"⏹⏸⏩⏪"}))
+      .append(Dom.createButton({id:'btn-text-beginning', text:"⏮", title:"Début du texte"}))
+      .append(Dom.createButton({id:'btn-text-end', text:"⏭", title:"Fin du texte"}))
+      .append(Dom.createButton({id:'btn-save-corrections', text:"⏺", title:"Enregistrer les corrections"}))
+      .append(Dom.createButton({id:'btn-prev-prox', text:"◀️", title:"Proximité précédente"}))
+      .append(Dom.createButton({id:'btn-next-prox', text:"▶️", title:"Proximité suivante"}))
+
+    // Il faut les surveiller
+    $('button#btn-next-prox').on('click', Proximity.showNext.bind(Proximity))
+    $('button#btn-prev-prox').on('click', Proximity.showPrev.bind(Proximity))
+  }
+
 , build(){
     // Pour les infos sur le texte
     UI.rightColumn.append(Dom.createDiv({id:'infos_texte', class:'container-data'}))

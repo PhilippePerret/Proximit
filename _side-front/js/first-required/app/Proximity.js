@@ -37,7 +37,7 @@ class Proximity {
     // l'indice de la proximité courante, affichée
     this.current_index = -1
     this.showInfos(itext)
-    this.showButtons(itext)
+    UI.showButtonsProximites(itext)
   }
 
   /**
@@ -47,31 +47,11 @@ class Proximity {
     UI.infos_proximites
       .clean()
       .append(Dom.createDiv({class:'bold', text:'Proximités'}))
-      .append(rowData(null,"Nombre de proximités",itext.resultats.datas.proximites.datas.nombre))
-      .append(rowData(null,"Nombre de mots",itext.resultats.datas.mots.datas.nombre_total_mots))
-      .append(rowData(null,"Nombre de canons",itext.resultats.datas.canons.datas.nombre))
-      .append(rowData(null,"Pourcentage proximités",itext.resultats.datas.proximites.datas.pourcentage))
-      .append(rowData(null,"Proximités corrigés", "à voir"))
-  }
-
-  /**
-    Affichage des boutons pour gérer les proximités
-  **/
-  static showButtons(itext){
-    const my = this
-    UI.buttons_proximites
-      .clean()
-      // .append(Dom.createDiv({text:"[Boutons]"}))
-      // .append(Dom.createButton({text:"⏹⏸⏩⏪"}))
-      .append(Dom.createButton({id:'btn-text-beginning', text:"⏮", title:"Début du texte"}))
-      .append(Dom.createButton({id:'btn-text-end', text:"⏭", title:"Fin du texte"}))
-      .append(Dom.createButton({id:'btn-save-corrections', text:"⏺", title:"Enregistrer les corrections"}))
-      .append(Dom.createButton({id:'btn-prev-prox', text:"◀️", title:"Proximité précédente"}))
-      .append(Dom.createButton({id:'btn-next-prox', text:"▶️", title:"Proximité suivante"}))
-
-    // Il faut les surveiller
-    $('button#btn-next-prox').on('click', my.showNext.bind(my))
-    $('button#btn-prev-prox').on('click', my.showPrev.bind(my))
+      .append(rowData(null,"Nombre de proximités",itext.resultats.datas.proximites.datas.nombre,'nombre_proximites'))
+      .append(rowData(null,"Nombre de mots",itext.resultats.datas.mots.datas.nombre_total_mots,'nombre_mots'))
+      .append(rowData(null,"Nombre de canons",itext.resultats.datas.canons.datas.nombre,'nombre_canons'))
+      .append(rowData(null,"Pourcentage proximités",itext.resultats.datas.proximites.datas.pourcentage,'pourcentage_proximites'))
+      .append(rowData(null,"Proximités corrigés", "à voir",'corrected_proximites'))
   }
 
   /**

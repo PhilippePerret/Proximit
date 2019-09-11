@@ -23,9 +23,10 @@ Object.assign(TESTS,{
 , async start(){
     const my = this
     console.clear()
-    my.title("Lancement des tests inside-tests")
-    this.errors = []
+    this.errors   = []
+    this.pendings = []
     this.success_count = 0
+    my.title("Lancement des tests inside-tests")
     // La liste de tests à prendre, en fonction des focalisations (only) et des
     // exclusion
     if ( my.onlyTests.length ) {
@@ -130,10 +131,14 @@ Object.assign(TESTS,{
 , finale_report(){
     const my = this
     const failures_count = this.errors.length
-    const failure = failures_count > 0;
+        , failure   = failures_count > 0
+        , s_failure = (!failure || failures_count > 1) ? 's' : '';
+    const pending_count = this.pendings.length
+        , pending   = pending_count > 0
+        , s_pending = (!pending || pending_count > 1) ? 's' : '';
     const couleur = failure ? 'red' : 'blue'
     console.log("\n\n")
-    console.log(`%c${this.success_count} succès,  ${failures_count} failure(s),  Pending : ---`, `font-size:1.3em;color:${couleur};font-weight:bold;`)
+    console.log(`%c${this.success_count} succès,  ${failures_count} failure${s_failure},  ${pending_count} pending${s_pending}`, `font-size:1.3em;color:${couleur};font-weight:bold;`)
     this.errors.forEach(dfailure => {
       console.log(`%c${dfailure.name} : ${dfailure.error_msg}`, "padding-left:2em;color:red;")
       console.log(`%cIN: ${dfailure.filename} AT LINE: ${dfailure.lineNumber}`, "padding-left:22em;font-size:0.91em;color:red;")
@@ -182,18 +187,120 @@ Object.assign(TESTS,{
       }, frequence)
     })
   }
+
+, addSuccess(message){
+    TESTS.success_count += 1
+    console.log("%c"+message, "padding-left:2em;color:green;font-weight:bold;")
+    return true
+  }
+, addFailure(message_failure, message_success){
+    if ( !message_failure) message_failure = `FAUX : ${message_success}`
+    console.log("%c"+message_failure, "padding-left:2em;color:red;font-weight:bold;")
+    throw new Error(message_failure)
+    return false
+  }
+, addPending(message){
+    console.log("%c"+message, "padding-left:2em;color:orange;font-weight:bold;")
+    this.pendings.push(message)
+  }
 })
 
 function assert(resultat, message_success, message_failure){
   if ( resultat ) {
-    TESTS.success_count += 1
-    console.log("%c"+message_success, "padding-left:2em;color:green;font-weight:bold;")
-    return true
+    return TESTS.addSuccess(message_success)
   } else {
-    if ( undefined === message_failure) message_failure = `FAUX : ${message_success}`
-    // TESTS.addError(message_failure) // par le throw ci-dessous
-    console.log("%c"+message_failure, "padding-left:2em;color:red;font-weight:bold;")
-    throw new Error(message_failure)
-    return false
+    return TESTS.addFailure(message_failure, message_success)
+  }
+}
+function pending(message){
+  return TESTS.addPending(message||'')
+}
+
+
+/**
+  | ---------------------------------------------------------------------
+  |
+  | CLASS PAGE
+  | ----------
+  | Pour les tests de la page courante, avec pour commencer la méthode de
+  | test `has`
+  |
+**/
+const Page = {
+
+  /**
+    Produit un succès si la balise +tag+ existe avec les attributs et le
+    contenu défini par +attrs+
+
+    Attributs particuliers
+    ----------------------
+      :resOnly      Si true, on ne fait que renvoyer le résultat du test.
+                    Sert par exemple pour `has_not`
+      :attrs        Des attributs supplémentaires non commun (donc hors de
+                    id, class, title)
+      :visible      Si true, l'élément doit être visible
+      :checked      Si true, l'élément doit être checké
+  **/
+  has(tag, attrs, success_message, failure_message){
+    let attrs_init = {}
+    Object.assign(attrs_init, attrs)
+    let onlyResultat = attrs.resOnly
+    delete attrs.resOnly
+    let text = attrs.text
+    delete attrs.text
+    let visible = attrs.visible
+    delete attrs.visible
+    let checked = attrs.checked
+    delete attrs.checked
+
+    var sel = `${tag}`
+    attrs.id    && (sel += `#${attrs.id}`)
+    if (undefined !== attrs.class){
+      if ('string' === typeof attrs.class) attrs.class = [attrs.class]
+      sel += `.${attrs.class.join('.')}`
+    }
+
+    attrs.title && ( sel += `[title=\"${attrs.title}\"]` )
+
+    if ( attrs.attrs ) {
+      for ( var attr in attrs.attrs ) {
+        sel += `[${attr}=\"${attrs.attrs[attr]}\"]`
+      }
+    }
+
+    // Débug
+    // console.log("Sélecteur à trouver :", sel)
+    
+    let el = document.querySelector(sel)
+    let ok = !!el
+
+    if ( ok && text ) {
+      let contenu = el.innerHTML
+      ok = contenu.match(text)
+    }
+
+    if ( ok && undefined !== checked ) {
+      // TODO Vérifier par le DOM si l'élément est checké
+    }
+
+    if ( onlyResultat ) return ok
+    else {
+      let refEl = `L'élément DOM défini par ${JSON.stringify(attrs_init)}`
+      if ( ok ) {
+        TESTS.addSuccess(success_message || `${refEl} existe bien.`)
+      } else {
+        TESTS.addFailure(failure_message || `${refEl} devrait exister`)
+      }
+    }
+  }
+
+, not_has(tag, attrs, success_message, failure_message){
+    attrs = attrs || {}
+    Object.assign(attrs,{resOnly:true})
+    if ( false === this.has(tag, attrs, success_message, failure_message) ) {
+      TESTS.addSuccess(success_message)
+    } else {
+      TESTS.addFailure(failure_message, success_message)
+    }
   }
 }

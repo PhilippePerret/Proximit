@@ -1,8 +1,7 @@
 'use strict'
 /**
-  Note : les modules de tests ne sont chargés que si la variable TESTS
-  est true.
-  Pour les jouer : TESTS=true npm start
+  Tests préliminaires de l'application Proximit
+  Tous les objets utiles doivent être définis.
 **/
 TESTS.add("Test de l'existence des objets", function(){
   // Toutes les classes doit être définies

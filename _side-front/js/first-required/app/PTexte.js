@@ -17,7 +17,7 @@ class PTexte {
 
   /**
 
-    Méthode principale, appelée par le menu "Analyse > Analyser le texte" qui
+    Méthode principale, appelée par le menu "Analyse > Analyser" qui
     lance la procédure d'analyse du texte courant.
     Pour le moment, elle demande à choisir le texte s'il n'y a pas de texte
     courant mais plus tard, le menu sera désactivé
@@ -35,11 +35,10 @@ class PTexte {
       } else {
         // Rappel : se trouve dans le stdout tout ce qui a été envoyé
         // par puts dans le script.
-        // console.log("Retour de l'exécution de l'analyse : ", stdout)
         // On réaffiche tout de suite les infos, pour savoir ce qu'a
-        // pu faire l'analyse
+        // pu faire l'analyse. On prépare aussi les boutons, etc.
         my.current.analyzed = true
-        PTexte.current.writeState()
+        PTexte.current.init()
       }
     })
   }
@@ -124,11 +123,7 @@ class PTexte {
     On charge ses résultats s'il est déjà analysé et on affiche ses informations
   **/
   init(){
-    if (this.isAnalyzed){
-      // Chargement du fichier résultats
-      this.resultats = require(this.resultats_path)
-      this.initWhenAnalyzed()
-    }
+    this.isAnalyzed && this.initWhenAnalyzed()
     // Écriture de l'état du texte
     this.writeState()
   }
@@ -205,6 +200,15 @@ class PTexte {
     | Propriétés volatiles
   **/
 
+  get resultats() {
+    if ( undefined === this._resultats ) {
+      if (fs.existsSync(this.resultats_path)){
+        this._resultats = require(this.resultats_path)
+      }
+    }
+    return this._resultats
+  }
+
   // l'instance addendum du texte courant
   get addendum(){return this._addendum||(this._addendum = new Addendum(this))}
 
@@ -215,14 +219,12 @@ class PTexte {
   }
 
   // Retourne true si le texte a été analysé
-  get isAnalyzed(){return fs.existsSync(this.prox_folder)}
+  get isAnalyzed() { return !!fs.existsSync(this.prox_folder) }
 
   /**
     Propriétés de path
   **/
-  in_prox(relpath){
-    return path.join(this.prox_folder,relpath)
-  }
+  in_prox(relpath){ return path.join(this.prox_folder,relpath) }
   get fulltext_path(){return this._fulltext_path || (this._fulltext_path = this.in_prox('texte_entier.txt'))}
   get resultats_path(){return this._resultatspath || (this._resultatspath = this.in_prox('table_resultats.json'))}
 

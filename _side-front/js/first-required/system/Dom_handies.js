@@ -11,15 +11,18 @@
     true    On coche en vert
     false   Une croix rouge
 
+  Si +span_id+ est fourni, ce sera l'identifiant du code SPAN qui contient
+  la valeur à donner à la rangée (souvent utile pour la modifier ou la lire)
+
   Note : le fichier CSS data.css est requis.
 **/
-function rowData(coche, label, value){
+function rowData(coche, label, value, span_id){
   var div = Dom.createDiv({class:'row-data'})
   var lab = Dom.create('LABEL')
   var coche = coche === null ? '' : (coche ? '✅' : '❌')
   lab.append(Dom.createSpan({class:'coche',text:coche}))
   lab.append(Dom.createSpan({text: label, class:'label'}))
   div.append(lab)
-  div.append(Dom.createSpan({text:value}))
+  div.append(Dom.createSpan({text:value, id:span_id}))
   return div
 }

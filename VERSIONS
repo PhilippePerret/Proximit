@@ -1,5 +1,9 @@
 # Versions
 
+## 0.1.2
+
+* Amélioration du traitement des erreurs dans les inside-tests (méthode `catch` pour les tests asynchrones).
+
 ## 0.1.1
 
 * Traitement des tests asynchrones (inside-tests),
