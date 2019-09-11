@@ -253,6 +253,17 @@ const Page = {
       for ( var tag of tags ) { if ( tag.innerHTML == ref ) return tag }
     }
   }
+
+  /**
+    Retourne le contenu de l'élément de référence +ref+ (cf. la méthode `get`)
+    en le simplifiant (pour le moment, les insécables sont remplacées par des
+    espaces simples et les apostrophes courbes par des apostrophes droits)
+  **/
+, getInner(ref, type){
+    let element = this.get(ref, type)
+    if (undefined === element) throw new Error(`L'élément de référence "${ref}" est introuvable. Impossible de retourner son contenu.`)
+    return element.innerHTML.replace(/( |&nbsp;)/g,' ').replace(/’/g, "'")
+  }
   /**
     Produit un succès si la balise +tag+ existe avec les attributs et le
     contenu défini par +attrs+

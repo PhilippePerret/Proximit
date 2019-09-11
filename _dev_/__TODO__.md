@@ -1,6 +1,8 @@
 * Poursuivre l'utilisation des inside-tests pour tester l'application
 
-* Poursuivre la procédure de correction d'une proximité
+* Quand on relance l'analyse d'un texte, si une proximité est affichée, il faut la supprimer pour repartir à zéro.
+
+* Poursuivre la procédure de correction d'une proximité (en la testant au fur et à mesure)
   - pour le moment, j'arrive à trouver ou définir le canon, à créer un nouveau canon si nécessaire, à créer un nouveau mot
   La procédure de création du nouveau mot laisse à désirer car elle ne définit ni l'offset, ni les idP (mot avant) idN (mot après), tbw (texte entre le mot et le mot suivant), prox_id si le mot se retrouve en proximité avec d'autres mots et peut-être aussi d'autres propriétés
   De ce que je vois aujourd'hui, il faut encore :

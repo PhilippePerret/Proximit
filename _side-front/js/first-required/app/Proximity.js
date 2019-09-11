@@ -148,13 +148,9 @@ class Proximity {
     // Pour obtenir le texte entre les deux mots, on boucle depuis l'id
     // du premier mot (motA), jusqu'à l'id du second (motB) en ajoutant entre
     // chaque mot l'espace :tbw
-    console.log("this.motA.idN, this.motA", this.motA.idN, this.motA)
     var next_mot = Mot.get(this.motA.idN) // il doit forcément exister
-    console.log("next_mot = ", next_mot)
     var between = this.motA.tbw // texte entre le motA et le mot suivant
-    console.log("Avant la boucle : next_mot.id:%d, this.motB_id:%d, next_mot", next_mot.id, this.motB_id, next_mot)
     while ( next_mot && next_mot.id != this.motB_id ) {
-      console.log("On rentre dans la boucle avec next_mot = ", next_mot)
       between += next_mot.mot
       between += next_mot.tbw
       next_mot = Mot.get(next_mot.idN)

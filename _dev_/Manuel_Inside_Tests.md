@@ -8,6 +8,9 @@
   * [Exclure un ou des tests de l'analyse](#exclude_some_tests)
 * [Construction d'un test](#build_a_test)
 * [Interactions avec la page](#interact_with_page)
+  * [Obtenir un élément (`Page.get(<ref>[, <type>])`)](#page_get_method)
+  * [Obtenir le contenu d'un élément (`Page.getInner`)](#page_getinner_method)
+  * [Simuler un click](#page_click_method)
 
 ## Todo List/Wish List {#todolist}
 
@@ -76,11 +79,17 @@ TESTS.add("Mon tests", ()=>{
 
 Plusieurs méthodes existent pour intéragir avec la page HTML.
 
-### `Page.get(<ref>[, <type>])` {#page_get_method}
+### Obtenir un élément (`Page.get(<ref>[, <type>])`) {#page_get_method}
 
 Pas spécifiquement une méthode d'interaction, mais elle permet de récupérer un élément quelconque de la page, soit avec son sélecteur précis, son identifiant ou son contenu.
 
 `<type>` peut être `button` ou `link` et limitera la recherche à ces éléments s'il est renseigné. Noter que le type `button` recherche dans les `button`, `input[type="button"]` et `input[type="submit"]`.
+
+### Obtenir le contenu d'un élément (`Page.getInner`) {#page_getinner_method}
+
+La méthode `Page.getInner(<reference>)` permet d'obtenir le contenu (`innerHTML`) de l'élément de référence `<reference>`.
+
+Noter cependant **un point important** : dans ce retour, toutes les espaces insécables ont été remplacées par des espaces simples et les apostrophes courbes par des apostrophes droits. Ceci afin de faciliter les travaux de comparaison.
 
 ### `click(<ref>)` {#page_click_method}
 

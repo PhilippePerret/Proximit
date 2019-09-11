@@ -1,7 +1,7 @@
 {
   "name": "proximit",
   "productName": "Proximit",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Application desktop et CLI pour analyser et modifier les proximités de mots dans un texte provenant de source aussi diverses que Scrivener, Word, un texte brut, etc.",
   "main": "app.js",
   "scripts": {

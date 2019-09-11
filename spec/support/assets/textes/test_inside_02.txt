@@ -1,0 +1,5 @@
+Ce texte, qui ne doit être modifié sous aucun prétexte, contient plusieurs proximités qui doivent permettre de checker le passage d'une proximité à l'autre dans tout le texte, en avant comme en arrière.
+
+Il est permis d'avoir des formes lémmatisées et plusieurs d'entre elles sont d'ailleurs utilisées ici. La lémmatisation permet de rassembler plusieurs mots en un même canon.
+
+Il est utile et nécessaire de le savoir.
