@@ -66,6 +66,10 @@ en	PRP	en
 un	DET:ART	un
 même	ADJ	même
 canon	NOM	canon
+,	PUN	,
+une	DET:ART	un
+forme	NOM	forme
+canonique	ADJ	canonique
 .	SENT	.
 Il	PRO:PER	il
 est	VER:pres	être

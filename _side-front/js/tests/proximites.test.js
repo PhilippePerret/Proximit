@@ -40,4 +40,39 @@ TESTS.add(true, "On peut passer en revue toutes les proximités d'un texte analy
   // On vérifie qu'il soit chargé
   assert(PTexte.current.name == text_name, `Le nom du texte courant doit être "${text_name}".`, `Le nom du texte courant devrait être "${text_name}", or, c'est "${PTexte.current.name}".`)
 
+  // On vérifie qu'il y ait le bon nombre de proximités
+  let nombre_prox = Object.keys(Proximity.items).length
+  assert( nombre_prox === 9, "Il y a bien 8 proximités", `9 proximités devraient avoir été trouvée, il y a en a ${nombre_prox} dans la donnée 'Proximity.items'.`)
+
+  function checkBeforeAfterWord(paire){
+    checks.forEach(paire => {
+      click("▶️")
+      let expectBefore  = paire[0]
+        , expectAfter   = paire[1] || paire[0]
+        , wordBefore    = Page.getInner('span#word-before')
+        , wordAfter     = Page.getInner('span#word-after')
+      assert(expectBefore == wordBefore && expectAfter == wordAfter, `La proximité suivante concerne bien "${wordBefore}" et "${wordAfter}".`, `la proximité suivante devrait concerner "${expectBefore}" et "${expectAfter}", elle concerne "${wordBefore}" et "${wordAfter}"…`)
+    })
+  }
+  // On vérifie qu'on passe bien d'une proximité à la suivante dans
+  // l'ordre du texte
+  let checks = [
+      ['texte'], ['qui'], ['doit','doivent'], ['plusieurs']
+    , ['proximités', 'proximité'], ['permettre','permis']
+    , ['permis','permet']
+    , ['formes','forme']
+    , ['plusieurs'] // c'est ici que la différence se fait
+  ]
+  checks.forEach(paire => checkBeforeAfterWord.call(paire))
+
+  // On vérifie qu'on passe bien d'une proximité à la suivante dans l'ordre
+  // des canons quand la case à cocher "Traiter par canons" est cochée
+  check('#cb-sort-by-canon')
+  checks = [
+    ['texte'], ['qui'], ['doit','doivent'], ['plusieurs']
+  , ['plusieurs'] // c'est ici que la différence se fait
+  , ['proximités', 'proximité'], ['permettre','permis']
+  , ['permis','permet'], ['formes','forme']
+  ]
+  checks.forEach(paire => checkBeforeAfterWord.call(paire))
 })

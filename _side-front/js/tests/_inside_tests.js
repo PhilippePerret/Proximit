@@ -149,9 +149,14 @@ Object.assign(TESTS,{
       my.title("Tests exclus")
       my.excludedTests.forEach(dtest => console.log("- %s (%s, %d)", dtest.name, dtest.filename, dtest.lineNumber))
     }
-    if ( failure ) {
-      alert("Des erreurs sont survenues. Consulter la console.")
-    }
+    let timer = setTimeout(()=>{
+      if ( failure ) {
+        UI.error("Des erreurs sont survenues. Consulter la console.")
+      } else {
+        UI.message("Tout s'est bien passé avec les tests.", 'notice')
+      }
+      clearTimeout(timer);timer = null;
+    }, 1000)
     console.log("\n\n")
   }
 

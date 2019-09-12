@@ -1,8 +1,18 @@
 'use strict'
 /**
   Constante UI
-  version 1.0.1
+  version 1.1.1
   ------------
+
+  Requis :
+    - UI.css
+
+  # version 1.1.1
+    Suppression de tout ce qui concernait l'application 'Projet'
+
+  # version 1.1.0
+    Ajout de UI.flash qui permet d'afficher des messages.
+
   # version 1.0.1
     Ajout de la méthode UI.message et de l'objet UI.footerMessage
     Pour afficher des messages en bas de page.
@@ -10,15 +20,33 @@
 const UI = {
 
   // Pour écrire un message dans le pied de page
-  message(msg){
-    this.footerMessage.innerHTML = msg
+  message(msg, style){
+    this.flash(msg, style || 'notice')
+  }
+, error(msg){
+    this.flash(msg, 'warning')
+  }
+
+, flash(msg, style){
+    let divFlash = document.querySelector('#flash') || Dom.createDiv({id:'flash'})
+      , divMsg   = Dom.createDiv({class:style||'notice', text:msg})
+    divFlash.append(divMsg)
+    document.body.append(divFlash)
+    let nombre_mots = msg.split(' ').length
+    if ( nombre_mots < 6 ) nombre_mots = 6
+    let laps = 1000 * ( nombre_mots / 1.5 )
+    let timer = setTimeout(()=>{
+      let flash = document.querySelector('#flash')
+      flash.classList.add('vanish')
+      clearTimeout(timer)
+      timer = setTimeout(()=>{flash.remove()}, laps + 5000)
+    }, laps)
   }
 
 , init(){
-    // L'application peut définir la méthode `UI.build` dans app_UI du
-    // dossier `required-then/js/app`
     if ('function' == typeof(this.build)) this.build.call(this)
     this.observe()
+
   }
 
 , setDimensions(){
@@ -30,7 +58,6 @@ const UI = {
   }
 
 , observe(){
-
   }
   /**
     Rend visible l'élément +o+ {HTMLElement} dans son parent

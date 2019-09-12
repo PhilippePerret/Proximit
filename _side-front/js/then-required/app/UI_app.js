@@ -21,10 +21,12 @@ Object.assign(UI,{
       .append(Dom.createButton({id:'btn-save-corrections', text:"⏺", title:"Enregistrer les corrections"}))
       .append(Dom.createButton({id:'btn-prev-prox', text:"◀️", title:"Proximité précédente"}))
       .append(Dom.createButton({id:'btn-next-prox', text:"▶️", title:"Proximité suivante"}))
+      .append(Dom.createCheckbox({id:'cb-sort-by-canon', text:"Afficher par canon"}))
 
     // Il faut les surveiller
     $('button#btn-next-prox').on('click', Proximity.showNext.bind(Proximity))
     $('button#btn-prev-prox').on('click', Proximity.showPrev.bind(Proximity))
+    $('input#cb-sort-by-canon').on('click', Proximity.onCheckSortByCanon.bind(Proximity))
   }
 
 , build(){

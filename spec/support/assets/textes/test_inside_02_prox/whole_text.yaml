@@ -3,12 +3,12 @@
 :datas:
   :path: "/Users/philippeperret/Programmation/Proximit/spec/support/assets/textes/test_inside_02_prox/texte_entier.txt"
   :lemma_file_path: "/Users/philippeperret/Programmation/Proximit/spec/support/assets/textes/test_inside_02_prox/texte_entier_lemmatized.txt"
-  :length: 422
+  :length: 443
   :pages_count: 1
   :mots:
     :class: TextAnalyzer::Analyse::WholeText::Mots
     :datas:
-      :count: 72
+      :count: 75
       :items:
         0:
           :class: TextAnalyzer::Analyse::WholeText::Mot
@@ -802,7 +802,7 @@
             :real_init: formes
             :file_id: 0
             :px_idP: 
-            :px_idN: 
+            :px_idN: 8
             :downcase: formes
             :lemma: forme
             :canon: forme
@@ -1213,7 +1213,7 @@
             :id: 63
             :idP: 62
             :idN: 64
-            :tbw: ".\n\n"
+            :tbw: ", "
             :real: canon
             :offset: 371
             :rel_offset: 371
@@ -1233,9 +1233,66 @@
             :idP: 63
             :idN: 65
             :tbw: " "
+            :real: une
+            :offset: 378
+            :rel_offset: 378
+            :real_init: une
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: une
+            :lemma: un
+            :canon: un
+            :length: 3
+            :sortish: une
+        65:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 65
+            :idP: 64
+            :idN: 66
+            :tbw: " "
+            :real: forme
+            :offset: 382
+            :rel_offset: 382
+            :real_init: forme
+            :file_id: 0
+            :px_idP: 8
+            :px_idN: 
+            :downcase: forme
+            :lemma: forme
+            :canon: forme
+            :length: 5
+            :sortish: forme
+        66:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 66
+            :idP: 65
+            :idN: 67
+            :tbw: ".\n\n"
+            :real: canonique
+            :offset: 388
+            :rel_offset: 388
+            :real_init: canonique
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: canonique
+            :lemma: canonique
+            :canon: canonique
+            :length: 9
+            :sortish: canonique
+        67:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 67
+            :idP: 66
+            :idN: 68
+            :tbw: " "
             :real: Il
-            :offset: 379
-            :rel_offset: 379
+            :offset: 400
+            :rel_offset: 400
             :real_init: Il
             :file_id: 0
             :px_idP: 
@@ -1245,16 +1302,16 @@
             :canon: il
             :length: 2
             :sortish: il
-        65:
+        68:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :id: 65
-            :idP: 64
-            :idN: 66
+            :id: 68
+            :idP: 67
+            :idN: 69
             :tbw: " "
             :real: est
-            :offset: 382
-            :rel_offset: 382
+            :offset: 403
+            :rel_offset: 403
             :real_init: est
             :file_id: 0
             :px_idP: 
@@ -1264,16 +1321,16 @@
             :canon: être
             :length: 3
             :sortish: est
-        66:
+        69:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :id: 66
-            :idP: 65
-            :idN: 67
+            :id: 69
+            :idP: 68
+            :idN: 70
             :tbw: " "
             :real: utile
-            :offset: 386
-            :rel_offset: 386
+            :offset: 407
+            :rel_offset: 407
             :real_init: utile
             :file_id: 0
             :px_idP: 
@@ -1283,16 +1340,16 @@
             :canon: utile
             :length: 5
             :sortish: utile
-        67:
+        70:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :id: 67
-            :idP: 66
-            :idN: 68
+            :id: 70
+            :idP: 69
+            :idN: 71
             :tbw: " "
             :real: et
-            :offset: 392
-            :rel_offset: 392
+            :offset: 413
+            :rel_offset: 413
             :real_init: et
             :file_id: 0
             :px_idP: 
@@ -1302,16 +1359,16 @@
             :canon: et
             :length: 2
             :sortish: et
-        68:
+        71:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :id: 68
-            :idP: 67
-            :idN: 69
+            :id: 71
+            :idP: 70
+            :idN: 72
             :tbw: " "
             :real: nécessaire
-            :offset: 395
-            :rel_offset: 395
+            :offset: 416
+            :rel_offset: 416
             :real_init: nécessaire
             :file_id: 0
             :px_idP: 
@@ -1321,16 +1378,16 @@
             :canon: nécessaire
             :length: 10
             :sortish: necessaire
-        69:
+        72:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :id: 69
-            :idP: 68
-            :idN: 70
+            :id: 72
+            :idP: 71
+            :idN: 73
             :tbw: " "
             :real: de
-            :offset: 406
-            :rel_offset: 406
+            :offset: 427
+            :rel_offset: 427
             :real_init: de
             :file_id: 0
             :px_idP: 
@@ -1340,16 +1397,16 @@
             :canon: de
             :length: 2
             :sortish: de
-        70:
+        73:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :id: 70
-            :idP: 69
-            :idN: 71
+            :id: 73
+            :idP: 72
+            :idN: 74
             :tbw: " "
             :real: le
-            :offset: 409
-            :rel_offset: 409
+            :offset: 430
+            :rel_offset: 430
             :real_init: le
             :file_id: 0
             :px_idP: 
@@ -1359,19 +1416,19 @@
             :canon: le
             :length: 2
             :sortish: le
-        71:
+        74:
           :class: TextAnalyzer::Analyse::WholeText::Mot
           :datas:
-            :id: 71
-            :idP: 70
+            :id: 74
+            :idP: 73
             :idN: 
             :tbw: |+
               .
 
 
             :real: savoir
-            :offset: 412
-            :rel_offset: 412
+            :offset: 433
+            :rel_offset: 433
             :real_init: savoir
             :file_id: 0
             :px_idP: 
@@ -1384,8 +1441,8 @@
       :en_proximites:
         :class: LCP
         :datas:
-          :nombre: 14
-          :pourcentage: 19.4 %
+          :nombre: 16
+          :pourcentage: 21.3 %
           :list:
           - 1
           - 2
@@ -1398,14 +1455,16 @@
           - 22
           - 29
           - 37
+          - 41
           - 44
           - 55
           - 58
+          - 65
       :hors_proximites:
         :class: LCP
         :datas:
-          :nombre: 58
-          :pourcentage: 80.6 %
+          :nombre: 59
+          :pourcentage: 78.7 %
           :list:
           - 0
           - 3
@@ -1437,7 +1496,6 @@
           - 38
           - 39
           - 40
-          - 41
           - 42
           - 43
           - 45
@@ -1458,14 +1516,16 @@
           - 62
           - 63
           - 64
-          - 65
           - 66
           - 67
           - 68
           - 69
           - 70
           - 71
-      :created_at: 2019-09-11 16:11:47.670634000 +03:00
-      :updated_at: 2019-09-11 16:11:47.670636000 +03:00
-  :created_at: 2019-09-11 16:11:47.670640000 +03:00
-  :updated_at: 2019-09-11 16:11:47.670641000 +03:00
+          - 72
+          - 73
+          - 74
+      :created_at: 2019-09-12 10:00:28.903352000 +03:00
+      :updated_at: 2019-09-12 10:00:28.903354000 +03:00
+  :created_at: 2019-09-12 10:00:28.903359000 +03:00
+  :updated_at: 2019-09-12 10:00:28.903360000 +03:00

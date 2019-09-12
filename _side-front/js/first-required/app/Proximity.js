@@ -73,9 +73,33 @@ class Proximity {
     }
     this.show(this.current_index += 1)
   }
+
+  /**
+    Pour afficher les proximités, on ne procède pas toujours dans le sens
+    des items définis ici. On peut fonctionner dans l'ordre des mots du
+    texte ou dans l'ordre des canons (toutes les instances mot d'un même canon
+    sont affichées à la suite). C'est une case à cocher, sous la bande de navi-
+    gation, qui le détermine.
+    Donc, avant d'afficher les proximités (ou lorsque cette case est modifiée),
+    il faut préparer une liste dans l'ordre voulu.
+  **/
+  static get sortedItems(){
+    if ( undefined === this._sorteditems ) {
+      if ( this.sortByCanon ) {
+        // Naturellement, la liste est classée par canon
+        this._sorteditems = Object.values(this.items)
+      } else {
+        this._sorteditems = Object.values(this.items).sort((a,b) => a.motA.data.offset - b.motA.data.offset)
+      }
+      // this._sorteditems.forEach(item => console.log(`Item "${item.motA.mot}" d'offset : ${item.motA.offset}`))
+    }
+    return this._sorteditems
+  }
+
   // Afficher la proximité d'index +idx+
   static show(idx){
-    this.items[idx].show()
+    this.sortedItems[idx].show()
+    // this.items[idx].show()
   }
 
   /**
@@ -86,6 +110,22 @@ class Proximity {
       fun(this.items[idx])
     }
   }
+
+  /**
+    | Méthodes d'interaction avec l'interface
+  **/
+
+  // Méthode appelée quand on clique sur la case à cocher "Afficher par canon"
+  static onCheckSortByCanon(ev){
+    this._sortByCanon = document.querySelector('#cb-sort-by-canon').checked
+    // Pour forcer le recalcul de la liste
+    delete this._sorteditems
+    this._sorteditems = undefined
+    // Pour fonctionner vraiment bien, il faudrait mémoriser quel est la proximité
+    // courante et régler le current_index pour que ça corresponde.
+
+  }
+  static get sortByCanon(){return this._sortByCanon || false}
 
   /**
     |

@@ -1,5 +1,9 @@
 # Versions
 
+## 0.2.0
+
+* Possibilité de voir les proximités dans l'ordre des mots (des offsets) ou dans l'ordre des canons (c'est-à-dire que tous les mots d'un même canon sont affichés les uns après les autres, en dépit de l'ordre des autres mots).
+
 ## 0.1.2
 
 * Amélioration du traitement des erreurs dans les inside-tests (méthode `catch` pour les tests asynchrones).
