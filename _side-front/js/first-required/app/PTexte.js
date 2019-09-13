@@ -69,6 +69,12 @@ class PTexte {
     this.reset()
     this._current = new PTexte({path: pth})
     this._current.init()
+    // On met la propriété RESULTATS, qui permet de gérer les résultats en
+    // direct (attention, il s'agit bien d'une instance {Resultats}, pas de la
+    // propriété +resultats+ du texte, qui contient l'analyse). RESULTATS, au
+    // départ, contient dans sa propriété `datas`la valeur de :
+    // `ptexte.resultats.datas`
+    RESULTATS = new Resultats(this._current)
   }
 
   static reset(){

@@ -36,6 +36,20 @@ class Mot {
   }
 
   /**
+    Supprime le mot qui a pour instance {Mot} +imot+
+  **/
+  static remove(imot) {
+    delete this.items[imot.id]
+    // On détruit l'instance
+    imot = undefined
+    // TODO À l'avenir, il faudra certainement réinitialiser des listes, comme
+    // les listes de mots par classement alphabétique ou par nombre de proximi-
+    // tés
+    delete this._alphaSorted
+    delete this._nbProxSorted
+  }
+
+  /**
     Définitions des mots
     On récupère la donnée +items+ du fichier de résultat
   **/
@@ -50,14 +64,17 @@ class Mot {
   }
 
   /**
-    Pour créer un nouveau mot à partir de +motstr+
+    Pour créer un nouveau mot à partir de +datamot+
   **/
-  static createNew(motstr){
-    let datamot = {
-        id:         this.newId()
-      , real_init:  motstr
-      , downcase:   motstr.toLowerCase()
-    }
+  static createNew(datamot){
+    if(undefined === datamot) datamot = {}
+      // Note : ne devrait pas arriver, car datamot devrait toujours contenir
+      // au moins la version string du mot et l'offset
+
+    undefined !== datamot.id || Object.assign(datamot, {id: this.newId()})
+    datamot.real_init || Object.assign(datamot, {real_init: datamot.mot})
+    datamot.downcase  || Object.assign(datamot, {downcase: datamot.mot.toLowerCase()})
+
     let imot = new Mot(datamot)
     Object.assign(this.items, {[imot.id]: imot})
     return imot
@@ -86,19 +103,17 @@ class Mot {
     On enclenche la surveillance des touches pressées (à moins qu'on la mette
     déjà avant)
   **/
-  onFocus(ev){
-    // console.log("-> onFocus")
+  onFocus(iprox, ev){
+    // console.log("-> onFocus, iprox = ", iprox)
     try {
-      // Ça n'est pas possible, peut-être parce que c'est seulement un
-      // span.contentEditable
-      $(ev.currentTarget).select()
+      UI.select(ev.currentTarget)
     } catch (e) {
       console.error(e)
     }
 
   }
 
-  onKeyPressed(ev){
+  onKeyPressed(iprox, ev){
     if ( ev.key === 'Enter' ){
       ev.currentTarget.blur()
       return stopEvent(ev)
@@ -109,15 +124,18 @@ class Mot {
     On vérifie s'il a été modifié et, si c'est le cas, on prend la modification
     et on regarde si elle crée d'autre problème (en les affichant sur le côté)
   **/
-  onBlur(ev){
+  onBlur(iprox, ev){
+    // On désélectionne le texte s'il l'était
+    document.getSelection().removeAllRanges();
     const new_mot = ev.currentTarget.innerText.trim()
+    // console.log("Je blure du mot %s qui contient maintenant '%s'", this.mot, new_mot)
     if ( new_mot != this.mot ) {
       // <= Le mot a été modifié
       // => Il faut vérifier s'il crée un problème de proximité
       //    Il faut invoquer le module de modification PModif
       //    Si ça n'est pas le cas, on demande à l'utilisateur s'il veut
       //    l'enregistrer et considérer la proximité comme résolue.
-      (new ProxModif(this.mot, new_mot)).analyze()
+      (new ProxModif(this, iprox, new_mot)).treate()
     }
   }
 
@@ -126,16 +144,16 @@ class Mot {
 
   // La proximité avec un mot avant (if any)
   get proxP(){
-    if (undefined === this._proxp && this.px_idP){
-      this._proxp = Proximity.get(this.px_idP)
+    if (undefined === this._proxp){
+      this._proxp = this.px_idP ? Proximity.get(this.px_idP) : null
     }
     return this._proxp
   }
 
   // La proximité avec un mot après (if any)
   get proxN(){
-    if (undefined === this._proxn && this.px_idN){
-      this._proxn = Proximity.get(this.px_idN)
+    if (undefined === this._proxn){
+      this._proxn = this.px_idN ? Proximity.get(this.px_idN) : null
     }
     return this._proxn
   }

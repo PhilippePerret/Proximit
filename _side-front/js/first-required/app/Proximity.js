@@ -9,6 +9,9 @@ const AROUND_LENGTH = 50
 **/
 class Proximity {
 
+  // Retourne la proximité d'identifiant +prox_id+
+  static get(prox_id){return this.items[prox_id]}
+
   /**
     On définit la valeur globale, qui est définie dans le fichier des
     résultats de l'analyse
@@ -24,10 +27,18 @@ class Proximity {
     Remise à zéro des proximités
   **/
   static reset(){
-    this.current_index = -1
-    this.items = {}
+    this.items          = {}
+    this.semi_reset()
     UI.infos_proximites.clean()
     UI.buttons_proximites.clean()
+  }
+
+  /**
+    Semi-réinitialisation, pour recalculer les valeurs volatiles
+  **/
+  static semi_reset(){
+    this.current_index  = -1
+    this._sortByCanon   = undefined
   }
 
   /**
@@ -117,6 +128,7 @@ class Proximity {
 
   // Méthode appelée quand on clique sur la case à cocher "Afficher par canon"
   static onCheckSortByCanon(ev){
+    console.log("-> Proximity.onCheckSortByCanon")
     this._sortByCanon = document.querySelector('#cb-sort-by-canon').checked
     // Pour forcer le recalcul de la liste
     delete this._sorteditems
@@ -127,7 +139,50 @@ class Proximity {
   }
   static get sortByCanon(){return this._sortByCanon || false}
 
+
   /**
+
+    Méthode qui SUPPRIME LA PROXIMITÉ +iprox+
+
+  **/
+  static remove(iprox){
+
+    const motA = iprox.motA
+    const motB = iprox.motB
+
+    // Dans les résultats
+    // ------------------
+    const itext = PTexte.current
+    // On détruit cette proximité dans les résultats
+    RESULTATS.removeProximity(motA.proxN)
+
+    // Dans les items de Proximity
+    // ---------------------------
+    this.items[motA.px_idN] = undefined
+    delete this.items[motA.px_idN]
+
+    // Dans les instances des mots
+    // ---------------------------
+    motA._px_idN  = undefined
+    motA._proxN   = undefined
+    motB._px_idP  = undefined
+    motB._proxP   = undefined
+
+    // On reset l'objet proximité pour qu'il tienne compte de ces
+    // changements.
+    // NON : ça n'est pas si simple, sinon, on va perdre le fil de la
+    // consultation des proximités
+    // IL FAUT :
+    //  - retenir la proximité courante
+    //  - la resélectionner si elle existe toujours
+    //  - sélectionner la suivante ou la nouvelle si elles existent
+    this.semi_reset()
+
+  }
+
+
+
+  /** ---------------------------------------------------------------------
     |
     | INSTANCE DE LA PROXIMITÉ
     |
@@ -154,13 +209,13 @@ class Proximity {
       .append(div)
     // Il faut observer les deux mots
     $("#word-before")
-      .on('focus', this.motA.onFocus.bind(this.motA))
-      .on('keypress', this.motA.onKeyPressed.bind(this.motA))
-      .on('blur', this.motA.onBlur.bind(this.motA))
+      .on('focus', this.motA.onFocus.bind(this.motA, this))
+      .on('keypress', this.motA.onKeyPressed.bind(this.motA, this))
+      .on('blur', this.motA.onBlur.bind(this.motA, this))
     $("#word-after")
-      .on('focus', this.motB.onFocus.bind(this.motB))
-      .on('keypress', this.motB.onKeyPressed.bind(this.motB))
-      .on('blur', this.motB.onBlur.bind(this.motB))
+      .on('focus', this.motB.onFocus.bind(this.motB, this))
+      .on('keypress', this.motB.onKeyPressed.bind(this.motB, this))
+      .on('blur', this.motB.onBlur.bind(this.motB, this))
   }
 
   // Retourne le texte comprennant les deux mots
@@ -247,6 +302,22 @@ class Proximity {
       }
     }
     return this._motB
+  }
+
+  get data_yaml(){
+    return {
+        class: this.classe
+      , datas: this.datas
+    }
+  }
+  get datas(){
+    var h = {}
+    for ( var k in this.properties ) { Object.assign(h, {[k]: this[k]}) }
+    return h
+  }
+
+  get classe(){
+    return 'TextAnalyzer::Analyse::TableResultats::Proximite'
   }
 
   get properties(){

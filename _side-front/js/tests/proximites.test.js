@@ -30,22 +30,17 @@ TESTS.add("Un texte peut afficher correctement sa proximité", async function(){
   assert(afterWords.match("Pourrais-je voir n'est-ce pas un poids mi-lourd ?"), "Après le second mot, on trouve le bon texte", `On devrait trouver après le second mot le texte ".<br><br>Pourrais-je voir n'est-ce", or on trouve "${afterWords}".`)
 })
 
-TESTS.add(true, "On peut passer en revue toutes les proximités d'un texte analysé", ()=>{
+TESTS.add("On peut passer en revue toutes les proximités d'un texte analysé", ()=>{
 
   // On charge le texte inside-2 qui contient plusieurs proximités
-  let text_name = 'test_inside_02.txt'
-  // On charge le texte préparé
-  let path_texte = TESTS.pathOfTexte(text_name)
-  PTexte.open(path_texte)
-  // On vérifie qu'il soit chargé
-  assert(PTexte.current.name == text_name, `Le nom du texte courant doit être "${text_name}".`, `Le nom du texte courant devrait être "${text_name}", or, c'est "${PTexte.current.name}".`)
+  TESTS.openTexte('test_inside_02.txt')
 
   // On vérifie qu'il y ait le bon nombre de proximités
   let nombre_prox = Object.keys(Proximity.items).length
   assert( nombre_prox === 9, "Il y a bien 8 proximités", `9 proximités devraient avoir été trouvée, il y a en a ${nombre_prox} dans la donnée 'Proximity.items'.`)
 
-  function checkBeforeAfterWord(paire){
-    checks.forEach(paire => {
+  function checkBeforeAfterWord(paires){
+    paires.forEach(paire => {
       click("▶️")
       let expectBefore  = paire[0]
         , expectAfter   = paire[1] || paire[0]
@@ -63,16 +58,21 @@ TESTS.add(true, "On peut passer en revue toutes les proximités d'un texte analy
     , ['formes','forme']
     , ['plusieurs'] // c'est ici que la différence se fait
   ]
-  checks.forEach(paire => checkBeforeAfterWord.call(paire))
+  checkBeforeAfterWord(checks)
 
   // On vérifie qu'on passe bien d'une proximité à la suivante dans l'ordre
   // des canons quand la case à cocher "Traiter par canons" est cochée
   check('#cb-sort-by-canon')
+  // Note : il faut aussi réinitialiser l'index de la proximité courante, pour
+  // repartir au début
+  Proximity.current_index = -1
   checks = [
     ['texte'], ['qui'], ['doit','doivent'], ['plusieurs']
-  , ['plusieurs'] // c'est ici que la différence se fait
+  , ['plusieurs'] // c'est ici que la différence se fait : les deux proximités
+                  // sur "plusieurs" sont affichées l'une après l'autre,.
   , ['proximités', 'proximité'], ['permettre','permis']
   , ['permis','permet'], ['formes','forme']
   ]
-  checks.forEach(paire => checkBeforeAfterWord.call(paire))
+  checkBeforeAfterWord(checks)
+
 })

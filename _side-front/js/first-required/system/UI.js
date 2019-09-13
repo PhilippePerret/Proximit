@@ -1,11 +1,20 @@
 'use strict'
 /**
   Constante UI
-  version 1.1.1
+  version 1.2.0
   ------------
 
   Requis :
     - UI.css
+
+  # version 1.2.0
+    Méthode 'select' qui permet de sélectionner tout élément, même
+    un champ editableContent (donc autre que input-text ou textarea qui se
+    sélectionnent simplement avec la méthode 'select')
+
+  # version 1.1.2
+    Correction du bug qui générait une erreur lorsqu'un message était
+    demandé alors que le dernier flash n'était pas encore supprimé.
 
   # version 1.1.1
     Suppression de tout ce qui concernait l'application 'Projet'
@@ -28,6 +37,9 @@ const UI = {
   }
 
 , flash(msg, style){
+    const my = this
+    // Si un timer de destruction est en route, il faut l'interrompre
+    my.flashTimer && this.clearFlashTimer()
     let divFlash = document.querySelector('#flash') || Dom.createDiv({id:'flash'})
       , divMsg   = Dom.createDiv({class:style||'notice', text:msg})
     divFlash.append(divMsg)
@@ -35,12 +47,20 @@ const UI = {
     let nombre_mots = msg.split(' ').length
     if ( nombre_mots < 6 ) nombre_mots = 6
     let laps = 1000 * ( nombre_mots / 1.5 )
-    let timer = setTimeout(()=>{
+    my.flashTimer = setTimeout(()=>{
       let flash = document.querySelector('#flash')
       flash.classList.add('vanish')
-      clearTimeout(timer)
-      timer = setTimeout(()=>{flash.remove()}, laps + 5000)
+      my.clearFlashTimer()
+      my.flashTimer = setTimeout(()=>{
+        flash.remove()
+        my.clearFlashTimer()
+      }, laps + 5000)
     }, laps)
+  }
+, clearFlashTimer(){
+    const my = this
+    clearTimeout(my.flashTimer)
+    my.flashTimer = null
   }
 
 , init(){
@@ -58,6 +78,19 @@ const UI = {
   }
 
 , observe(){
+  }
+
+  /**
+    Sélection l'élément DOM element quel qu'il soit.
+  **/
+, select(element){
+    var range = new Range()
+    range.setStart(element,0)
+    range.setEnd(element,1) // TODO Si l'élément contient des noeuds, il faudra
+                            // s'y prendre autrement, car là, seul le premier
+                            // noeud sera pris en considération
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(range)
   }
   /**
     Rend visible l'élément +o+ {HTMLElement} dans son parent

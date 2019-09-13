@@ -14,14 +14,14 @@ class Addendum {
     this.load()
   }
   // Ajout du mot +mot+ aux données
-  addMot(mot){
-
+  static addMot(mot){
+    console.log("Je dois ajouter ce mot à l'addendum : ", mot)
   }
   /*
     Ajout du {Canon} canon +canon+ aux données ajoutées du texte.
   **/
-  addCanon(canon){
-
+  static addCanon(canon){
+    console.log("Je dois ajouter ce canon à l'addendum : ", canon)
   }
 
   // Chargement de l'addendum s'il exixte
@@ -31,7 +31,7 @@ class Addendum {
 
   // Enregistrement de l'addendum
   save(){
-    
+
   }
 
   // Chemin d'accès à l'addendum

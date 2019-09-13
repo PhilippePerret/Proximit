@@ -7,10 +7,15 @@
   * [Lancer seulement un test particulier](#run_only_special_tests)
   * [Exclure un ou des tests de l'analyse](#exclude_some_tests)
 * [Construction d'un test](#build_a_test)
+  * [Les assertions](#les_assertions)
+    * [assert](#assertion_assert)
+    * [Les vérification silencieuses avec `assert`](#assertion_verif_silencieuse)
+    * [Page.has](#assertion_page_has)
 * [Interactions avec la page](#interact_with_page)
   * [Obtenir un élément (`Page.get(<ref>[, <type>])`)](#page_get_method)
   * [Obtenir le contenu d'un élément (`Page.getInner`)](#page_getinner_method)
   * [Simuler un click](#page_click_method)
+  * [Simuler une case cochée/décochée](#page_check_method)
 
 ## Todo List/Wish List {#todolist}
 
@@ -66,7 +71,7 @@ TESTS.add("Mon tests", ()=>{
   assert(4 = 2 + 2, "Le calcul est juste")
   // Produira le succès "Le calcul est juste"
 
-  assert(false,"pas de succès", "C'est un faux volontaire")
+  assert(false, "pas de succès", "C'est un faux volontaire")
   // Produira l'échec "C'est un faux volontaire"
 
   assert(false, "4 est égal à 2 + 3")
@@ -74,6 +79,34 @@ TESTS.add("Mon tests", ()=>{
 })
 
 ```
+
+### Les assertions {#les_assertions}
+
+#### assert {#assertion_assert}
+
+L'assertion de base se construit par :
+
+```javascript
+
+assert(<resultat booleen>, "<message en cas de succès>"[, "<message en cas d'échec>"])
+
+```
+
+Si le message en cas d'échec n'est pas stipulé, on utilisera le message `FAUX : <message en cas de succès>`.
+
+#### Les vérification silencieuses avec `assert` {#assertion_verif_silencieuse}
+
+La méthode `assert` permet aussi de faire des *vérifications silencieuse*, c'est-à-dire des tests, qui ne sont pas considérés comme tels et n'affiche un message d'erreur que lorsqu'ils échouent. On les construit en mettant en premier argument de la méthode `assert` le niveau de verbosité minimum qu'il faut pour que le message possitif s'affiche :
+
+```javascript
+
+assert(<verbosity level>, <resultat boolean>, "<message succès>")
+
+```
+
+Noter que le niveau de verbosité n'est considéré qu'en cas de succès (l'échec provoque toujours le message d'erreur). Si le `verbosity level` est supérieur au niveau courant (5 par défaut), alors le message de succès ne s'affiche pas. Inversement, si le niveau de verbosité est inférieur ou égal au niveau courant, alors le message de succès s'affiche dans le rapport de test, indiquant la vérification.
+
+#### Page.has {#assertion_page_has}
 
 ## Interactions avec la page {#interact_with_page}
 
@@ -94,3 +127,9 @@ Noter cependant **un point important** : dans ce retour, toutes les espaces ins�
 ### `click(<ref>)` {#page_click_method}
 
 Simule un click souris sur l'élément `<ref>`. `<ref>` peut être le sélecteur de l'élément (par exemple `#monIdBouton`), l'identifiant de l'élément (p.e. `monIdBouton`) ou le contenu textuel de l'élément (p.e. `Cliquez-moi !`).
+
+### Simuler une case cochée/décochée {#page_check_method}
+
+La méthode `check(<ref element>)` ou `uncheck(<ref element>)` permet de cocher ou de décocher la case (input type "checkbox") de référence `<ref element>`.
+
+Noter que la procédure déclenche l'évènement `onclick` s'il est défini sur la case à cocher.

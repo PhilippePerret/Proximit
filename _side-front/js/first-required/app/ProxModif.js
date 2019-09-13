@@ -14,13 +14,24 @@ class ProxModif {
     delete this._current; this._current = undefined;
   }
 
-  // Instanciation avec l'instance {Mot} du mot modifié, et {String} la valeur
-  // du nouveau mot.
+  // Instanciation d'une modification de proximité demandée.
   // Note : avant d'appeler cette instanciation, il faut s'assurer que les
   // mots sont différents.
-  constructor(imot, newText){
+  /**
+    | Instanciation d'une modification de proximité demandée
+    |
+    | @param {Mot}    imot    Le mot qui a été modifié. Pour savoir si c'est le
+    |                         premier ou le second de la proximité, on se sert
+    |                         de +isSecond+ ci-dessous.
+    | @param {String} newText Le nouveau texte qui doit remplacé le mot (pas
+    |                         forcément un mot unique)
+    | @param {Bool}   iprox   Instance de la proximité concernée.
+    |
+  **/
+  constructor(imot, iprox, newText){
     this.imot     = imot
     this.newText  = newText
+    this.iprox    = iprox
     this.constructor.current = this
   }
 
@@ -29,15 +40,71 @@ class ProxModif {
     aurait sur le texte actuel (création d'une nouvelle proximité par
     exemple ou absence de modification — pour un mot différent mais qui
     appartiendrait au même canon)
+
+    La procédure d'analyse a deux formes :
+      * une forme simple où un mot est remplacé par un seul autre mot
+      * une forme complexe où le mot est remplacé par une suite de mots
+    Les deux procédures sont traitées différemment, mais utilisent des méthodes
+    communes.
+
+    Cette méthode définit la propriété `this.isComplexModif` qui est true
+    lorsque la forme est complexe.
   **/
-  analyze(){
+  treate(){
+    try {
+      this.constructor.running = true // pour les tests
+      this.isComplexModif = !!this.newText.match(' ')
+      if ( this.isComplexModif ) {
+        this.traitement_complexe.call(this)
+      } else {
+        this.traitement_simple.call(this)
+      }
+    } catch (e) {
+      throw e
+    } finally {
+      this.constructor.running = false // pour les tests
+    }
+  }
+
+  async traitement_simple() {
+
+    // Il faut d'abord s'assurer que le nouveau mot soit valide, c'est-à-dire
+    // qu'il ne crée pas une nouvelle proximité qui ne serait pas validée
+    // par l'auteur
+    let choix = await this.check_new_word(this.imot.mot, this.imot.offset)
+    if ( ! choix ) return
+
+    // Il faut détruire la proximité de l'ancien mot
+    Proximity.remove(this.iprox)
+
+    const imot_id = this.imot.id
+
+    // On crée un nouveau mot avec le nouveau mot, en reprenant quelques
+    // information de l'ancien mot, tel que son id, son offset
+    const newMot = this.createNewWord({
+        mot:this.newText
+      , id:this.imot.id
+      , offset:this.imot.offset
+      , rel_offset:this.imot.rel_offset
+      , idP: this.imot.idP
+      , idN: this.imot.idN
+    })
+
+    // On détruit l'ancien mot, en récupérant son ID pour l'utiliser
+    Mot.remove(this.imot)
+
+  }
+
+  traitement_complexe() {
     try {
       // Faire la liste des mots de remplacement, s'il y en a plusieurs.
       // La méthode retourne une liste d'instance Mot, ce qui permet d'avoir tout
       // de suite ce qu'il faut au niveau des tbw, etc.
       let mots = this.newText.split(' ') // pour le moment
       // TODO Mais ça ne suffit pas, de découper comme ça, car il pourra y
-      // avoir des ponctuations et notamment des virgules ou des points.
+      // avoir des ponctuations et notamment des virgules ou des points puisqu'il
+      // sera possible de modifier beaucoup plus que le mot en proximité.
+      // => Reprendre la procédure de traitement ruby de relève des mots.
 
       // Avant de procéder à quelconque changement, on doit vérifier
       // que le nouveau choix est valide ou confirmé par l'auteur
@@ -56,7 +123,8 @@ class ProxModif {
     // On doit par trouver le canon du nouveau mot. Qu'il existe ou non,
     // la méthode Canon.of retourne une instance de {Canon} nouvelle ou
     // créée. Attention, la méthode Canon.of peut aussi retourner null
-    // lorsqu'il faut demander le canon à l'utilisateur.
+    // lorsqu'il faut demander le canon à l'utilisateur (dans ce cas-là, la
+    // méthode devient asynchrone).
     let canon_newMot = Canon.of(motstr) // ~ @asynchrone
     // Si le canon n'a pas eu besoin d'être défini, on peut poursuivre
     if ( canon_newMot ) {
@@ -86,6 +154,11 @@ class ProxModif {
   /**
     Méthode qui vérifie le {String} +mot+.
     @async
+
+    @param {String} mot         Le mot vraiment
+    @param {Number} mot_offset  Le décalage du mot dans le texte
+                                Attention, il peut être approximatif si le
+                                mot a été changé.
     @return true si le mot est valide, false dans le cas contraire.
   **/
   check_new_word(mot, mot_offset){
@@ -115,10 +188,37 @@ class ProxModif {
     })
   }
 
-  create_single_word_in_canon(motstr, canon){
-    console.log("J'en arrive ici avec motstr='%s' et canon = ", motstr, canon)
-    let newMot = Mot.createNew(motstr)
+  /**
+    Méthode qui crée complètement un nouveau mot à partir des informations
+    fournis par +mdata+
+    @param {Hash} mdata   Les données à prendre en compte. Peut contenir :
+                          mot:  Le mot simple, initial
+                          canon   L'instance canon. Si elle n'est pas définie,
+                                  elle sera recherchée.
+  **/
+  async createNewWord(mdata){
+    if (undefined === mdata.canon) {
+      let icanon = Canon.of(mdata.mot, {create:true}, this.addCanonToWordData.bind(this, mdata))
+      console.log("icanon = ", icanon)
+      if ( !icanon ) return
+      Object.assign(mdata, {canon: icanon})
+    }
+
+    // On remplace l'instance du canon par son texte
+    const icanon  = mdata.canon
+    mdata.canon   = mdata.canon.canon
+
+    // On peut créer le mot
+    console.log("mdata avant création du mot : ", mdata)
+    let newMot = Mot.createNew(mdata)
     console.log("newMot:", newMot)
-    canon.addMot(newMot)
+    icanon.addMot(newMot)
   }
+
+  addCanonToWordData(mdata, icanon) {
+    console.log("icanon : ", icanon)
+    Object.assign(mdata, {canon: icanon})
+    this.createNewWord(mdata)
+  }
+
 }

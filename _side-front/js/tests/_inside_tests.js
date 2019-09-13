@@ -12,6 +12,7 @@ const CONSOLE_TITLE_STYLE = "font-weight:bold;font-size:2em;text-decoration:unde
 **/
 Object.assign(TESTS,{
   name: 'Méthodes de TESTS'
+, VERBOSITY_LEVEL: 5 // TODO Pouvoir le régler
 , current: null
 , init(){
     const my = this
@@ -172,6 +173,7 @@ Object.assign(TESTS,{
     Attend jusqu'à ce que la fonction +funTrue+ retourne true
   **/
 , waitFor(funTrue, options){
+    console.log("-> waitFor")
     options = options || {}
     const timeout   = options.timeout   || TESTS_TIMEOUT_DEFAULT
     const frequence = options.frequence || TESTS_FREQUENCE_DEFAULT
@@ -180,6 +182,7 @@ Object.assign(TESTS,{
       var laps  = 0
       var timer = setInterval(()=>{
         if ( funTrue.call() === true ) {
+          clearInterval(timer)
           ok()
         } else if ( laps > timeout ) {
           clearInterval(timer)
@@ -210,7 +213,33 @@ Object.assign(TESTS,{
   }
 })
 
-function assert(resultat, message_success, message_failure){
+/**
+  Faire une assertion
+  -------------------
+  En règle générale, +resultat+ est un booléen qui contient la valeur du
+  résultat. Mais il peut être égal aussi à un nombre, dans lequel
+  cas cela signifie qu'il ne s'agit pas d'un test à afficher mais d'une simple
+  vérification (faite souvent avant les tests).
+  Le nombre détermine le degré de verbosité au-dessus duquel cette vérification
+  doit apparaitre comme un test. Par exemple, si `resultat == 4` et que le
+  degré de verbosité est 3, alors la vérification sera affichée même en cas de
+  résultat positif.
+**/
+function assert(resultat, message_success, message_failure, quatre){
+  let verbosity_required;
+  if ( 'boolean' !== typeof resultat ) {
+    verbosity_required  = resultat
+    resultat            = message_success
+    message_success     = message_failure
+    message_failure     = quatre
+  } else {
+    // Cas d'un test normal
+    verbosity_required = -1
+  }
+  if ( resultat && verbosity_required > -1 && verbosity_required > TESTS.VERBOSITY_LEVEL){
+    // Simple vérification
+    return true
+  }
   if ( resultat ) {
     return TESTS.addSuccess(message_success)
   } else {
@@ -347,6 +376,63 @@ const Page = {
 }
 
 /**
+  Simulation d'une touche pressée
+**/
+
+/*
+  @method keyPress(key, options)
+  NOTE : Ça ne semble pas fonctionner avec nodejs/chrome
+  @description  Simule une touche pressée (down et up)
+  @provided
+    :key  {String} La touche à presser, par exemple "k"
+    :options {Objet} Table des options, pour indiquer les modificateurs et la cible, avec `metaKey:true`, `shiftKey:true`, etc. :on permet aussi d'indiquer sur quel DOMElement il faut trigger la touche.
+  @usage keyPress('c', {shiftKey:true, metaKey:true, on:'div#mondiv'})
+ */
+
+const keyPress = function(key, options){
+  keyDown(key,options);
+  keyUp(key,options);
+}
+/*
+  @method keyDown(key, options)
+  @description Pour simuler une touche pressée (mais pas relevée)
+  @provided
+    :key {String} La touche pressée, par exemple 'c'
+    :options {Object} Table des options, pour indiquer les modificateurs et la cible, avec `metaKey:true`, `shiftKey:true`, etc. :on permet aussi d'indiquer sur quel DOMElement il faut trigger la touche.
+  @usage keyDown('s', {altKey:true})
+*/
+const keyDown = function(key, options){
+  keySim(key, 'keydown', options)
+}
+/*
+  @method keyUp(key, options)
+  @description Pour simuler une touche relevée (après avoir été pressée)
+  @provided
+    :key {String} La touche relevée, par exemple 'c'
+    :options {Object} Table des options, pour indiquer les modificateurs et la cible, avec `metaKey:true`, `shiftKey:true`, etc. :on permet aussi d'indiquer sur quel DOMElement il faut trigger la touche.
+  @usage keyDown('s', {altKey:true})
+*/
+const keyUp = function(key, options){
+  keySim(key, 'keyup', options)
+}
+
+const KEYS_PROPS = ['altKey', 'ctrlKey', 'metaKey', 'shiftKey', 'bubbles', 'keyCode']
+const keySim = function(key, type, options) {
+  options = options || {}
+  var e = $.Event(type)
+  e.key = key
+  for (var kprop of KEYS_PROPS) {
+    if ( undefined !== options[kprop] ) e[kprop] = options[kprop]
+  }
+  if ( e.keyCode ) e.which = e.keyCode
+  if ( options.on ) options.on = $(options.on)
+  var container = options.on || $(document)
+  console.log("container:", container)
+  console.log("e : ", e)
+  $(container).trigger(e);
+}
+
+/**
   Simule le click sur l'élément référencé par +ref+
   +ref+ peut être le titre du bouton/lien/input-submit/etc., son identifiant ou
   son name.
@@ -357,4 +443,19 @@ function click(ref, type){
   // console.log("élément trouvé : ", element)
   if ( element ) element.click()
   else { throw new Error(`Impossible de trouver l'élément référencé par '${ref}'`)}
+}
+
+/**
+  Simule la coche d'une case à cocher
+
+  Note : la méthode 'click' (plutôt que 'check') permet de déclencher
+  l'évènement onclick peut-être associé à la case à cocher.
+**/
+function check(ref){
+  let element = Page.get(ref)
+  if ( element.checked == false) element.click()
+}
+function uncheck(ref){
+  let element = Page.get(ref)
+  if ( element.checked ) element.click()
 }

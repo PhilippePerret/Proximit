@@ -59,6 +59,8 @@ class Canon {
     | Trouve la forme canonique du mot +motstr+ et la retourne comme premier
     | argument en appelant la méthode +callback+
     | Si options et options.create est true, le canon est créé s'il n'existe pas
+    | ATTENTION : pour créer le canon, il faut impérativement et explicitement
+      mettre `options.create` à true
     | Si options et options.force est true, on demande le nom du canon. Sinon,
     | la méthode est @synchrone et on retourne null
   **/
@@ -66,8 +68,10 @@ class Canon {
     const my = this
     options = options || {}
     let canon = this.canonicFormOf(motstr)
+    console.log("forme canonique de '%s' : ", motstr, canon)
     if ( canon === "<unknown>") {
       if ( options.force === true ) {
+        my.onSetCanon.poursuivre = callback
         prompt(`Impossible de trouver un canon pour le mot « ${motstr} ». Lequel dois-je utiliser ?`,{
           title: 'Canon introuvable'
           , buttons:[{text:"Le même", onclick:my.onSetCanon.bind(my,motstr)}, {text:"OK", onclick:my.onSetCanon.bind(my,null)}]
@@ -76,6 +80,7 @@ class Canon {
       return null
     } else {
       let theCanon = this.get(canon)
+      console.log("theCanon de '%s' = ", canon, theCanon)
       if ( undefined === theCanon ) {
         // Ce canon n'existe pas, il n'y aura donc aucun problème de proximité
         // avec ce mot, on peut le créer (mais c'est peut-être juste un check)
@@ -84,6 +89,9 @@ class Canon {
           // Il faut indiquer que ce canon est une nouvelle donnée à
           // prendre en compte pour le projet, nouvelle donnée qu'on doit
           // tout de suite enregistrer sur fichier.
+          // NOTE : je suis parti maintenant pour modifier la donnée resultats, donc
+          // cet addendum devrait s'avérer inutile, ou juste pour l'historique des
+          // opérations.
           Addendum.addCanon(newCanon)
           // On retourne ce canon
           return newCanon
@@ -99,11 +107,14 @@ class Canon {
     il n'a pas été trouvé pas npl-js-tools-french ou tree-tagger-french.
   **/
   static onSetCanon(mot_init, can){
+    const my = this
     let canon = mot_init || can // 'mot_init' est null, si on a défini le canon 'can'
-    let newCanon = this.createNew(canon)
+    let newCanon = my.createNew(canon)
     // Il faut ajouter ce canon à la addendum
     Addendum.addCanon(newCanon)
-    ProxModif.current.create_single_word_in_canon(canon, newCanon)
+    if ( 'function' === typeof my.onSetCanon.poursuivre ) {
+      my.onSetCanon.poursuivre(newCanon)
+    }
   }
 
   /*
@@ -186,7 +197,7 @@ class Canon {
     Pour ajouter le mot +imot+ au canon
   **/
   addMot(imot){
-    console.log("Je dois ajouter le mot %s au canon", imot.mot, this)
+    console.error("Je dois ajouter le mot %s au canon", imot.mot, this)
   }
 
   /**

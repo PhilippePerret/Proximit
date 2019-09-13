@@ -1,5 +1,15 @@
 # Réflexion de fonctionnement
 
+## Réflexion sur la modification
+
+QUESTION : faut-il tenir compte des offsets, en sachant que lorsqu'un des premiers mots est modifié, il faudrait modifier l'offset de tous les mots (ça peut être des centaines de milliers) après.
+En réalité, à quoi sert cette offset, si ce n'est, au moment de la relève des mots, pour déterminer le mot exact et le texte entre deux mots consécutifs.
+Mais ensuite, c'est le mot et le tbw qui permet de reconstituer le texte.
+=> Pour le moment, ne tenir aucun compte des changements d'offset (et voir à l'usage si ça pose problème).
+
+QUESTION : Lorsqu'un mot est changé, faut-il changer l'instance ou changer les données du mot précédent ? A priori, je serais plus partant de créer une nouvelle instance, pour que les propriétés calculées puissent l'être.
+
+
 ## Principe lors de la modification d'une proximité
 
 - OLDM est identique à NIRM et trop proche. Ils appartiennent au canon OLDC.
