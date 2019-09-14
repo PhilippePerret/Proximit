@@ -19,7 +19,9 @@ class Proximity {
   static set(datas){
     this.reset()
     for(var idx in datas.items){
-      Object.assign(this.items, {[idx]: new Proximity(datas.items[idx].datas)})
+      var iprox = new Proximity(datas.items[idx].datas)
+      iprox.id = parseInt(idx,10)
+      Object.assign(this.items, {[idx]: iprox})
     }
   }
 
@@ -27,7 +29,7 @@ class Proximity {
     Remise à zéro des proximités
   **/
   static reset(){
-    this.items          = {}
+    this.items = {}
     this.semi_reset()
     UI.infos_proximites.clean()
     UI.buttons_proximites.clean()
@@ -46,7 +48,8 @@ class Proximity {
   **/
   static init(itext){
     // l'indice de la proximité courante, affichée
-    this.current_index = -1
+    this.current_index  = -1
+    this.correctedCount = 0
     this.showInfos(itext)
     UI.showButtonsProximites(itext)
   }
@@ -65,6 +68,20 @@ class Proximity {
       .append(rowData(null,"Proximités corrigés", "à voir",'corrected_proximites'))
   }
 
+  static updateInfos(){
+    Proximity .showNombre()
+    Proximity .showNombreCorrected()
+    Canon     .showNombre()
+    Mot       .showNombre()
+  }
+
+  static showNombre(){
+    UI.infos_proximites.find('#nombre_proximites').innerHTML = Object.keys(this.items).length
+  }
+  static showNombreCorrected(){
+    UI.infos_proximites.find('#corrected_proximites').innerHTML = this.correctedCount || 0
+  }
+
   /**
     |
     | Pour afficher les proximités
@@ -78,7 +95,7 @@ class Proximity {
     this.show(this.current_index -= 1)
   }
   static showNext(){
-    if ( undefined === this.items[this.current_index + 1]){
+    if ( this.current_index + 1 >= this.sortedItems.length ){
       UI.message("FIN DU TEXTE")
       return
     }
@@ -110,7 +127,132 @@ class Proximity {
   // Afficher la proximité d'index +idx+
   static show(idx){
     this.sortedItems[idx].show()
-    // this.items[idx].show()
+  }
+
+  /**
+    *** Cœur de la recherche de proximité ***
+
+    Cette méthode retourne le mot (instance {Mot}) avec lequel +imot+ est en
+    proximité dans le texte actuel.
+
+    @param {String} str     Le mot qui doit être cherché
+    @param {Mot}    fromId  L'ID du mot qu'on appelle "mot de référence", qui
+                            est en général le mot que doit remplacer +str+. On
+                            en a besoin pour connaitre le point de départ de la
+                            recherche.
+                            Si c'est une instance {Mot}, on prend son id
+    @param {Canon}  canon   Optionnellement, on peut envoyer le canon du nouveau
+                            mot s'il a déjà été calculé.
+
+  **/
+  static for(str, fromId, canon) {
+    // Distance en dessous de laquelle on considère que les mots sont en
+    // proximité
+    // console.log("-> Proximity.for(str=%s,fromId=%s)", str, fromId)
+
+    // Les données qui seront renvoyées
+    let data_proxims = {
+        prevMot:null
+      , prevDistance:null
+      , nextMot:null
+      , nextDistance:null
+      , distanceMin:null
+      , canon:null
+    }
+
+    // Le canon
+    // --------
+    canon = canon || Canon.of(str, {create:false, force:false})
+
+    // Si le nouveau mot n'a pas de canon, il est inutile de lui chercher
+    // une proximité.
+    if ( ! canon ) return data_proxims
+
+    Object.assign(data_proxims,{canon:canon, distanceMin:canon.proxDistance})
+    const distanceMin = data_proxims.distanceMin
+
+    // Le mot de référence
+    // -------------------
+    if ( fromId instanceof(Mot) ) fromId = fromId.id // I know, it's dumb…
+    const imot = Mot.get(fromId)
+
+    // Si les occurences du canon ne sont pas trop nombreuses, on regarde si
+    // les offsets sont susceptibles de provoquer des proximités. On considère
+    // que c'est impossible lorsque qu'ils se trouvent à la distance minimale
+    // du canon + 1500, la distance moyenne.
+    // Noter que cette recherche est approximative dans le sens où le offset
+    // du mot de référence est peut-être approximitif si le mot a été modifié
+    // au cours de la session de travail.
+    if ( canon.nombre_occurences < 20 && !canon.mayHaveNearMot(imot.offset) ) {
+      // <= Toutes les occurences du canon sont beaucoup trop éloignées pour
+      //    provoquer une proximité.
+      // => On peut retourner les données (vides) tout de suite.
+      return data_proxims
+    }
+
+
+    // On boucle jusqu'à atteindre la distance minimum. Si un frère ou un
+    // jumeau est rencontré, on interrompt la boucle
+    // On commence par chercher avant, puis après
+    var mot_checked = imot
+    var cur_distance = 0
+    while ( mot_checked && (mot_checked = mot_checked.motP) ) {
+      cur_distance += mot_checked.full_length
+      if ( cur_distance > distanceMin ) {
+        // on a dépassé la distance minimale, on peut s'arrêter là
+        break
+      } else {
+        // <= On est encore dans la distance minimale
+        // => On doit voir si ce mot appartient au même canon.
+        if ( mot_checked.canon === imot.canon ) {
+          // <= Le mot checké et le mot testé ont le même canon
+          // => C'est un jumeau ou un frère, il faut s'arrêter là.
+          data_proxims.prevMot = Mot.get(mot_checked.id)
+          data_proxims.prevDistance = cur_distance
+          break
+        }
+      }
+    }// fin de boucle tant qu'on trouve un mot avant
+
+    var mot_checked = imot
+    var cur_distance = 0
+    while ( mot_checked && (mot_checked = mot_checked.motN) ) {
+      cur_distance += mot_checked.full_length
+      if ( cur_distance > distanceMin ) {
+        // on a dépassé la distance minimale, on peut s'arrêter là
+        break
+      } else {
+        // <= On est encore dans la distance minimale
+        // => On doit voir si ce mot appartient au même canon.
+        if ( mot_checked.canon === imot.canon ) {
+          // <= Le mot checké et le mot testé ont le même canon
+          // => C'est un jumeau ou un frère, il faut s'arrêter là.
+          data_proxims.nextMot = Mot.get(mot_checked.id)
+          data_proxims.nextDistance = cur_distance
+          break
+        }
+      }
+    } // fin de boucle tant qu'on trouve un mot après et que la distance
+      // minimum n'est pas atteinte
+
+    // console.log("data_proxims après la recherche en avant", data_proxims)
+
+    // Pour terminer, on regarde quel est le mot le plus proche pour
+    // renseigner closestMot
+    if ( data_proxims.nextMot && data_proxims.prevMot ) {
+      if ( data_proxims.nextDistance < data_proxims.prevDistance ) {
+        data_proxims.closestMot = data_proxims.nextMot
+      } else {
+        data_proxims.closestMot = data_proxims.prevMot
+      }
+    }
+    else if ( data_proxims.nextMot ) { data_proxims.closestMot = data_proxims.nextMot }
+    else if ( data_proxims.prevMot ) { data_proxims.closestMot = data_proxims.prevMot }
+
+    // Si les deux mots ont été trouvés, il faut les retourner avec la distance
+    // qui les sépare.
+    return data_proxims
+
   }
 
   /**
@@ -147,26 +289,31 @@ class Proximity {
   **/
   static remove(iprox){
 
+
     const motA = iprox.motA
     const motB = iprox.motB
 
     // Dans les résultats
     // ------------------
-    const itext = PTexte.current
     // On détruit cette proximité dans les résultats
-    RESULTATS.removeProximity(motA.proxN)
+    // Note : peut-être que ça n'est pas nécessaire si on recalcule tout avec
+    // d'enregistrer la donnée.
+    RESULTATS.removeProximity(iprox)
 
     // Dans les items de Proximity
     // ---------------------------
-    this.items[motA.px_idN] = undefined
-    delete this.items[motA.px_idN]
+    delete this.items[iprox.id]
 
     // Dans les instances des mots
     // ---------------------------
-    motA._px_idN  = undefined
-    motA._proxN   = undefined
-    motB._px_idP  = undefined
-    motB._proxP   = undefined
+    // Supprimer la proximité 'next' du mot A
+    delete motA._px_idN
+    delete motA._proxN
+    // Supprimer la proximité 'prev' du mot B
+    delete motB._px_idP
+    delete motB._proxP
+
+    motA.icanon.reinit() // notamment pour forcer le recalcul des proximités
 
     // On reset l'objet proximité pour qu'il tienne compte de ces
     // changements.

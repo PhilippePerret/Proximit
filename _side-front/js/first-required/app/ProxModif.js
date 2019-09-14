@@ -50,15 +50,19 @@ class ProxModif {
     Cette méthode définit la propriété `this.isComplexModif` qui est true
     lorsque la forme est complexe.
   **/
-  treate(){
+  async treate(){
     try {
       this.constructor.running = true // pour les tests
       this.isComplexModif = !!this.newText.match(' ')
       if ( this.isComplexModif ) {
-        this.traitement_complexe.call(this)
+        await this.traitement_complexe.call(this)
       } else {
-        this.traitement_simple.call(this)
+        await this.traitement_simple.call(this)
       }
+      // On ajoute une proximité corrigée
+      ++Proximity.correctedCount
+      // On actualise l'affichage
+      Proximity.updateInfos()
     } catch (e) {
       throw e
     } finally {
@@ -67,17 +71,21 @@ class ProxModif {
   }
 
   async traitement_simple() {
-
+    // console.log("-> ProxModif#traitement_simple")
     // Il faut d'abord s'assurer que le nouveau mot soit valide, c'est-à-dire
     // qu'il ne crée pas une nouvelle proximité qui ne serait pas validée
     // par l'auteur
-    let choix = await this.check_new_word(this.imot.mot, this.imot.offset)
+    let choix = await this.check_new_word()
     if ( ! choix ) return
 
-    // Il faut détruire la proximité de l'ancien mot
-    Proximity.remove(this.iprox)
-
     const imot_id = this.imot.id
+
+    // On détruit l'ancien mot, en récupérant son ID pour l'utiliser
+    // NOTE : on doit le détruire avant de créer le nouveau, sinon cette
+    // destruction détruirait en vérité le nouveau mot, et pas celui-ci
+    // Note : cette destruction détruit aussi les proximités que le mot
+    // peut entretenir et son appartenance au canon.
+    Mot.remove(this.imot)
 
     // On crée un nouveau mot avec le nouveau mot, en reprenant quelques
     // information de l'ancien mot, tel que son id, son offset
@@ -88,11 +96,10 @@ class ProxModif {
       , rel_offset:this.imot.rel_offset
       , idP: this.imot.idP
       , idN: this.imot.idN
+      , tbw: this.imot.tbw
     })
 
-    // On détruit l'ancien mot, en récupérant son ID pour l'utiliser
-    Mot.remove(this.imot)
-
+    // console.log("<- ProxModif#traitement_simple")
   }
 
   traitement_complexe() {
@@ -151,18 +158,20 @@ class ProxModif {
     }
     console.log("Je vais procéder au changement")
   }
+
+
   /**
     Méthode qui vérifie le {String} +mot+.
     @async
 
     @param {String} mot         Le mot vraiment
-    @param {Number} mot_offset  Le décalage du mot dans le texte
-                                Attention, il peut être approximatif si le
-                                mot a été changé.
+                                S'il n'est pas fourni, c'est la propriété
+                                `newText` (traitement simple)
     @return true si le mot est valide, false dans le cas contraire.
   **/
-  check_new_word(mot, mot_offset){
-    return new Promise((ok,ko)=>{
+  check_new_word(mot) {
+    mot = mot || this.newText
+    return new Promise( (ok,ko) => {
       // Forme canonique du mot
       // La méthode Canon.of, avec ces options, retourne null si
       // la forme canonique (lémmatisée) n'a pas pu être trouvée OU si ce canon
@@ -174,12 +183,15 @@ class ProxModif {
         ok(true)
         return true
       }
+
+      // --- Si le mot possède un canon ---
+
       // Si le mot possède un canon connu de l'analyse, il faut voir s'il ne
       // rentre pas en proximité avec un de l'analyse autre que lui-même
-      let motProche ;
-      if ( motProche = canon.hasNearMot(mot_offset) ) {
+      let data_proxims = Proximity.for(mot, this.imot, canon)
+      if ( data_proxims.closestMot ) {
         // Un mot proche a été trouvé, il faut demander ce qu'on doit faire
-        ask("Un mot proche a été trouvé, dois-je poursuivre ?", {
+        ask("Un frère ou un jumeau a été trouvé, dois-je poursuivre ?", {
           buttons:[{text:"Abandonner", onclick:ok(false)}, {text:"Poursuivre quand même",onclick:ok(true)}]
         })
       } else {

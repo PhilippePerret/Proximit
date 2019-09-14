@@ -21,6 +21,13 @@ class UIObject {
     return this
   }
 
+  /**
+    Retourne l'élément de selector +selector+ contenu par l'élément courant
+  **/
+  find(selector){
+    return this.domObj.querySelector(selector)
+  }
+
   // Vide
   // @return l'objet (pour chainage)
   clean(){this.domObj.innerHTML = ''; return this}

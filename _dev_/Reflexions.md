@@ -1,11 +1,31 @@
 # Réflexion de fonctionnement
 
+## REFLEXION 02
+
+Comme précisé dans une note, l'offset est au cœur du fonction de l'application, puisque c'est lui permet de connaitre l'éloignement des mots.
+
+Cependant, modifier les offsets peut être extrêmement consommateur entendu que pour le faire, il faut :
+
+* modifier tous les offsets des mots suivant le mot modifié
+* modifier tous les offsets de tous les canons
+* modifier toutes ces données dans la table de résultats qu'il faut enregistrer
+
+Ne vaudrait-il pas mieux d'imaginer un autre système pour surveiller les proximités : en vérifiant chaque fois qu'un mot est modifié s'il possède un "frère" ou un "jumeau" dans la distance limite.
+
+Pour le moment, pour savoir si un mot est en proximité avec un frère ou un jumeau, on se sert de la liste `offsets` du canon. C'est extrêmement rapide, mais on pourrait lui reprocher cependant de fonctionner toujours depuis la première occurence. Si on est sur le mot "texte" qui possède 6000 occurences, et qu'on modifie le dernier texte, les 6000 offsets doivent être testés pour trouver le dernier.
+
+Ici, on fonctionnerait plutôt de cette manière : quand un mot est modifié, grâce à son `idN` et `idP` qui donne l'identifiant du mot avant et après, on peut remonter jusqu'à la distance de proximité minimale (donnée par le canon). On peut savoir à quelle distance on se trouve du mot grâce à la donnée `full_length` du mot qui comptabiliserait la longueur du mot et la longueur du `btw`. Cela ne ferait qu'approximativement 500 mots à checker, en sachant que ce serait juste des propriétés qu'il faudrait lire, et que la seule opération serait une opération d'addition sur la distance courante (c'est la propriété `canon` qui permettrait de savoir si on rencontre un frère ou un jumeau).
+
+Note : c'est seulement à la toute fin, au moment d'enregistrer la table des résultats, qu'on pourrait actualiser les offsets pour leur donner leur vrai valeur. Mais à quoi cela servirait-il au fond si le système ci-dessus est adopté.
+
 ## Réflexion sur la modification
 
 QUESTION : faut-il tenir compte des offsets, en sachant que lorsqu'un des premiers mots est modifié, il faudrait modifier l'offset de tous les mots (ça peut être des centaines de milliers) après.
-En réalité, à quoi sert cette offset, si ce n'est, au moment de la relève des mots, pour déterminer le mot exact et le texte entre deux mots consécutifs.
-Mais ensuite, c'est le mot et le tbw qui permet de reconstituer le texte.
-=> Pour le moment, ne tenir aucun compte des changements d'offset (et voir à l'usage si ça pose problème).
+En réalité, à quoi sert cet offset, si ce n'est, au moment de la relève des mots, pour déterminer le mot exact et le texte entre deux mots consécutifs.
+NON !!!! CET OFFSET est au contraire au cœur de l'application puisque c'est lui qui permet de gérer les proximités. Ces proximités sont calculées en fonction de l'offset.
+DONC => IL EST INDISPENSABLE DE LE TENIR À JOUR, QUELLES QUE SOIENT LES OPÉRATIONS QUE ÇA DEMANDE.
+À la rigueur : content le temps de modification pour estimer le temps.
+Mettre un message "Rectification des offsets…" lorsque c'est nécessaire.
 
 QUESTION : Lorsqu'un mot est changé, faut-il changer l'instance ou changer les données du mot précédent ? A priori, je serais plus partant de créer une nouvelle instance, pour que les propriétés calculées puissent l'être.
 

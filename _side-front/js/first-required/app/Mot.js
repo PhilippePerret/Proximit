@@ -37,12 +37,25 @@ class Mot {
 
   /**
     Supprime le mot qui a pour instance {Mot} +imot+
+
+    La destruction est complète, elle touche aussi les données qui contiennent
+    ce mot, à commencer par les canons et les proximités.
+
   **/
   static remove(imot) {
+
+    // S'il est en proximité avec d'autres mots avant ou après, il faut
+    // détruire cette proximité.
+    imot.proxP && Proximity.remove(imot.proxP)
+    imot.proxN && Proximity.remove(imot.proxN)
+
+    // On retire le mot de son canon
+    imot.icanon.removeMot(imot)
+
     delete this.items[imot.id]
     // On détruit l'instance
     imot = undefined
-    // TODO À l'avenir, il faudra certainement réinitialiser des listes, comme
+    // À l'avenir, il faudra certainement réinitialiser des listes, comme
     // les listes de mots par classement alphabétique ou par nombre de proximi-
     // tés
     delete this._alphaSorted
@@ -86,7 +99,12 @@ class Mot {
     return (this.lastId += 1)
   }
 
-  /**
+  static showNombre(){
+    UI.infos_proximites.find('#nombre_mots').innerHTML = Object.keys(this.items).length
+  }
+
+
+  /** ---------------------------------------------------------------------
     |
     | INSTANCE DU MOT
     |
@@ -142,20 +160,41 @@ class Mot {
   // ---------------------------------------------------------------------
   //  PROPERTIES VOLATILES
 
+  // retourne l'instance {Mot} du mot qui précède le mot courant
+  get motP(){
+    return this._motp || (this._motp = Mot.get(this.idP))
+  }
+  // Retourne l'instance {Mot} du mot qui suit le mot courant
+  get motN(){
+    return this._motn || (this._motn = Mot.get(this.idN))
+  }
+
+  // Retourne l'instance {Canon} du mot
+  get icanon(){
+    return this._icanon || (this._icanon = Canon.get(this.canon))
+  }
+
+  // Retourne la longueur "complète" du mot, c'est-à-dire sa longueur propre
+  // à laquelle on ajoute la longueur des signes entre lui et le prochain
+  // mot (tbw)
+  get full_length(){
+    return this._fulllen || (this._fulllen = this.length + this.btw.length)
+  }
+
   // La proximité avec un mot avant (if any)
   get proxP(){
-    if (undefined === this._proxp){
-      this._proxp = this.px_idP ? Proximity.get(this.px_idP) : null
+    if (undefined === this._proxP){
+      this._proxP = this.px_idP ? Proximity.get(this.px_idP) : null
     }
-    return this._proxp
+    return this._proxP
   }
 
   // La proximité avec un mot après (if any)
   get proxN(){
-    if (undefined === this._proxn){
-      this._proxn = this.px_idN ? Proximity.get(this.px_idN) : null
+    if (undefined === this._proxN){
+      this._proxN = this.px_idN ? Proximity.get(this.px_idN) : null
     }
-    return this._proxn
+    return this._proxN
   }
 
   get mot(){return this._real_init}
@@ -181,7 +220,7 @@ class Mot {
   // String entre ce mot et le mot suivant
   get tbw()         {return this._tbw}
   // Longueur du mot
-  get length()      {return this._length}
+  get length()      {return this._length || this.real.length}
   // Offset absolu (dans tout le texte)
   get offset()      {return this._offset}
   // Offset relatif (dans le document file_id)

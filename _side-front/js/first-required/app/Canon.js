@@ -134,7 +134,14 @@ class Canon {
     }
     return can
   }
-  /**
+
+  // Affiche le nombre exact de canons
+  static showNombre(){
+    UI.infos_proximites.find('#nombre_canons').innerHTML = Object.keys(this.items).length
+  }
+
+
+  /** ---------------------------------------------------------------------
     |
     | INSTANCES
     |
@@ -145,12 +152,34 @@ class Canon {
     // console.log("data canon:", data)
     for ( var k in data ){
       if ( k === 'mots' ) continue ;
-      else if ( k === 'distance_minimale' ) this._proxdistance = data[k] ;
-      else this[k] = data[k]
+      else if ( k === 'distance_minimale' )  ;
+      else {
+        switch(k){
+          case 'mots': continue ;
+          case 'distance_minimale': this._proxdistance = data[k]; break;
+          // Les valeurs à passer
+          case 'proximites': // sera calculé d'après la liste
+          case 'nombre_proximites': // sera calculé d'après la liste
+            break ;
+          default:
+            this[k] = data[k]
+        }
+      }
     }
   }
 
+  /**
+    Pour appliquer la fonction +func+ à tous les mots du canon
 
+    Note : pour interrompre la boucle, il suffit que la fonction +func+
+    retourne strictement `false`.
+
+  **/
+  forEachMot(func){
+    for( var mot of this.mots ) {
+      if ( false === func(mot) /* pour interrompre la boucle */ ) break
+    }
+  }
   /**
     À l'instanciation, on peut demander à dispatcher les mots
     Retourne la liste des instances {Mot} créées et la met aussi dans
@@ -195,20 +224,94 @@ class Canon {
 
   /**
     Pour ajouter le mot +imot+ au canon
+
+    Cela consiste à l'ajouter dans la liste des mots et la liste des
+    offsets.
+
   **/
   addMot(imot){
-    console.error("Je dois ajouter le mot %s au canon", imot.mot, this)
+    // On commence par rechercher la place qu'il doit avoir
+    var offoff = -1
+    for ( var idx in this.offsets ) {
+      if (this.offsets[idx] > imot.offset){ offoff = parseInt(idx,10)-1; break }
+    }
+    // On ajoute le mot dans la liste des mots et dans la liste des offsets
+    if ( offoff < 0 ) {
+      this._offsets .push(imot.offset)
+      this._mots    .push(imot)
+    }
+    else {
+      this._offsets .splice(idx, 0, imot.offset)
+      this._mots    .splice(idx, 0, imot)
+    }
+    ++ this.nombre_occurences
+    this.reinit()
   }
 
   /**
+    Supprimer l'instance {Mot} +imot+ de ce canon (après suppression du mot
+    dans le texte, par exemple).
+  **/
+  removeMot(imot){
+    var idx;
+    for ( idx in this.mots ) {
+      if ( this.mots[idx].id == imot.id ) {
+        idx = parseInt(idx,10)
+      }
+    }
+    this.mots.splice(idx,1)
+    this.offsets.splice(idx,1)
+    -- this.nombre_occurences
+    this.reinit()
+  }
+
+  reinit(){
+    delete this._proximites
+  }
+
+  /**
+    Retourne les proximités de ce canon.
+
+    Noter que dans la table des résultats, cette donnée est enregistrée, mais
+    ici, on la rend dynamique pour pouvoir tenir compte des modifications du
+    canon et notamment du fait qu'une proximités peut être ajoutée ou modifiée.
+  **/
+  get proximites(){
+    if ( undefined === this._proximites ) {
+      this._proximites = []
+      this.forEachMot( mot => {
+        if ( mot.proxP ) this._proximites.push(mot.proxP.id)
+        if ( mot.proxN ) this._proximites.push(mot.proxN.id)
+      })
+    }
+    return this._proximites
+  }
+  get nombre_proximites(){ return this.proximites.length }
+
+  /**
     Retourne true si le canon possède un mot proche de l'offset +offset+
+    DEPRECATED
   **/
   hasNearMot(offset){
+    console.log("DEPRECATED: La méthode Canon.hasNearMot ne doit plus être utilisée (lire la note N001)")
     for ( var i in this.offsets ) {
       if ( Math.abs(this.offsets - offset) >= this.proxDistance ) {
         return this.mots[parseInt(i,10)]
       }
     }
     return null
+  }
+  /**
+    Retourne true si le canon possède un mot qui pourrait être proche de
+    l'offset +offset+ avec une grande tolérance.
+  **/
+  mayHaveNearMot(offset){
+    const tolerance = this.proxDistance + 1500
+    for ( var offcomp of this.offsets ) {
+      if ( Math.abs(offcomp - offset) < tolerance ) {
+        return true
+      }
+    }
+    return false
   }
 }

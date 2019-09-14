@@ -12,13 +12,17 @@ const CONSOLE_TITLE_STYLE = "font-weight:bold;font-size:2em;text-decoration:unde
 **/
 Object.assign(TESTS,{
   name: 'Méthodes de TESTS'
-, VERBOSITY_LEVEL: 5 // TODO Pouvoir le régler
+, options:{
+      fail_fast:true // TODO Pouvoir tout régler
+    , verbosity_level: 5
+  }
 , current: null
 , init(){
     const my = this
     my.onlyTests      = []
     my.commonTests    = []
     my.excludedTests  = []
+    my.VERBOSITY_LEVEL = my.options.verbosity_level
     return this ; // chainage éventuel
   }
 , async start(){
@@ -58,14 +62,27 @@ Object.assign(TESTS,{
           // <= Pas une promise
           dtest.function.call()
         }
-      } catch (e) {
-        my.addError(e)
-      } finally {
         // On passe au test suivant
+        // Note : en cas d'erreur, on ne passera au test suivant que si
+        // l'option fail_fast n'est pas activée.
         my.runTest()
+      } catch (e) {
+        // On passe ici dans deux situations :
+        //  1. Un échec a été rencontré au cours d'un test,
+        //  2. Une erreur de programmation a été rencontrée.
+        // Pour la première (RegularTestError), on ajoute l'erreur à la liste
+        // des échecs du test. Pour la seconde, on génère une erreur normale.
+        if ( e instanceof RegularTestError ) {
+          my.current.exactErrorLine = my.searchExactErrorLineInStack(e.stack, my.current)
+          my.addError(e)
+          if ( ! my.options.fail_fast ) my.runTest()
+          else { my.endTests() }
+        } else {
+          throw(e)
+        }
       }
     } else {
-      my.finale_report()
+      my.endTests()
     }
   }
 
@@ -104,11 +121,11 @@ Object.assign(TESTS,{
     catch (e) {
       // On récupère le nom du fichier et la ligne
       let path = e.stack.split("\n").reverse()[0]
-      let reg = new RegExp(`at file://${remote.app.getAppPath()}/_side-front/js/tests`)
-      path  = path.replace(reg, ".")
+      let reg = new RegExp(`at file://${remote.app.getAppPath()}/_side-front/js/tests/`)
+      path  = path.replace(reg, '')
       dpath = path.split(':')
     }
-    var dtest = {name:name, function:fun, filename:dpath[0].trim(), lineNumber:dpath[1], colNumber:dpath[2]}
+    var dtest = {name:name, function:fun, filename:dpath[0].trim(), lineNumber:dpath[1], colNumber:dpath[2], exactErrorLine:null}
 
     // On ajoute le test dans la liste adéquate
     if ( runable === true ) {
@@ -129,6 +146,30 @@ Object.assign(TESTS,{
 , addError(error_msg){
     this.errors.push(Object.assign(this.current,{error_msg:error_msg}))
   }
+
+  /**
+    Méthode appelée lorsqu'un échec est produit, qui permet de retrouver la
+    ligne exacte de l'erreur et qui la renvoie (pour la mettre dans exactErrorLine
+    de la donnée courante des tests)
+  **/
+, searchExactErrorLineInStack(stack, dataTest) {
+    var relPath = dataTest.filename
+    stack = stack.split(RC).reverse()
+    for (var iline in stack) {
+      var stackLine = stack[iline]
+      // console.log("Check de ", stackLine)
+      if ( stackLine.match(`/${relPath}`) ) {
+        dline = stackLine.split(':')
+        return parseInt(dline[dline.length - 2],10)
+      }
+    }
+  }
+  /**
+    Appelée pour finir les tests
+  **/
+, endTests(){
+    this.finale_report()
+  }
 , finale_report(){
     const my = this
     const failures_count = this.errors.length
@@ -142,7 +183,7 @@ Object.assign(TESTS,{
     console.log(`%c${this.success_count} succès,  ${failures_count} failure${s_failure},  ${pending_count} pending${s_pending}`, `font-size:1.3em;color:${couleur};font-weight:bold;`)
     this.errors.forEach(dfailure => {
       console.log(`%c${dfailure.name} : ${dfailure.error_msg}`, "padding-left:2em;color:red;")
-      console.log(`%cIN: ${dfailure.filename} AT LINE: ${dfailure.lineNumber}`, "padding-left:22em;font-size:0.91em;color:red;")
+      console.log(`%cIN: ${dfailure.filename} AT LINE: ${dfailure.exactErrorLine} TEST STARTS LINE: ${dfailure.lineNumber}`, "padding-left:22em;font-size:0.91em;color:red;")
     })
     if ( my.excludedTests.length ) {
       // <= Des tests ont été exclus
@@ -173,7 +214,6 @@ Object.assign(TESTS,{
     Attend jusqu'à ce que la fonction +funTrue+ retourne true
   **/
 , waitFor(funTrue, options){
-    console.log("-> waitFor")
     options = options || {}
     const timeout   = options.timeout   || TESTS_TIMEOUT_DEFAULT
     const frequence = options.frequence || TESTS_FREQUENCE_DEFAULT
@@ -204,7 +244,7 @@ Object.assign(TESTS,{
 , addFailure(message_failure, message_success){
     if ( !message_failure) message_failure = `FAUX : ${message_success}`
     console.log("%c"+message_failure, "padding-left:2em;color:red;font-weight:bold;")
-    throw new Error(message_failure)
+    throw new RegularTestError(message_failure)
     return false
   }
 , addPending(message){
@@ -212,6 +252,23 @@ Object.assign(TESTS,{
     this.pendings.push(message)
   }
 })
+
+/**
+  La classe des erreurs
+**/
+class RegularTestError extends Error {
+  constructor(err_msg, ...params){
+    super(...params)
+    // Maintenir dans la pile une trace adéquate de l'endroit où l'erreur a été déclenchée (disponible seulement en V8)
+    if(Error.captureStackTrace) {
+      Error.captureStackTrace(this, RegularTestError);
+    }
+    this.name     = 'RegularTestError';
+    // Informations de déboguage personnalisées
+    this.message  = err_msg;
+    this.date     = new Date();
+  }
+}
 
 /**
   Faire une assertion
