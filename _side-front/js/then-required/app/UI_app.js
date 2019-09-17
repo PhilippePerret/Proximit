@@ -41,16 +41,15 @@ Object.assign(UI,{
     UI.rightColumn.append(Dom.createDiv({id:'infos_proximites', class:'container-data'}))
     UI.middleColumn.append(Dom.createDiv({id:'buttons_proximites',class:'buttons'}))
     UI.middleColumn.append(Dom.createDiv({id:'prox_message'}))
-    UI.leftColumn.append(Dom.createDiv({id:'current_proximity'}))
+    UI.leftColumn.append(Dom.createDiv({id:'full_texte'}))
   }
 })
+
 Object.defineProperties(UI,{
-  currentProximity:{get(){
-    if (undefined === this._currentproximity){
-      this._currentproximity = new UIObject('#current_proximity')
-    }
-    return this._currentproximity
-  }}
+
+  // Le bloc où écrire l'intégralité du texte
+  texte:{get(){return this._texte || (this._texte = new UIObject('#full_texte'))}}
+
 , buttons_proximites:{get(){
     if (undefined === this._btnsprox){
       this._btnsprox = new UIObject('#buttons_proximites')

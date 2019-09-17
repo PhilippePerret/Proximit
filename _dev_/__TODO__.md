@@ -1,3 +1,7 @@
+* Et si je faisais plus simple ? Et si j'affichais tout le texte ?
+  => Après le chargement, on affiche tout le texte
+  => Après avoir cliqué sur le bouton pour voir la première proximité, on met simplement le span de ses deux mots en contentEditable.
+  
 * Poursuivre les tests de l'enregistrement des données modifiées
   - corriger le test qui ne passe pas
   - vérifier la validité des fichiers de données

@@ -27,6 +27,9 @@ class UIObject {
   find(selector){
     return this.domObj.querySelector(selector)
   }
+  findAll(selector){
+    return this.domObj.querySelectorAll(selector)
+  }
 
   // Vide
   // @return l'objet (pour chainage)

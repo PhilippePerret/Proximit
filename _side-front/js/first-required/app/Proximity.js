@@ -17,7 +17,6 @@ class Proximity {
     résultats de l'analyse
   **/
   static set(datas){
-    console.log("Proximités initialisées avec :", datas.items)
     this.reset()
     for(var idx in datas.items){
       var iprox = new Proximity(datas.items[idx].datas)
@@ -104,10 +103,21 @@ class Proximity {
     this.show(this.current_index += 1)
   }
 
+  static unshowCurrent(){
+    this.currentProx.unshow()
+    delete this.currentProx
+  }
   // Afficher la proximité d'index +idx+
   static show(idx){
+    if ( this.currentProx ) this.unshowCurrent()
     this.current_index = parseInt(idx,10)
-    this.sortedItems[idx].show()
+    this.currentProx = this.sortedItems[idx]
+    this.currentProx.show()
+  }
+
+  // On enlève la classe 'danger' aux précédents mots mis en exergue
+  static unshowDangers(){
+    $(UI.texte.findAll('.mot.danger')).removeClass('danger')
   }
 
   /**
@@ -137,69 +147,20 @@ class Proximity {
   static showDanger(dataprox) {
     // console.log("-> Proximity.showDanger", dataprox)
 
-    const container = $('div#current_proximity div.portion')
+    const container = UI.texte
 
-    // On enlève la classe 'danger' aux précédents mots mis en exergue
-    container.find('.mot.danger').removeClass('danger')
+    this.unshowDangers()
 
     // Il faut mettre en exergue le mot dataprox.motId (celui qui a été changé)
-    container.find(`.mot[data-id="${dataprox.motId}"]`).addClass('danger')
-
-    // Ensuite il faut rechercher le ou les mots qui sont en proximité, en les
-    // ajoutant avant ou après s'ils ne sont pas dans le texte courant.
+    $(container.find(`.mot[data-id="${dataprox.motId}"]`)).addClass('danger')
 
     if ( dataprox.prevMot ) {
-      const prevContainer = container.find('span#before-words')
-          , idPrev = dataprox.prevMot.id
-
-      // Il faut d'abord s'assurer qu'il soit visible. Si ce n'est pas le cas,
-      // il faut afficher le texte jusqu'à ce mot
-      var prevSelector = `.mot[data-id="${idPrev}"]`
-        , prevObj = prevContainer.find(prevSelector)
-      if ( prevObj.length == 0 ) {
-        // <= Le mot n'est pas affiché
-        // => Il faut remonter le texte en l'affichant jusqu'à ce mot
-        // (en fait, on affiche depuis ce mot jusqu'au premier mot qu'on
-        //  trouvera dans la page), auquel on ajoute cinq mots (pour le voir
-        // dans son contexte)
-        var imot = dataprox.prevMot
-          , prevImot = null
-          , nombrePMotsSup = 0
-        while( imot && nombrePMotsSup < 5) {
-          imot.asDom.reverse().forEach(span => prevContainer.insertBefore(span,prevImot) )
-          if ( nombrePMotsSup > 0 || imot.id == idPrev ) ++ nombrePMotsSup
-          prevImot = imot
-          imot = Mot.get(imot.idP)
-        }
-        prevObj = prevContainer.find(prevSelector)
-      }
-      prevObj.addClass('danger')
+      var prevSelector = `.mot[data-id="${dataprox.prevMot.id}"]`
+      $(container.find(prevSelector)).addClass('danger')
     }
     if ( dataprox.nextMot ) {
-      // Cf. le commentaire pour le mot précédent ci-dessus
-
-      // Le container qui contient les mots après le second mot de la
-      // proximité courante
-      const nextContainer = container.find('span#after-words')
-          , nextId = dataprox.nextMot.id
-
-      var nextSelector = `.mot[data-id="${nextId}"]`
-        , nextObj = nextContainer.find(nextSelector)
-      if ( nextObj.length === 0 ) {
-        var imot = dataprox.nextMot
-          , lastImot = null
-          , nombreNMotsSup = 0
-
-        // On va boucler jusqu'à obtenir 5 mots supplémentaires (après avoir
-        // affiché le mot recherché)
-        while ( imot && nombreNMotsSup < 5 ) {
-          imot.asDom.forEach( span => nextContainer.append(span) )
-          if ( nombreNMotsSup > 0 || imot.id == nextId) { ++ nombreNMotsSup }
-          imot = Mot.get(imot.idN)
-        }
-        nextObj = nextContainer.find(nextSelector)
-      }
-      nextObj.addClass('danger')
+      var nextSelector = `.mot[data-id="${dataprox.nextMot.id}"]`
+      $(container.find(nextSelector)).addClass('danger')
     }
 
     // Pour renseigner sur la proximité
@@ -299,8 +260,6 @@ class Proximity {
       // => On peut retourner les données (vides) tout de suite.
       return data_proxims
     }
-
-    console.log("[Proximity.for] On doit boucler pour chercher une proximité.")
 
     // On boucle jusqu'à atteindre la distance minimum. Si un frère ou un
     // jumeau est rencontré, on interrompt la boucle
@@ -410,6 +369,10 @@ class Proximity {
     const motA = iprox.motA
     const motB = iprox.motB
 
+    // Il faut désactiver la proximité courante si c'est elle qui
+    // est corrigée.
+    if ( this.currentProx && this.currentProx.id === iprox.id) this.unshowCurrent()
+
     // Dans les résultats
     // ------------------
     // On détruit cette proximité dans les résultats
@@ -478,27 +441,46 @@ class Proximity {
     for (var k in data) { this[k] = data[k] }
   }
 
+  get spanA(){return UI.texte.find(`.mot[data-id="${this.motA.id}"]`)}
+  get spanB(){return UI.texte.find(`.mot[data-id="${this.motB.id}"]`)}
+
+  /**
+    Méthode de désaffichage de la proximité, après son édition ou sa
+    correction par exemple.
+  **/
+  unshow(){
+    // On sélectionne le premier mot
+    var mA = this.spanA
+      , mB = this.spanB
+
+    // Il faut leur mettre une classe distinctive
+    $(mA).removeClass('exergue')
+    mA.contentEditable = false
+    $(mB).removeClass('exergue')
+    mB.contentEditable = false
+  }
+
   /**
     Méthode d'affichage de la proximité
   **/
   show(){
-    var dataAround = this.textAround(500)
-    var div = Dom.createDiv({class:'portion'})
-    div.append(Dom.createSpan({id:'before-words', text: dataAround.before}))
-    div.append(Dom.createSpan({id:'word-before', text:dataAround.first_word, contentEditable:'true', class:'mot exergue', 'data-id':this.motA.id}))
-    div.append(Dom.createSpan({id:'between-words', text: dataAround.between}))
-    div.append(Dom.createSpan({id:'word-after', text: dataAround.second_word, contentEditable:'true', class:'mot exergue', 'data-id':this.motB.id}))
-    div.append(Dom.createSpan({id:'after-words', text: dataAround.after}))
-    UI.currentProximity
-      .clean()
-      .append(Dom.createDiv({text: `Proximité : « ${this.motA.mot} » ⇤ ${this.distance} ⇥ « ${this.motB.mot} » [offsets : ${this.motA.offset} ↹ ${this.motB.offset}]`}))
-      .append(div)
+
+    // On sélectionne le premier mot
+    var mA = this.spanA
+      , mB = this.spanB
+
+    // Il faut leur mettre une classe distinctive
+    $(mA).addClass('exergue')
+    mA.contentEditable = true
+    $(mB).addClass('exergue')
+    mB.contentEditable = true
+
     // Il faut observer les deux mots
-    $("#word-before")
+    $(mA)
       .on('focus', this.motA.onFocus.bind(this.motA, this))
       .on('keypress', this.motA.onKeyPressed.bind(this.motA, this))
       .on('blur', this.motA.onBlur.bind(this.motA, this))
-    $("#word-after")
+    $(mB)
       .on('focus', this.motB.onFocus.bind(this.motB, this))
       .on('keypress', this.motB.onKeyPressed.bind(this.motB, this))
       .on('blur', this.motB.onBlur.bind(this.motB, this))

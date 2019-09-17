@@ -51,11 +51,15 @@ class ProxModif {
     lorsque la forme est complexe.
   **/
   async treate(){
+    console.log("-> ProxModif.treate")
     var res
+
+    // On supprime toutes les proximités qui auraient pu être mises en
+    // exergue au cours d'une correction précédente.
+    Proximity.unshowDangers()
 
     UI.proxMessage('')
     await UI.waiter('Recherche de proximités…', '#prox_message')
-
 
     // Avant toute chose, on conserve la trace de la proximité courante
     // pour pouvoir passer à la suite ensuite.
@@ -100,10 +104,8 @@ class ProxModif {
     // qu'il ne crée pas une nouvelle proximité qui ne serait pas validée
     // par l'auteur
     let choix = this.check_new_word()
-    console.log("choix = ", choix)
     if ( ! choix ) return false
-
-    console.log("Je poursuis le traitement simple")
+    UI.proxMessage('')
 
     const imot_id = this.imot.id
 
@@ -179,13 +181,13 @@ class ProxModif {
     for ( var mot of mots ) {
       var poursuivre = my.check_new_word.call(my, mot, this.imot.offset + offs)
       if ( poursuivre === false ) {
-        console.log("Je renonce au changement.")
+        // console.log("Je renonce au changement.")
         return
       } else {
         offs += mot.length + 1 // +1 pour l'espace
       }
     }
-    console.log("Je vais procéder au changement")
+    // console.log("Je vais procéder au changement")
   }
 
 
@@ -214,7 +216,7 @@ class ProxModif {
     // Si le mot possède un canon connu de l'analyse, il faut voir si le mot
     // ne rentre pas en proximité avec un de l'analyse autre que lui-même
     let data_proxims = Proximity.for(mot, this.imot, canon)
-    console.log("data_proxims = ", data_proxims)
+    // console.log("data_proxims = ", data_proxims)
     if ( data_proxims.closestMot ) {
       // Un mot proche a été trouvé
       // Il faut l'indiquer à l'utilisateur en employant une autre couleur
@@ -237,7 +239,7 @@ class ProxModif {
   async createNewWord(mdata){
     if (undefined === mdata.canon) {
       let icanon = Canon.of(mdata.mot, {create:true}, this.addCanonToWordData.bind(this, mdata))
-      console.log("icanon = ", icanon)
+      // console.log("icanon = ", icanon)
       if ( !icanon ) return
       Object.assign(mdata, {canon: icanon})
     }
@@ -247,14 +249,13 @@ class ProxModif {
     mdata.canon   = mdata.canon.canon
 
     // On peut créer le mot
-    console.log("mdata avant création du mot : ", mdata)
     let newMot = Mot.createNew(mdata)
-    console.log("newMot:", newMot)
+    // console.log("newMot:", newMot)
     icanon.addMot(newMot)
   }
 
   addCanonToWordData(mdata, icanon) {
-    console.log("icanon : ", icanon)
+    // console.log("icanon : ", icanon)
     Object.assign(mdata, {canon: icanon})
     this.createNewWord(mdata)
   }

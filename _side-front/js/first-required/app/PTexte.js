@@ -200,6 +200,17 @@ class PTexte {
     // On peuple les proximités
     Proximity.set(this.resultats.datas.proximites.datas)
     Proximity.init(this)
+    // On écrit le texte dans la page
+    this.writeTexte()
+  }
+
+  writeTexte(){
+    const my = this
+    var curmot = this.firstMot
+    while ( curmot ) {
+      curmot.asDom.forEach(span => UI.texte.append(span))
+      curmot = curmot.motN
+    }
   }
 
   /**

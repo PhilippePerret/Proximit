@@ -115,8 +115,11 @@ class Mot {
 
     undefined !== datamot.id || Object.assign(datamot, {id: this.newId()})
     datamot.real_init || Object.assign(datamot, {real_init: datamot.mot})
+    datamot.real      || Object.assign(datamot, {real: datamot.real_init})
+    datamot.length    || Object.assign(datamot, {real: datamot.real_init.length})
     datamot.downcase  || Object.assign(datamot, {downcase: datamot.mot.toLowerCase()})
 
+    // console.log("datamot pour la création du mot : ", datamot)
     let imot = new Mot(datamot)
     Object.assign(this.items, {[imot.id]: imot})
     return imot
@@ -286,7 +289,7 @@ class Mot {
   // Forme canonique du mot (= lemma)
   get canon()       {return this._canon}
   get real_init()   {return this._real_init}
-  get real()        {return this._real}
+  get real()        {return this._real || this.real_init}
   // Version minuscule du mot
   get downcase()    {return this._downcase}
   // Forme lémmatisée du mot

@@ -1,5 +1,0 @@
-Test de la sauvegarde du document modifié.
-
-Le texte a été corrigé ou non avant sa sauvegarde.
-
-
