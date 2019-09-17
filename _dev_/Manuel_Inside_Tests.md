@@ -108,9 +108,27 @@ Noter que le niveau de verbosité n'est considéré qu'en cas de succès (l'éch
 
 #### Page.has {#assertion_page_has}
 
+La méthode provoque un succès si la page actuelle contient le texte voulu, avec les informations passées en second argument.
+
+```javascript
+
+Page.has("<tag>", {/*<attributs>*/}, "<message succès>"[, "<message échec>"])
+
+```
+
+Les `<attributs>`, au-delà des attributs de la balise HTML `tag`, peut définir les propriétés suivantes :
+
+* `text`. Le texte que doit contenir la balise,
+* `resOnly`. Si true, la méthode ne fait que renvoyer le résultat de l'assertion, sans provoquer de succès ou de failure,
+* `visible`. Si true, l'élément doit être visible.
+* `checked`. Si true, c'est une case à cocher qui doit être cochée.
+
+---------------------------------------------------------------------
+
 ## Interactions avec la page {#interact_with_page}
 
 Plusieurs méthodes existent pour intéragir avec la page HTML.
+
 
 ### Obtenir un élément (`Page.get(<ref>[, <type>])`) {#page_get_method}
 

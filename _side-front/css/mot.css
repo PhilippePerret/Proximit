@@ -1,0 +1,16 @@
+/* Le bloc contenant la proximité courante */
+div#current_proximity {
+
+}
+
+div#current_proximity .portion {
+  text-align:justify;
+}
+div#current_proximity .mot {
+  border:1px solid transparent;
+}
+
+div#current_proximity .mot.danger {
+  background-color:red;
+  color:white;
+}

@@ -95,10 +95,9 @@ class Canon {
           Addendum.addCanon(newCanon)
           // On retourne ce canon
           return newCanon
-        } else {
-          return theCanon
         }
       }
+      return theCanon
     }
   }
 

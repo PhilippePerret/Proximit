@@ -1,10 +1,8 @@
 'use strict';
 
-TESTS.add("Modification d'une proximité avec mot créant une nouvelle proximité avec un autre canon", async function(){
-  assert(1+1 == 3, "1+1 est bien égal à 3", "1+1 n'est pas du tout égal à 3, mon coco !")
-})
 
-TESTS.add(true,"Modification d'une proximité avec nouveau mot sans proximité ni canon existant", async function(){
+
+TESTS.add("Modification d'une proximité avec nouveau mot sans proximité ni canon existant", async function(){
   /**
     Note : une modification simple signifie que :
       - un seul des mots créant la proximité est remplacé
@@ -33,15 +31,7 @@ TESTS.add(true,"Modification d'une proximité avec nouveau mot sans proximité n
 
   // ======== TEST =========
   // On change le mot en mettant "auquel" à la place de "qui"
-  fieldFirstWord.focus()
-  fieldFirstWord.innerHTML = 'auquel'
-  fieldFirstWord.blur()
-  fieldAfterWord.focus()
-
-  // Il faut attendre jusqu'à ce que le traitement ait été effectué
-  // Il y a des méthodes asynchrones ou des méthodes qui demandent confirmation
-  // par l'auteur.
-  await TESTS.waitFor(() => ProxModif.running === false)
+  await Page.remplaceFirstWordWith('auquel')
 
   // VÉRIFICATIONS
   // -------------
@@ -103,15 +93,128 @@ TESTS.add(true,"Modification d'une proximité avec nouveau mot sans proximité n
 
   // Pour terminer, on s'assure que la proximité suivante soit bien le mot
   // suivant.
-  click("▶️")
+  assert(Proximity.current_index == 1, "L'index de la proximité courante est 1", `L'index de la proximité courante devrait être 1, c'est ${Proximity.current_index}…`)
   let firstMot  = Page.getInner('#word-before')
   let secondMot = Page.getInner('#word-after')
-  assert(firstMot == 'doit' && secondMot == 'doivent', "La proximité suivante concerne 'doit' et 'doivent'", `La proximité suivante devrait concerner 'doit' et doivent', elle concerne '${firstMot}' et '${secondMot}'.`)
+  assert(firstMot == 'doit' && secondMot == 'doivent', "La proximité courante concerne 'doit' et 'doivent'", `La proximité courante devrait concerner 'doit' et doivent', elle concerne '${firstMot}' et '${secondMot}'.`)
+  // En revenant en arrière, on ne doit pas tomber sur l'ancienne proximité
+  // mais sur la première
+  click("◀️")
+  firstMot  = Page.getInner('#word-before')
+  secondMot = Page.getInner('#word-after')
+  assert(firstMot == 'texte' && secondMot == 'texte', "La proximité précédente concerne bient 'texte' et 'texte'", `La proximité précédente devrait concerner 'texte' et 'texte', elle concerne '${firstMot}' et '${secondMot}'.`)
+
   click("▶️")
   firstMot  = Page.getInner('#word-before')
   secondMot = Page.getInner('#word-after')
-  assert(firstMot == 'proximités' && secondMot == 'proximité', "La proximité suivante concerne 'proximités' et 'proximité'", `La proximité suivante devrait concerner 'proximités' et 'proximité', elle concerne '${firstMot}' et '${secondMot}'.`)
+  assert(firstMot == 'doit' && secondMot == 'doivent', "La proximité suivante concerne 'doit' et 'doivent'", `La proximité suivante devrait concerner 'doit' et doivent', elle concerne '${firstMot}' et '${secondMot}'.`)
 
+})
+
+
+
+TESTS.add(true, "Modification (refusée) d'une proximité avec mot créant une nouvelle proximité avec un autre canon dont le mot se trouve dans le texte affiché", async function(){
+
+  /**
+    NOTES
+    -----
+      Dans ce test, c'est le second mot de la troisième proximité qu'on va
+      remplacer.
+
+  **/
+  // On charge le texte inside-2 qui contient plusieurs proximités
+  TESTS.openTexte('test_inside_02.txt')
+
+  // --- Quelques vérifications préliminaires ---
+  let nombre_prox = Object.keys(Proximity.items).length
+  assert(6/*simple vérification*/, nombre_prox == 9, `Il y a bien 9 proximités au départ (${nombre_prox} éléments dans la table Proximity.items).`)
+
+  // On affiche la troisième proximité
+  click("▶️")
+  click("▶️")
+  click("▶️")
+
+  const oldMot15 = Mot.get(14) // 'doivent'
+
+  // Le 'doit' qui est en proximité avec le mot testé
+  const motFirst  = Mot.get(oldMot15.px_idP)
+  // console.log("motQui = ", motQui)
+
+  let fdFirst = Page.get('#word-before')
+  let fdSecon = Page.get('#word-after')
+
+  assert(6, fdFirst.innerHTML == 'doit', "Le premier mot est 'doit'", `Le 1er mot devrait être 'doit', or c'est '${fdFirst.innerHTML}'…`)
+  assert(6, fdSecon.innerHTML == 'doivent', "Le second mot est 'doivent'", `Le second mot devrait être 'doivent', or c'est '${fdSecon.innerHTML}'…`)
+
+  // === TEST ===
+  await Page.remplacerSecondWordWith('ailleurs') // note 'ailleurs' existe déjà dans le texte
+
+  // Le fait de proposer un mot qui va créer une nouvelle proximité doit
+  // provoquer une demande de confirmation. Ou alors on la signale seulement ?
+  Page.has('div', {class:'warning', text:"Une nouvelle proximité a été trouvée"})
+
+  // Le second mot possède la classe 'danger'
+  Page.has('span',{class:['mot','danger'], visible:true, attrs:{'data-id':'14'}}, "Le premier 'ailleurs' est mis en exergue")
+  // Le mot 'ailleurs' est visible et possède la classe 'danger'
+  Page.has('span',{class:['mot','danger'], visible:true, attrs:{'data-id':'50'}}, "Le second 'ailleurs' est mis en exergue")
+
+})
+
+TESTS.add(true, "Cas : correction proximité MAIS nouvelle proximité avec mot : canon existant, proche après hors texte affiché", async function(){
+
+  /**
+    NOTES
+    -----
+      Dans ce test, c'est le second mot de la troisième proximité qu'on va
+      remplacer.
+
+  **/
+  // On charge le texte inside-2 qui contient plusieurs proximités
+  TESTS.openTexte('test_inside_02.txt')
+
+  // --- Quelques vérifications préliminaires ---
+  let nombre_prox = Object.keys(Proximity.items).length
+  assert(6/*=> simple vérification*/, nombre_prox == 9, `Il y a bien 9 proximités au départ (${nombre_prox} éléments dans la table Proximity.items).`)
+
+  // On affiche la troisième proximité
+  click("▶️")
+  click("▶️")
+  click("▶️")
+
+  const oldMot15 = Mot.get(14) // 'doivent'
+
+  // Le 'doit' qui est en proximité avec le mot testé
+  const motFirst  = Mot.get(oldMot15.px_idP)
+  // console.log("motQui = ", motQui)
+
+  let fdFirst = Page.get('#word-before')
+  let fdSecon = Page.get('#word-after')
+
+  assert(6, fdFirst.innerHTML == 'doit', "Le premier mot est 'doit'", `Le 1er mot devrait être 'doit', or c'est '${fdFirst.innerHTML}'…`)
+  assert(6, fdSecon.innerHTML == 'doivent', "Le second mot est 'doivent'", `Le second mot devrait être 'doivent', or c'est '${fdSecon.innerHTML}'…`)
+
+  // === TEST ===
+  await Page.remplacerSecondWordWith('nécessaire') // note 'ailleurs' existe déjà dans le texte
+
+  // Le fait de proposer un mot qui va créer une nouvelle proximité doit
+  // provoquer une demande de confirmation. Ou alors on la signale seulement ?
+  Page.has('div', {class:'warning', text:"Une nouvelle proximité a été trouvée"})
+  Page.has('div', {class:'warning', text:"avec le mot suivant \"nécessaire\" (\#71) à 265 signes"})
+
+  // Le second mot possède la classe 'danger'
+  Page.has('span',{class:['mot','danger'], visible:true, attrs:{'data-id':'14'}}, "Le premier 'nécessaire', est mis en exergue.")
+  // Le mot 'nécessaire' est visible et possède la classe 'danger'
+  Page.has('span',{class:['mot','danger'], visible:true, attrs:{'data-id':'71'}}, "Le second 'nécessaire' devrait être mis en exergue…")
+
+  // Il y a toujours 9 proximités
+  nombre_prox = Object.keys(Proximity.items).length
+  assert(nombre_prox == 9, `Il y a toujours 9 proximités (${nombre_prox} éléments dans la table Proximity.items).`)
+
+})
+
+TESTS.add("Modification acceptée d'une proximité avec mot créant une nouvelle proximité avec un autre canon", async function(){
+  assert(1+1 == 2, "1+1 est bien égal à 2", "1+1 n'est pas du tout égal à 2, mon coco !")
+  // assert(1+1 == 3, "1+1 est bien égal à 3", "1+1 n'est pas du tout égal à 3, mon coco !")
 })
 
 // * Faire une modification avec un mot dont le canon existe déjà (remplacer "permis", par "plusieurs")

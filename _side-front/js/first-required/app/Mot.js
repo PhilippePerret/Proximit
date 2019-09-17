@@ -46,8 +46,8 @@ class Mot {
 
     // S'il est en proximité avec d'autres mots avant ou après, il faut
     // détruire cette proximité.
-    imot.proxP && Proximity.remove(imot.proxP)
-    imot.proxN && Proximity.remove(imot.proxN)
+    imot.proxP && Proximity.remove.call(Proximity, imot.proxP)
+    imot.proxN && Proximity.remove.call(Proximity, imot.proxN)
 
     // On retire le mot de son canon
     imot.icanon.removeMot(imot)
@@ -158,6 +158,16 @@ class Mot {
   }
 
   // ---------------------------------------------------------------------
+  //  HELPERS
+
+  get asDom(){
+    return [
+        Dom.create('SPAN',{text:this.mot, 'data-id':this.id, class:'mot'})
+      , Dom.create('SPAN',{text:this.tbw})
+    ]
+  }
+
+  // ---------------------------------------------------------------------
   //  PROPERTIES VOLATILES
 
   // retourne l'instance {Mot} du mot qui précède le mot courant
@@ -178,7 +188,7 @@ class Mot {
   // à laquelle on ajoute la longueur des signes entre lui et le prochain
   // mot (tbw)
   get full_length(){
-    return this._fulllen || (this._fulllen = this.length + this.btw.length)
+    return this._fulllen || (this._fulllen = this.length + (this.btw||'').length)
   }
 
   // La proximité avec un mot avant (if any)

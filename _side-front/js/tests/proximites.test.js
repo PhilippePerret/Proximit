@@ -37,7 +37,7 @@ TESTS.add("On peut passer en revue toutes les proximités d'un texte analysé", 
 
   // On vérifie qu'il y ait le bon nombre de proximités
   let nombre_prox = Object.keys(Proximity.items).length
-  assert( nombre_prox === 9, "Il y a bien 8 proximités", `9 proximités devraient avoir été trouvée, il y a en a ${nombre_prox} dans la donnée 'Proximity.items'.`)
+  assert( nombre_prox === 9, "Il y a bien 9 proximités", `9 proximités devraient avoir été trouvées, il y a en a ${nombre_prox} dans la table 'Proximity.items'.`)
 
   function checkBeforeAfterWord(paires){
     paires.forEach(paire => {

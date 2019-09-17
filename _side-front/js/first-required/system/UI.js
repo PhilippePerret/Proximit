@@ -1,11 +1,15 @@
 'use strict'
 /**
   Constante UI
-  version 1.2.0
+  version 1.3.0
   ------------
 
   Requis :
     - UI.css
+    - img/divers/waiter-rond-bleu.gif
+
+  # version 1.3.0
+    Méthode `waiter` pour mettre un waiter d'attente sur la page
 
   # version 1.2.0
     Méthode 'select' qui permet de sélectionner tout élément, même
@@ -26,6 +30,9 @@
     Ajout de la méthode UI.message et de l'objet UI.footerMessage
     Pour afficher des messages en bas de page.
 **/
+
+const HORLOGE_ATTENTE = '<img src="img/divers/waiter-rond-bleu.gif" />'
+
 const UI = {
 
   // Pour écrire un message dans le pied de page
@@ -57,10 +64,23 @@ const UI = {
       }, laps + 5000)
     }, laps)
   }
+
 , clearFlashTimer(){
     const my = this
     clearTimeout(my.flashTimer)
     my.flashTimer = null
+  }
+
+, waiter(msg, container, img) {
+    img = img || HORLOGE_ATTENTE
+    container = container || $(document)
+    let divWaiter = Dom.createDiv({id:'#waiter'})
+    if ( msg ) divWaiter.append(Dom.createDiv({text:msg, class:'message center'}))
+    divWaiter.append(Dom.createDiv({text:img, class:'waiter center'}))
+    $(container).append(divWaiter)
+    return new Promise((ok,ko)=>{
+      setTimeout(ok,200)
+    })
   }
 
 , init(){

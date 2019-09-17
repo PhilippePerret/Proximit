@@ -1,7 +1,7 @@
 'use strict'
 
 const DISTANCE_PROX_DEFAULT = 1500
-const AROUND_LENGTH = 50
+const AROUND_LENGTH = 100 //200 // 50
 
 /**
   |
@@ -17,6 +17,7 @@ class Proximity {
     résultats de l'analyse
   **/
   static set(datas){
+    console.log("Proximités initialisées avec :", datas.items)
     this.reset()
     for(var idx in datas.items){
       var iprox = new Proximity(datas.items[idx].datas)
@@ -40,7 +41,8 @@ class Proximity {
   **/
   static semi_reset(){
     this.current_index  = -1
-    this._sortByCanon   = undefined
+    delete this._sortByCanon
+    delete this._sorteditems
   }
 
   /**
@@ -102,6 +104,117 @@ class Proximity {
     this.show(this.current_index += 1)
   }
 
+  // Afficher la proximité d'index +idx+
+  static show(idx){
+    this.current_index = parseInt(idx,10)
+    this.sortedItems[idx].show()
+  }
+
+  /**
+    Méthode qui montre (en les mettant en exergue) les dangers d'une proximité
+    entre deux mots. Prioritairement, cette méthode fonctionne avec les mots
+    en édition (la proximité travaillé) mais on peut imaginer qu'elle puisse
+    être utilisée avec n'importe quoi et n'importe quand.
+
+    Noter que la méthode est susceptible d'ajouter des mots avant ou après dans
+    le cas où la portion de texte affiché ne contiendrait pas les mots qui
+    forment une proximité.
+
+    @param {Hash} dataprox
+                  Les données de la proximité. C'et la table qui est retournée
+                  par 'Proximity.for' ci-dessous. Pour cette méthode, elle
+                  contient principalement :
+                  :modId    Identifiant du mot de référence, souvent le mot
+                            édité.
+                  :mot      {String} Le mot considéré
+                  :nextMot  {Mot|Null} Le mot après qui est en proximité, s'il a
+                            été trouvé, sinon null.
+                  :prevMot  {Mot|Null} Le mot avant qui est en proximité, s'il a
+                            été trouvé, sinon null.
+                  :nextDistance {Number|Null} La distance avec le mot suivant.
+                  :prevDistance {Number|Null} La distance avec le mot précédent.
+  **/
+  static showDanger(dataprox) {
+    // console.log("-> Proximity.showDanger", dataprox)
+
+    const container = $('div#current_proximity div.portion')
+
+    // On enlève la classe 'danger' aux précédents mots mis en exergue
+    container.find('.mot.danger').removeClass('danger')
+
+    // Il faut mettre en exergue le mot dataprox.motId (celui qui a été changé)
+    container.find(`.mot[data-id="${dataprox.motId}"]`).addClass('danger')
+
+    // Ensuite il faut rechercher le ou les mots qui sont en proximité, en les
+    // ajoutant avant ou après s'ils ne sont pas dans le texte courant.
+
+    if ( dataprox.prevMot ) {
+      const prevContainer = container.find('span#before-words')
+          , idPrev = dataprox.prevMot.id
+
+      // Il faut d'abord s'assurer qu'il soit visible. Si ce n'est pas le cas,
+      // il faut afficher le texte jusqu'à ce mot
+      var prevSelector = `.mot[data-id="${idPrev}"]`
+        , prevObj = prevContainer.find(prevSelector)
+      if ( prevObj.length == 0 ) {
+        // <= Le mot n'est pas affiché
+        // => Il faut remonter le texte en l'affichant jusqu'à ce mot
+        // (en fait, on affiche depuis ce mot jusqu'au premier mot qu'on
+        //  trouvera dans la page), auquel on ajoute cinq mots (pour le voir
+        // dans son contexte)
+        var imot = dataprox.prevMot
+          , prevImot = null
+          , nombrePMotsSup = 0
+        while( imot && nombrePMotsSup < 5) {
+          imot.asDom.reverse().forEach(span => prevContainer.insertBefore(span,prevImot) )
+          if ( nombrePMotsSup > 0 || imot.id == idPrev ) ++ nombrePMotsSup
+          prevImot = imot
+          imot = Mot.get(imot.idP)
+        }
+        prevObj = prevContainer.find(prevSelector)
+      }
+      prevObj.addClass('danger')
+    }
+    if ( dataprox.nextMot ) {
+      // Cf. le commentaire pour le mot précédent ci-dessus
+
+      // Le container qui contient les mots après le second mot de la
+      // proximité courante
+      const nextContainer = container.find('span#after-words')
+          , nextId = dataprox.nextMot.id
+
+      var nextSelector = `.mot[data-id="${nextId}"]`
+        , nextObj = nextContainer.find(nextSelector)
+      if ( nextObj.length === 0 ) {
+        var imot = dataprox.nextMot
+          , lastImot = null
+          , nombreNMotsSup = 0
+
+        // On va boucler jusqu'à obtenir 5 mots supplémentaires (après avoir
+        // affiché le mot recherché)
+        while ( imot && nombreNMotsSup < 5 ) {
+          imot.asDom.forEach( span => nextContainer.append(span) )
+          if ( nombreNMotsSup > 0 || imot.id == nextId) { ++ nombreNMotsSup }
+          imot = Mot.get(imot.idN)
+        }
+        nextObj = nextContainer.find(nextSelector)
+      }
+      nextObj.addClass('danger')
+    }
+
+    // Pour renseigner sur la proximité
+    let proxInfo = [`avec`]
+    if (dataprox.prevMot){
+      proxInfo.push(`le mot précédent "${dataprox.prevMot.mot}" (#${dataprox.prevMot.id}) à ${dataprox.prevDistance} signes`)
+    }
+    if (dataprox.nextMot) {
+      if (dataprox.prevMot) proxInfo.push('et')
+      proxInfo.push(`le mot suivant "${dataprox.nextMot.mot}" (#${dataprox.nextMot.id}) à ${dataprox.nextDistance} signes`)
+    }
+    proxInfo = proxInfo.join(' ')
+    UI.proxMessage(`Une nouvelle proximité a été trouvée ${proxInfo}.\nPour confirmer ce choix, cliquez sur « Confirmer ».\nDans le cas contraire, modifiez-la.`, 'warning')
+  }
+
   /**
     Pour afficher les proximités, on ne procède pas toujours dans le sens
     des items définis ici. On peut fonctionner dans l'ordre des mots du
@@ -124,11 +237,6 @@ class Proximity {
     return this._sorteditems
   }
 
-  // Afficher la proximité d'index +idx+
-  static show(idx){
-    this.sortedItems[idx].show()
-  }
-
   /**
     *** Cœur de la recherche de proximité ***
 
@@ -148,11 +256,18 @@ class Proximity {
   static for(str, fromId, canon) {
     // Distance en dessous de laquelle on considère que les mots sont en
     // proximité
-    // console.log("-> Proximity.for(str=%s,fromId=%s)", str, fromId)
+    console.log("-> Proximity.for(str,fromId,canon)",str,fromId,canon)
+
+    // Le mot de référence
+    // -------------------
+    if ( fromId instanceof(Mot) ) fromId = fromId.id // I know, it's dumb…
+    const imot = Mot.get(fromId)
 
     // Les données qui seront renvoyées
     let data_proxims = {
-        prevMot:null
+        motId: imot.id // on prend l'id seulement car le mot string est autre
+      , mot: str
+      , prevMot:null
       , prevDistance:null
       , nextMot:null
       , nextDistance:null
@@ -171,11 +286,6 @@ class Proximity {
     Object.assign(data_proxims,{canon:canon, distanceMin:canon.proxDistance})
     const distanceMin = data_proxims.distanceMin
 
-    // Le mot de référence
-    // -------------------
-    if ( fromId instanceof(Mot) ) fromId = fromId.id // I know, it's dumb…
-    const imot = Mot.get(fromId)
-
     // Si les occurences du canon ne sont pas trop nombreuses, on regarde si
     // les offsets sont susceptibles de provoquer des proximités. On considère
     // que c'est impossible lorsque qu'ils se trouvent à la distance minimale
@@ -190,6 +300,7 @@ class Proximity {
       return data_proxims
     }
 
+    console.log("[Proximity.for] On doit boucler pour chercher une proximité.")
 
     // On boucle jusqu'à atteindre la distance minimum. Si un frère ou un
     // jumeau est rencontré, on interrompt la boucle
@@ -204,7 +315,7 @@ class Proximity {
       } else {
         // <= On est encore dans la distance minimale
         // => On doit voir si ce mot appartient au même canon.
-        if ( mot_checked.canon === imot.canon ) {
+        if ( mot_checked.canon === canon.canon ) {
           // <= Le mot checké et le mot testé ont le même canon
           // => C'est un jumeau ou un frère, il faut s'arrêter là.
           data_proxims.prevMot = Mot.get(mot_checked.id)
@@ -213,6 +324,8 @@ class Proximity {
         }
       }
     }// fin de boucle tant qu'on trouve un mot avant
+
+    console.log("data_proxims après la boucle en arrière : ", data_proxims)
 
     var mot_checked = imot
     var cur_distance = 0
@@ -224,7 +337,7 @@ class Proximity {
       } else {
         // <= On est encore dans la distance minimale
         // => On doit voir si ce mot appartient au même canon.
-        if ( mot_checked.canon === imot.canon ) {
+        if ( mot_checked.canon === canon.canon ) {
           // <= Le mot checké et le mot testé ont le même canon
           // => C'est un jumeau ou un frère, il faut s'arrêter là.
           data_proxims.nextMot = Mot.get(mot_checked.id)
@@ -235,8 +348,9 @@ class Proximity {
     } // fin de boucle tant qu'on trouve un mot après et que la distance
       // minimum n'est pas atteinte
 
-    // console.log("data_proxims après la recherche en avant", data_proxims)
+    console.log("data_proxims après la recherche en avant", data_proxims)
 
+    // --- Le mot le plus proche (si les deux) ---
     // Pour terminer, on regarde quel est le mot le plus proche pour
     // renseigner closestMot
     if ( data_proxims.nextMot && data_proxims.prevMot ) {
@@ -257,10 +371,13 @@ class Proximity {
 
   /**
     Boucle sur toutes les proximités
+
+    Un retour exactement égal à false de la fonction interrompt aussitôt
+    la boucle
   **/
   static forEach(fun){
     for ( var idx in this.items ) {
-      fun(this.items[idx])
+      if ( false === fun(this.items[idx]) ) break ;
     }
   }
 
@@ -346,9 +463,9 @@ class Proximity {
     var dataAround = this.textAround(500)
     var div = Dom.createDiv({class:'portion'})
     div.append(Dom.createSpan({id:'before-words', text: dataAround.before}))
-    div.append(Dom.createSpan({id:'word-before', text:dataAround.first_word, contentEditable:'true', class:'mot exergue'}))
+    div.append(Dom.createSpan({id:'word-before', text:dataAround.first_word, contentEditable:'true', class:'mot exergue', 'data-id':this.motA.id}))
     div.append(Dom.createSpan({id:'between-words', text: dataAround.between}))
-    div.append(Dom.createSpan({id:'word-after', text: dataAround.second_word, contentEditable:'true', class:'mot exergue'}))
+    div.append(Dom.createSpan({id:'word-after', text: dataAround.second_word, contentEditable:'true', class:'mot exergue', 'data-id':this.motB.id}))
     div.append(Dom.createSpan({id:'after-words', text: dataAround.after}))
     UI.currentProximity
       .clean()
@@ -393,7 +510,7 @@ class Proximity {
     var next_mot = Mot.get(this.motA.idN) // il doit forcément exister
     var between = this.motA.tbw // texte entre le motA et le mot suivant
     while ( next_mot && next_mot.id != this.motB_id ) {
-      between += next_mot.mot
+      between += `<span class="mot" data-id="${next_mot.id}">${next_mot.mot}</span>`
       between += next_mot.tbw
       next_mot = Mot.get(next_mot.idN)
     }
@@ -401,14 +518,16 @@ class Proximity {
 
     // Reconstitution du texte avant
     var before = ''
+    var before_len = 0
     // console.log("this.motA.idP = ", this.motA.idP)
     if ( undefined !== this.motA.idP ) {
       // <= Il y a un mot avant le premier mot
       // => On prend la longueur de texte voulue
       var motref = Mot.get(this.motA.idP)
       // console.log("motref:", motref)
-      while ( motref && (before.length < AROUND_LENGTH + addedLen) ) {
-        before = motref.mot + motref.tbw + before
+      while ( motref && (before_len < AROUND_LENGTH + addedLen) ) {
+        before = `<span class="mot" data-id="${motref.id}">${motref.mot}</span>` + motref.tbw + before
+        before_len += motref.mot.length + motref.tbw.length
         motref = Mot.get(motref.idP)
       }
     }
@@ -416,10 +535,12 @@ class Proximity {
 
     // Reconstitution du texte après le second mot (motB)
     var after = this.motB.tbw
+    var after_len = after.length
     if ( undefined !== this.motB.idN) {
       var motref = Mot.get(this.motB.idN)
-      while ( motref && (after.length < AROUND_LENGTH + addedLen) ) {
-        after += motref.mot + motref.tbw
+      while ( motref && (after_len < AROUND_LENGTH + addedLen) ) {
+        after += `<span class="mot" data-id="${motref.id}">${motref.mot}</span>` + motref.tbw
+        after_len += motref.mot.length + motref.tbw.length
         motref = Mot.get(motref.idN)
       }
     }

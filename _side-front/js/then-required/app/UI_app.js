@@ -7,6 +7,12 @@
 Object.assign(UI,{
   name:'Extension de UI propre à l’application'
 
+, proxMessage(msg, style){
+    msg = msg.replace(/\n/g, '<br>')
+    if ( style ) msg = `<div class="${style}">${msg}</div>`
+    $('div#prox_message').html(msg||'')
+  }
+
   /**
     Affichage des boutons pour gérer les proximités
   **/
@@ -34,6 +40,7 @@ Object.assign(UI,{
     UI.rightColumn.append(Dom.createDiv({id:'infos_texte', class:'container-data'}))
     UI.rightColumn.append(Dom.createDiv({id:'infos_proximites', class:'container-data'}))
     UI.middleColumn.append(Dom.createDiv({id:'buttons_proximites',class:'buttons'}))
+    UI.middleColumn.append(Dom.createDiv({id:'prox_message'}))
     UI.leftColumn.append(Dom.createDiv({id:'current_proximity'}))
   }
 })

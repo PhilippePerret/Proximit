@@ -29,3 +29,9 @@ div#buttons_proximites button:active {
 div#buttons_proximites button:hover {
   border-color:green;
 }
+
+section#middle-column div#prox_message {
+  padding:1em;
+  font-size:1.1em;
+  font-family:Arial,Helvetica;
+}

@@ -51,13 +51,36 @@ class ProxModif {
     lorsque la forme est complexe.
   **/
   async treate(){
+    var res
+
+    UI.proxMessage('')
+    await UI.waiter('Recherche de proximités…', '#prox_message')
+
+
+    // Avant toute chose, on conserve la trace de la proximité courante
+    // pour pouvoir passer à la suite ensuite.
+    const nextProximity = Proximity.sortedItems[Proximity.current_index+1]
     try {
       this.constructor.running = true // pour les tests
+
+      // On traite en fonction de la complexité du remplacement
       this.isComplexModif = !!this.newText.match(' ')
       if ( this.isComplexModif ) {
-        await this.traitement_complexe.call(this)
+        res = await this.traitement_complexe.call(this)
       } else {
-        await this.traitement_simple.call(this)
+        res = await this.traitement_simple.call(this)
+      }
+
+      // Quand la proximité a pu être corrigée, on passe directement
+      // à la proximité suivante
+      if ( res === true ){
+        var curIdx = 0
+        for ( var curIdx = 0, len = Proximity.sortedItems.length ; curIdx < len ; ++ curIdx ) {
+          if ( Proximity.sortedItems[curIdx].id == nextProximity.id ) {
+            Proximity.current_index = parseInt(curIdx,10)
+            Proximity.show(Proximity.current_index)
+          }
+        }
       }
       // On ajoute une proximité corrigée
       ++Proximity.correctedCount
@@ -72,11 +95,15 @@ class ProxModif {
 
   async traitement_simple() {
     // console.log("-> ProxModif#traitement_simple")
+
     // Il faut d'abord s'assurer que le nouveau mot soit valide, c'est-à-dire
     // qu'il ne crée pas une nouvelle proximité qui ne serait pas validée
     // par l'auteur
-    let choix = await this.check_new_word()
-    if ( ! choix ) return
+    let choix = this.check_new_word()
+    console.log("choix = ", choix)
+    if ( ! choix ) return false
+
+    console.log("Je poursuis le traitement simple")
 
     const imot_id = this.imot.id
 
@@ -100,6 +127,7 @@ class ProxModif {
     })
 
     // console.log("<- ProxModif#traitement_simple")
+    return true
   }
 
   traitement_complexe() {
@@ -120,6 +148,7 @@ class ProxModif {
       mots.forEach(motstr => this.analyze_single_word(motstr) )
       // Pour chacun des mots, même s'il n'y en a qu'un seul, il faut faire le test
 
+      return true // absolument, en cas de réussite
     } catch (e) {
       console.error(e)
       // error(e.message)
@@ -148,7 +177,7 @@ class ProxModif {
     const my = this
     var offs = 0
     for ( var mot of mots ) {
-      var poursuivre = await my.check_new_word.call(my, mot, this.imot.offset + offs)
+      var poursuivre = my.check_new_word.call(my, mot, this.imot.offset + offs)
       if ( poursuivre === false ) {
         console.log("Je renonce au changement.")
         return
@@ -171,33 +200,30 @@ class ProxModif {
   **/
   check_new_word(mot) {
     mot = mot || this.newText
-    return new Promise( (ok,ko) => {
-      // Forme canonique du mot
-      // La méthode Canon.of, avec ces options, retourne null si
-      // la forme canonique (lémmatisée) n'a pas pu être trouvée OU si ce canon
-      // n'existe pas dans l'analyse courante.
-      var canon = Canon.of(mot, {create:false, force:false})
-      // Si un mot possède un canon qui est inconnu de l'analyse, il ne
-      // peut pas rentrer en proximité avec d'autres mots
-      if ( ! canon ){
-        ok(true)
-        return true
-      }
+    // Forme canonique du mot
+    // La méthode Canon.of, avec ces options, retourne null si
+    // la forme canonique (lémmatisée) n'a pas pu être trouvée OU si ce canon
+    // n'existe pas dans l'analyse courante.
+    var canon = Canon.of(mot, {create:false, force:false})
+    // Si un mot possède un canon qui est inconnu de l'analyse, il ne
+    // peut pas rentrer en proximité avec d'autres mots
+    if (!canon){return true}
 
-      // --- Si le mot possède un canon ---
+    // --- Si le mot possède un canon ---
 
-      // Si le mot possède un canon connu de l'analyse, il faut voir s'il ne
-      // rentre pas en proximité avec un de l'analyse autre que lui-même
-      let data_proxims = Proximity.for(mot, this.imot, canon)
-      if ( data_proxims.closestMot ) {
-        // Un mot proche a été trouvé, il faut demander ce qu'on doit faire
-        ask("Un frère ou un jumeau a été trouvé, dois-je poursuivre ?", {
-          buttons:[{text:"Abandonner", onclick:ok(false)}, {text:"Poursuivre quand même",onclick:ok(true)}]
-        })
-      } else {
-        ok(true/* pour poursuivre */) // pas de proximité trouvée
-      }
-    })
+    // Si le mot possède un canon connu de l'analyse, il faut voir si le mot
+    // ne rentre pas en proximité avec un de l'analyse autre que lui-même
+    let data_proxims = Proximity.for(mot, this.imot, canon)
+    console.log("data_proxims = ", data_proxims)
+    if ( data_proxims.closestMot ) {
+      // Un mot proche a été trouvé
+      // Il faut l'indiquer à l'utilisateur en employant une autre couleur
+      Proximity.showDanger(data_proxims)
+      return false
+    } else {
+      // Pas de proximité dangereuse
+      return true
+    }
   }
 
   /**

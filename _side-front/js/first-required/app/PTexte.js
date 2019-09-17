@@ -78,7 +78,7 @@ class PTexte {
   }
 
   static reset(){
-    delete this._current; this._current = undefined;
+    delete this._current
     Proximity.reset()
     Canon.reset()
     Mot.reset()
@@ -129,6 +129,7 @@ class PTexte {
     On charge ses résultats s'il est déjà analysé et on affiche ses informations
   **/
   init(){
+    $('.texte_title').innerHTML = this.title
     this.isAnalyzed && this.initWhenAnalyzed()
     // Écriture de l'état du texte
     this.writeState()
@@ -209,7 +210,13 @@ class PTexte {
   get resultats() {
     if ( undefined === this._resultats ) {
       if (fs.existsSync(this.resultats_path)){
-        this._resultats = require(this.resultats_path)
+        // Si on "require", pour les tests, la donnée ne sera pas reprise
+        // depuis les fichiers, ce qui entrainera des faux négatifs lorsque
+        // les résultats auront été modifiés. Il faut donc toujours forcer
+        // la lecture depuis le fichier (ce qui, de toute façon, ne mange pas
+        // de pain)
+        // this._resultats = require(this.resultats_path)
+        this._resultats = JSON.parse(fs.readFileSync(this.resultats_path,'utf-8'))
       }
     }
     return this._resultats
@@ -242,6 +249,8 @@ class PTexte {
 
   // L'affixe du fichier (pour le nom du dossier)
   get affixe(){return this._affixe || (this._affixe = path.basename(this.path,path.extname(this.path)))}
+
+  get title(){return this._title || (this._title = this.affixe.replace(/_/g,' '))}
 
   get name(){return this._name||(this._name = path.basename(this.path))}
   // Le path du texte original

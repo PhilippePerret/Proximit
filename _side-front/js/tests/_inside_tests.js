@@ -383,7 +383,7 @@ const Page = {
     var sel = `${tag}`
     attrs.id    && (sel += `#${attrs.id}`)
     if (undefined !== attrs.class){
-      if ('string' === typeof attrs.class) attrs.class = [attrs.class]
+      if ('string' === typeof attrs.class) attrs.class = attrs.class.split(' ')
       sel += `.${attrs.class.join('.')}`
     }
 
@@ -403,7 +403,8 @@ const Page = {
 
     if ( ok && text ) {
       let contenu = el.innerHTML
-      ok = contenu.match(text)
+        , reg = new RegExp(text.replace(/([\[\\\^\$\.\|\?\*\+\(\)\]\#])/g, "\\$1"))
+      ok = contenu.match(reg)
     }
 
     if ( ok && undefined !== checked ) {
@@ -416,7 +417,7 @@ const Page = {
       if ( ok ) {
         TESTS.addSuccess(success_message || `${refEl} existe bien.`)
       } else {
-        TESTS.addFailure(failure_message || `${refEl} devrait exister`)
+        TESTS.addFailure(failure_message || (`${refEl} devrait exister` + (success_message ? ` (FAUX : ${success_message})` : '')))
       }
     }
   }
@@ -434,6 +435,8 @@ const Page = {
 
 /**
   Simulation d'une touche pressée
+  Ça n'est pas possible, sinon, ça ouvrirait la porte à tout hacker par le
+  biais du navigateur.
 **/
 
 /*
