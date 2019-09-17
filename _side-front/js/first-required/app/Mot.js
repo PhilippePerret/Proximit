@@ -251,6 +251,7 @@ class Mot {
         'id':         'id'
       , 'idN':        'iN'
       , 'idP':        'iP'
+      , 'file_id':    'f'
       , 'canon':      'c'
       , 'real_init':  'ri'
       , 'real':       'r'
