@@ -4,9 +4,9 @@ class WholeText
 class Mot
 
   # Retourne TRUE si le mot est un vrai mot, c'est-à-dire s'il
-  # contient des lettres.
+  # contient des lettres ou seulement des chiffres.
   def real_mot?
-    @is_real_mot ||= !!downcase.match(/[a-zA-Zçàô]/)
+    @is_real_mot ||= !!downcase.match(/[a-zA-Z0-9çàô]/)
   end
 
   # Retourne true si le mot est traitable

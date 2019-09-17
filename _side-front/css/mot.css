@@ -11,3 +11,9 @@ div#full_texte .mot.danger {
   background-color:red;
   color:white;
 }
+
+div#full_texte br {
+  display:block;
+  margin-top:1em;
+  content:" ";
+}

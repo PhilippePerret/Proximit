@@ -195,7 +195,7 @@ class Mot {
   get asDom(){
     return [
         Dom.create('SPAN',{text:this.mot, 'data-id':this.id, class:'mot'})
-      , Dom.create('SPAN',{text:this.tbw})
+      , Dom.create('SPAN',{text:this.tbw.replace(/\r?\n/g,'<br>')})
     ]
   }
 

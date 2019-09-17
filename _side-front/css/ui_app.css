@@ -1,10 +1,15 @@
 /* Le bloc contenant tout le texte */
 body > section#left-column #full_texte {
-  max-height:500px;
+  position:fixed;
+  top:80px;
+  border:1px dashed green;
+  width:44%;
+  min-height:500px;
   overflow:auto;
   font-size:16.1pt;
-  padding:2em;
+  padding:44px;
   text-align:justify;
+  font-family:Georgia;
 }
 
 body > section#right-column #infos_texte {
@@ -16,15 +21,21 @@ section#left-column div#current_proximity {
   margin:1em;
 }
 
-div#buttons_proximites {
+section#middle-column div.buttons {
   display:inline-block;
   border-radius:1em;
-  padding:0.5em 1em 0.3em;
-  text-align:right;
+  padding:0.5em 0.4em 0.3em;
+  clear:both;
+}
+div#buttons_proximites {
   background-color:#4C0707;
   color:white;
 }
 div#buttons_proximites button {
+  display:block;
+}
+div.buttons button
+{
   all:unset;
   font-family: unset;
   font-size:30pt;
@@ -32,10 +43,10 @@ div#buttons_proximites button {
   border:2px solid transparent;
 }
 
-div#buttons_proximites button:active {
+div.buttons button:active {
   background-color:green;
 }
-div#buttons_proximites button:hover {
+div.buttons button:hover {
   border-color:green;
 }
 

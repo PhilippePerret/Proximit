@@ -27,7 +27,10 @@ class PTexte {
     if ( undefined === my.current ) my.chooseText()
     if ( undefined === my.current ) return ; // annulation
     my.current.analyzed = null
+    UI.texte.clean()
+    UI.waiter("Analyse du texte. Merci de patienter…", UI.texte.domObj)
     execFile(`./bin/analyse_texte.rb`, [PTexte.current.path], (err, stdout, stderr) => {
+      UI.texte.clean()
       if (err) {
         my.current.analyzed = false
         console.error(err)
@@ -75,7 +78,7 @@ class PTexte {
     // propriété +resultats+ du texte, qui contient l'analyse). RESULTATS, au
     // départ, contient dans sa propriété `datas`la valeur de :
     // `ptexte.resultats.datas`
-    RESULTATS = new Resultats(this._current)
+    // RESULTATS = new Resultats(this._current)
   }
 
   static reset(){
@@ -130,11 +133,22 @@ class PTexte {
     On charge ses résultats s'il est déjà analysé et on affiche ses informations
   **/
   init(){
-    $('.texte_title').innerHTML = this.title
+    $('.texte_title').html(this.title)
+    this.setTexteHeight()
+    delete this.firstMot
     this.isAnalyzed && this.initWhenAnalyzed()
     // Écriture de l'état du texte
     this.writeState()
     this.inited = true
+  }
+
+  /**
+    Fixe la hauteur du texte pour qu'il prenne toute la hauteur de l'interface
+  **/
+  setTexteHeight(){
+    let wHeight = window.innerHeight
+      , hTexte  = wHeight - (80 /*header et info prox*/ + 25 /* footer */ + 88 /* padding */)
+    $(UI.texte.domObj).css('height',`${hTexte}px`)
   }
 
   /**
@@ -192,7 +206,8 @@ class PTexte {
     |   - afficher l'état des proximités
     |   - proposer les boutons pour voir les proximités
   **/
-  initWhenAnalyzed(){
+  async initWhenAnalyzed(){
+    await UI.waiter("Affichage du texte. Merci de patienter…", UI.rightColumn.domObj)
     Mot.init()
     // On peuple les canons
     // + peuplement des mots
@@ -202,6 +217,7 @@ class PTexte {
     Proximity.init(this)
     // On écrit le texte dans la page
     this.writeTexte()
+    UI.stopWaiter()
   }
 
   writeTexte(){

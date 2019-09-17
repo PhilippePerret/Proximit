@@ -1,6 +1,6 @@
 body {
   display: grid;
-  grid-template-columns: auto 20% 30%;
+  grid-template-columns: 50% 180px auto;
   grid-template-rows: 40px auto 32px;
   width: 100%;
   min-height:814px;

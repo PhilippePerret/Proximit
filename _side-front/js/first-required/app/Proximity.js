@@ -50,6 +50,7 @@ class Proximity {
   static init(itext){
     // l'indice de la proximité courante, affichée
     this.current_index  = -1
+    delete this.current
     this.correctedCount = 0
     this.showInfos(itext)
     UI.showButtonsProximites(itext)
@@ -88,31 +89,79 @@ class Proximity {
     | Pour afficher les proximités
     |
   **/
+
+  static showFirst(){
+    this.current_index = -1
+    this.showNext()
+  }
+  static showLast(){
+    this.current_index = this.sortedItems.length
+    this.showPrev()
+  }
+  // La proximité visible précédente
   static showPrev(){
-    if ( this.current_index <= 0 ){
-      UI.message("DÉBUT DU TEXTE")
-      return
+    // On cherche la précédente proximité qui serait affichable
+    var chkidx = parseInt(this.current_index,10)
+    chkidx -= 1
+    if ( !this.optionAllProximites ) {
+      while ( this.sortedItems[chkidx] && this.sortedItems[chkidx].ignored){
+        -- chkidx
+      }
     }
-    this.show(this.current_index -= 1)
+    // console.log("showPrev. current_index = %d", chkidx)
+    if ( chkidx < 0 ){
+      UI.message("DÉBUT DU TEXTE")
+    } else {
+      this.show(this.current_index = chkidx)
+    }
   }
   static showNext(){
-    if ( this.current_index + 1 >= this.sortedItems.length ){
-      UI.message("FIN DU TEXTE")
-      return
+    // On cherche la prochaine proximité à afficher
+    var chkidx = parseInt(this.current_index,10)
+    ++ chkidx
+    if ( !this.optionAllProximites ) {
+      while ( this.sortedItems[chkidx] && this.sortedItems[chkidx].ignored){
+        ++chkidx
+      }
     }
-    this.show(this.current_index += 1)
+    // console.log("showNext. current_index = %d", chkidx)
+    if ( chkidx + 1 > this.sortedItems.length ){
+      UI.message("FIN DU TEXTE")
+    } else {
+      this.show(this.current_index = chkidx)
+    }
   }
 
   static unshowCurrent(){
-    this.currentProx.unshow()
-    delete this.currentProx
+    this.current.unshow()
+    delete this.current
   }
+
+  // Pour ignorer (et donc passer) la proximité courante
+  static ignoreCurrent(){
+    if ( this.current ) {
+      this.current.ignore.call(this.current)
+    } else {
+      UI.error("Il faut choisir la proximité à ignorer à l'aide des boutons ▶️ ou ◀️.")
+    }
+  }
+
+  static unignore(prox_id){
+    var iprox = this.get(prox_id)
+    if ( iprox.ignored ) {
+      iprox.ignored = false
+      this.modified = true
+    } else {
+      UI.error("Je ne peux pas désignorer une proximité qui n'est pas ignorée.")
+    }
+  }
+
   // Afficher la proximité d'index +idx+
   static show(idx){
-    if ( this.currentProx ) this.unshowCurrent()
+    if ( this.current ) this.unshowCurrent()
     this.current_index = parseInt(idx,10)
-    this.currentProx = this.sortedItems[idx]
-    this.currentProx.show()
+    this.current = this.sortedItems[idx]
+    this.current.show()
   }
 
   // On enlève la classe 'danger' aux précédents mots mis en exergue
@@ -147,20 +196,18 @@ class Proximity {
   static showDanger(dataprox) {
     // console.log("-> Proximity.showDanger", dataprox)
 
-    const container = UI.texte
-
     this.unshowDangers()
 
     // Il faut mettre en exergue le mot dataprox.motId (celui qui a été changé)
-    $(container.find(`.mot[data-id="${dataprox.motId}"]`)).addClass('danger')
+    $(UI.texte.find(`.mot[data-id="${dataprox.motId}"]`)).addClass('danger')
 
     if ( dataprox.prevMot ) {
       var prevSelector = `.mot[data-id="${dataprox.prevMot.id}"]`
-      $(container.find(prevSelector)).addClass('danger')
+      $(UI.texte.find(prevSelector)).addClass('danger')
     }
     if ( dataprox.nextMot ) {
       var nextSelector = `.mot[data-id="${dataprox.nextMot.id}"]`
-      $(container.find(nextSelector)).addClass('danger')
+      $(UI.texte.find(nextSelector)).addClass('danger')
     }
 
     // Pour renseigner sur la proximité
@@ -357,6 +404,9 @@ class Proximity {
   }
   static get sortByCanon(){return this._sortByCanon || false}
 
+  static get optionAllProximites(){
+    return document.querySelector('#cb-show-all-prox').checked
+  }
 
   /**
 
@@ -371,7 +421,7 @@ class Proximity {
 
     // Il faut désactiver la proximité courante si c'est elle qui
     // est corrigée.
-    if ( this.currentProx && this.currentProx.id === iprox.id) this.unshowCurrent()
+    if ( this.current && this.current.id === iprox.id) this.unshowCurrent()
 
     // Dans les résultats
     // ------------------
@@ -439,6 +489,17 @@ class Proximity {
   constructor(data){
     this.data = data
     for (var k in data) { this[k] = data[k] }
+  }
+
+  /**
+    Méthode appelée quand on active le bouton "Ignorer" sur la proximité
+  **/
+  ignore(){
+    var cancelLink = Dom.createButton({onclick:`Proximity.unignore.call(Proximity,${this.id})`,text:'Annuler'})
+    UI.flash(`Cette proximité est ignorée. ${cancelLink.outerHTML}.`, {keep:true})
+    this.ignored = true
+    if ( Proximity.current.id === this.id ) Proximity.unshowCurrent()
+    Proximity.modified = true
   }
 
   get spanA(){return UI.texte.find(`.mot[data-id="${this.motA.id}"]`)}

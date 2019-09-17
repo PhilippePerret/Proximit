@@ -1,7 +1,7 @@
 ---
 :class: TextAnalyzer::Analyse::TableResultats
 :datas:
-  :text_analyzer_version: 0.1.2
+  :text_analyzer_version: 0.2.0
   :current_offset: 127
   :current_id_mot: 24
   :last_id_proximite: 0
@@ -654,8 +654,8 @@
             :nombre_occurences: 1
             :nombre_proximites: 0
             :distance_minimale: 1500.0
-      :created_at: 2019-09-11 15:46:24.768430000 +03:00
-      :updated_at: 2019-09-11 15:46:24.768431000 +03:00
+      :created_at: 2019-09-17 15:58:22.451173000 +03:00
+      :updated_at: 2019-09-17 15:58:22.451174000 +03:00
   :mots:
     :class: TextAnalyzer::Analyse::TableResultats::Mots
     :datas:
@@ -726,8 +726,8 @@
         - 23
         lourd:
         - 24
-      :created_at: 2019-09-11 15:46:24.768489000 +03:00
-      :updated_at: 2019-09-11 15:46:24.768490000 +03:00
+      :created_at: 2019-09-17 15:58:22.451239000 +03:00
+      :updated_at: 2019-09-17 15:58:22.451244000 +03:00
   :proximites:
     :class: TextAnalyzer::Analyse::TableResultats::Proximites
     :datas:
@@ -744,9 +744,9 @@
             :motB_id: 13
             :distance: 7
             :distance_minimale: 1500.0
-            :created_at: 2019-09-11 15:46:24.768541000 +03:00
-            :updated_at: 2019-09-11 15:46:24.768542000 +03:00
-      :created_at: 2019-09-11 15:46:24.768544000 +03:00
-      :updated_at: 2019-09-11 15:46:24.768545000 +03:00
-  :created_at: 2019-09-11 15:46:24.768550000 +03:00
-  :updated_at: 2019-09-11 15:46:24.768550000 +03:00
+            :created_at: 2019-09-17 15:58:22.451314000 +03:00
+            :updated_at: 2019-09-17 15:58:22.451315000 +03:00
+      :created_at: 2019-09-17 15:58:22.451319000 +03:00
+      :updated_at: 2019-09-17 15:58:22.451320000 +03:00
+  :created_at: 2019-09-17 15:58:22.451322000 +03:00
+  :updated_at: 2019-09-17 15:58:22.451323000 +03:00

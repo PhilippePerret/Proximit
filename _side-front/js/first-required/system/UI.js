@@ -37,32 +37,45 @@ const UI = {
 
   // Pour écrire un message dans le pied de page
   message(msg, style){
-    this.flash(msg, style || 'notice')
+    this.flash(msg, {style: style || 'notice'})
   }
 , error(msg){
-    this.flash(msg, 'warning')
+    this.flash(msg, {style:'warning'})
   }
 
-, flash(msg, style){
+  /**
+    Affiche un message
+    @param {String} msg   Le message à afficher
+    @param {Hash|String}  options   Les options ou le style
+                          keep:     Si true, on ne fait pas disparaitre le message
+                          style:    Le style, 'notice', 'neutre' ou 'warning'
+  **/
+, flash(msg, options){
     const my = this
+    if ( 'string' === typeof options ) options = {style:options}
+    else { options = options || {} }
     // Si un timer de destruction est en route, il faut l'interrompre
     my.flashTimer && this.clearFlashTimer()
     let divFlash = document.querySelector('#flash') || Dom.createDiv({id:'flash'})
-      , divMsg   = Dom.createDiv({class:style||'notice', text:msg})
+      , divMsg   = Dom.createDiv({class:options.style||'notice', text:msg})
     divFlash.append(divMsg)
     document.body.append(divFlash)
-    let nombre_mots = msg.split(' ').length
-    if ( nombre_mots < 6 ) nombre_mots = 6
-    let laps = 1000 * ( nombre_mots / 1.5 )
-    my.flashTimer = setTimeout(()=>{
-      let flash = document.querySelector('#flash')
-      flash.classList.add('vanish')
-      my.clearFlashTimer()
+    // Sauf si l'option 'keep' est activée, il faudra supprimer le message
+    // au bout d'un certain temps
+    if ( !options.keep ) {
+      let nombre_mots = msg.split(' ').length
+      if ( nombre_mots < 6 ) nombre_mots = 6
+      let laps = 1000 * ( nombre_mots / 1.5 )
       my.flashTimer = setTimeout(()=>{
-        flash.remove()
+        let flash = document.querySelector('#flash')
+        flash.classList.add('vanish')
         my.clearFlashTimer()
-      }, laps + 5000)
-    }, laps)
+        my.flashTimer = setTimeout(()=>{
+          flash.remove()
+          my.clearFlashTimer()
+        }, laps + 5000)
+      }, laps)
+    }
   }
 
 , clearFlashTimer(){
@@ -72,15 +85,17 @@ const UI = {
   }
 
 , waiter(msg, container, img) {
+    if (undefined === this.waiters) this.waiters = []
     img = img || HORLOGE_ATTENTE
-    container = container || $(document)
+    container = container || document.body
     let divWaiter = Dom.createDiv({id:'#waiter'})
     if ( msg ) divWaiter.append(Dom.createDiv({text:msg, class:'message center'}))
     divWaiter.append(Dom.createDiv({text:img, class:'waiter center'}))
     $(container).append(divWaiter)
-    return new Promise((ok,ko)=>{
-      setTimeout(ok,200)
-    })
+    return new Promise((ok,ko)=>{setTimeout(ok,200)})
+  }
+, stopWaiter(){
+    $('#waiter').remove()
   }
 
 , init(){
