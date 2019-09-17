@@ -445,6 +445,28 @@ class Proximity {
   }
 
 
+  /**
+    Sauvegarde de tous les canons du texte courant, sous une forme que
+    pourra recharger Proximit
+  **/
+  static save(){
+    const my = this
+    return new Promise((ok,ko)=>{
+      let writeStream = fs.createWriteStream(my.jsonDataPath);
+      writeStream.write(my.jsonData(), 'utf-8');
+      writeStream.on('finish', () => {
+          console.log('Toutes les proximités ont été écrites dans le fichier');
+          ok()
+      });
+      writeStream.end();
+    })
+  }
+  static jsonData(){
+    var djson = Object.values(this.items).map(item => item.to_json)
+    return '[' + djson.join(', ') + ']'
+  }
+  static get jsonDataPath(){return PTexte.current.in_prox('proximites.json')}
+
 
   /** ---------------------------------------------------------------------
     |
@@ -588,17 +610,37 @@ class Proximity {
     return 'TextAnalyzer::Analyse::TableResultats::Proximite'
   }
 
+  /**
+    Les propriétés qui doivent être sauvées dans les fichiers propres à
+    proximit, c'est-à-dire ceux enregistrés en javascript lorsque des
+    corrections (ou non, d'ailleurs) ont été exécutée.
+    On en profite pour réduire la longueur des noms de propriétés afin
+    d'obtenir des fichiers json beaucoup moins volumineux en cas de texte
+    long, comme des romans.
+  **/
   get properties(){
     return {
-        fixed:      {hname: "Proximité corrigée", values: [true,false]}
-      , erased:     {hname: "Proximité supprimée", values: [true, false]}
-      , ignored:    {hname: "Proximité à ignorer", values: [true, false]}
-      , motA_id:    {hname: "Index du premier mot de la proximité"}
-      , motB_id:    {hname: "Index du second mot de la proximité"}
-      , distance:   {hname: "Distance entre les deux mots"}
-      , distance_minimale: {hname: "Distance minimale de proximité (en deça, les mots sont en proximité)"}
-      , created_at: {hname: "Date de création de cette proximité"}
-      , updated_at: {hname: "Date de modification de cette proximité"}
+        'id':         'id'
+      , 'ignored':    'i'
+      , 'motA_id':    'ma'
+      , 'motB_id':    'mb'
+      , 'distance':   'd'
+      , 'distance_minimale': 'dm'
+      // Propriétés normalement inutile puisque la proximité est détruite
+      , 'fixed':      'f' // inutile
+      , 'erased':     'e' // inutile
     }
   }
+  // Retourne les propriétés à sauver sous la forme d'une table json
+  get to_json(){
+    let djson = {}
+    for (var prop in this.properties ) {
+      var val = this[prop]
+      if ( val === null || val === undefined ) continue ;
+      var propInFile = this.properties[prop]
+      Object.assign(djson, {[propInFile]: val})
+    }
+    return JSON.stringify(djson)
+  }
+
 }

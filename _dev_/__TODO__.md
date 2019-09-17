@@ -1,3 +1,9 @@
+* Poursuivre les tests de l'enregistrement des données modifiées
+  - corriger le test qui ne passe pas
+  - vérifier la validité des fichiers de données
+  
+* Pouvoir recharger les données à partir des nouveaux fichiers mots.json, canons.json, etc.
+
 * Poursuivre l'utilisation des inside-tests pour tester l'application
 
 * Quand on relance l'analyse d'un texte, si une proximité est affichée, il faut la supprimer pour repartir à zéro.

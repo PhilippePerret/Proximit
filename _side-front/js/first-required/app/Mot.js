@@ -30,10 +30,39 @@ class Mot {
   static add(dmot) {
     const mot = new Mot(dmot)
     if ( mot.id > this.lastId ) this.lastId = parseInt(mot.id,10)
+    if ( null === mot._idP || undefined === mot._idP ) {
+      if ( undefined === PTexte.current.firstMot ) {
+        PTexte.current.firstMot = mot
+      } else {
+        throw new Error(`"Le texte comporte déjà un premier mot, il ne devrait pas en avoir deux (premier mot : "${PTexte.current.firstMot.mot}" (#${PTexte.current.firstMot.id}), autre mot sans idP : "${mot.mot}" (#${mot.id}))…`)
+      }
+    }
     // console.log("Ajout du mot %d :", mot.id, mot)
     Object.assign(this.items, {[mot.id]: mot})
     return mot
   }
+
+  /**
+    Sauvegarde de tous les mots du texte courant, sous une forme que
+    pourra recharger Proximit
+  **/
+  static save(){
+    const my = this
+    return new Promise((ok,ko)=>{
+      let writeStream = fs.createWriteStream(my.jsonDataPath);
+      writeStream.write(my.jsonData(), 'utf-8');
+      writeStream.on('finish', () => {
+          console.log('Tous les mots ont été écrits dans le fichier');
+          ok()
+      });
+      writeStream.end();
+    })
+  }
+  static jsonData(){
+    var djson = Object.values(this.items).map(item => item.to_json)
+    return '[' + djson.join(', ') + ']'
+  }
+  static get jsonDataPath(){return PTexte.current.in_prox('mots.json')}
 
   /**
     Supprime le mot qui a pour instance {Mot} +imot+
@@ -208,6 +237,42 @@ class Mot {
   }
 
   get mot(){return this._real_init}
+
+  /**
+    Les propriétés qui doivent être sauvées dans les fichiers propres à
+    proximit, c'est-à-dire ceux enregistrés en javascript lorsque des
+    corrections (ou non, d'ailleurs) ont été exécutée.
+    On en profite pour réduire la longueur des noms de propriétés afin
+    d'obtenir des fichiers json beaucoup moins volumineux en cas de texte
+    long, comme des romans.
+  **/
+  get properties(){
+    return {
+        'id':         'id'
+      , 'idN':        'iN'
+      , 'idP':        'iP'
+      , 'canon':      'c'
+      , 'real_init':  'ri'
+      , 'real':       'r'
+      , 'downcase':   'd'
+      , 'lemma':      'l'
+      , 'sortish':    's'
+      , 'tbw':        't'
+      , 'offset':     'o'
+      , 'rel_offset': 'ro'
+    }
+  }
+  // Retourne les propriétés à sauver sous la forme d'une table json
+  get to_json(){
+    let djson = {}
+    for (var prop in this.properties ) {
+      var val = this[prop]
+      if ( val === null || val === undefined ) continue ;
+      var propInFile = this.properties[prop]
+      Object.assign(djson, {[propInFile]: val})
+    }
+    return JSON.stringify(djson)
+  }
 
   // ---------------------------------------------------------------------
   //  PROPERTIES SAVED

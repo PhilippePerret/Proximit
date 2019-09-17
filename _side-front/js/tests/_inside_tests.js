@@ -178,7 +178,7 @@ Object.assign(TESTS,{
     const pending_count = this.pendings.length
         , pending   = pending_count > 0
         , s_pending = (!pending || pending_count > 1) ? 's' : '';
-    const couleur = failure ? 'red' : 'blue'
+    const couleur = failure ? 'red' : 'green'
     console.log("\n\n")
     console.log(`%c${this.success_count} succès,  ${failures_count} failure${s_failure},  ${pending_count} pending${s_pending}`, `font-size:1.3em;color:${couleur};font-weight:bold;`)
     this.errors.forEach(dfailure => {

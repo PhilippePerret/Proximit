@@ -24,6 +24,7 @@
     "glob": "^7.1.4",
     "jquery": "^3.4.1",
     "mysql2": "^1.6.5",
-    "nlp-js-tools-french": "^1.0.9"
+    "nlp-js-tools-french": "^1.0.9",
+    "rimraf": "^3.0.0"
   }
 }

@@ -113,7 +113,7 @@ TESTS.add("Modification d'une proximité avec nouveau mot sans proximité ni can
 
 
 
-TESTS.add(true, "Modification (refusée) d'une proximité avec mot créant une nouvelle proximité avec un autre canon dont le mot se trouve dans le texte affiché", async function(){
+TESTS.add("Modification (refusée) d'une proximité avec mot créant une nouvelle proximité avec un autre canon dont le mot se trouve dans le texte affiché", async function(){
 
   /**
     NOTES
@@ -160,7 +160,7 @@ TESTS.add(true, "Modification (refusée) d'une proximité avec mot créant une n
 
 })
 
-TESTS.add(true, "Cas : correction proximité MAIS nouvelle proximité avec mot : canon existant, proche après hors texte affiché", async function(){
+TESTS.add("Cas : correction proximité MAIS nouvelle proximité avec mot : canon existant, proche après hors texte affiché", async function(){
 
   /**
     NOTES
@@ -224,3 +224,4 @@ TESTS.add("Modification acceptée d'une proximité avec mot créant une nouvelle
 // * Faire une modification avec plusieurs mots simples où tous les canons doivent être faits
 // * Faire une modification avec plusieurs mots et des ponctuations
 // * Faire une modification qui supprime deux proximités en même temps
+// * Faire une proximité qui touche le premier mot, et vérifier que le premier mot du texte (firstMot), qui permet de le reconstruire à l'enregistrement, ait bien été modifié (sinon, il sera impossible de reconstruire le texte sans rechercher le premier mot)

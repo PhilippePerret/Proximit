@@ -22,7 +22,7 @@ class PTexte {
     Pour le moment, elle demande à choisir le texte s'il n'y a pas de texte
     courant mais plus tard, le menu sera désactivé
   **/
-  static analyseCurrent(){
+  static analyseCurrent(callback){
     const my = this
     if ( undefined === my.current ) my.chooseText()
     if ( undefined === my.current ) return ; // annulation
@@ -39,6 +39,7 @@ class PTexte {
         // pu faire l'analyse. On prépare aussi les boutons, etc.
         my.current.analyzed = true
         PTexte.current.init()
+        if ('function' === typeof callback) callback.call()
       }
     })
   }
@@ -133,6 +134,55 @@ class PTexte {
     this.isAnalyzed && this.initWhenAnalyzed()
     // Écriture de l'état du texte
     this.writeState()
+    this.inited = true
+  }
+
+  /**
+    Sauvegarde de toutes les données courantes
+
+    Note : cette méthode ne sauvent pas dans les mêmes fichiers que
+    l'analyse ruby. Ici, on utilise mots.json, canons.json, proximites.json
+    et corrected_text.txt (et peut-être d'autres fichiers à l'avenir)
+  **/
+  async save(){
+    console.log("*** SAUVEGARDE DE L'ANALYSE DU TEXTE '%s'…", this.name)
+    await Mot.save()
+    await Canon.save()
+    await Proximity.save()
+    await this.saveTexte()
+    console.log("=== DONNÉES PROXIMIT SAUVEGARDÉES AVEC SUCCÈS ===")
+  }
+  /**
+    Sauvegarde de tous les canons du texte courant, sous une forme que
+    pourra recharger Proximit
+  **/
+  saveTexte(){
+    const my = this
+    return new Promise((ok,ko)=>{
+      let writeStream = fs.createWriteStream(my.correctedTextPath);
+      writeStream.write(my.correctedText, 'utf-8');
+      writeStream.on('finish', () => {
+          console.log('Toutes les proximités ont été écrites dans le fichier');
+          ok()
+      });
+      writeStream.end();
+    })
+  }
+  get correctedTextPath(){return this.in_prox('corrected_text.txt')}
+
+  /**
+    Retourne le texte intégral corrigé
+    Attention, ce texte peut être immense (tout un livre)
+  **/
+  get correctedText(){
+    var fulltext = ''
+    var curMot = this.firstMot
+    while ( curMot ) {
+      fulltext  = fulltext.concat(curMot.mot, (curMot.tbw||''))
+      curMot    = curMot.motN
+    }
+    console.log("LONGUEUR TEXTE RETOURNÉ : %d", fulltext.length)
+    return fulltext
   }
 
   /**

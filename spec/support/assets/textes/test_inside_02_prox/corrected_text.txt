@@ -1,0 +1,5 @@
+Ce de la sauvegarde du texte modifié.
+
+Le texte a été corrigé ou non avant sa sauvegarde.
+
+

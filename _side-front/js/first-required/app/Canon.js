@@ -139,6 +139,27 @@ class Canon {
     UI.infos_proximites.find('#nombre_canons').innerHTML = Object.keys(this.items).length
   }
 
+  /**
+    Sauvegarde de tous les canons du texte courant, sous une forme que
+    pourra recharger Proximit
+  **/
+  static save(){
+    const my = this
+    return new Promise((ok,ko)=>{
+      let writeStream = fs.createWriteStream(my.jsonDataPath);
+      writeStream.write(my.jsonData(), 'utf-8');
+      writeStream.on('finish', () => {
+          console.log('Tous les canons ont été écrits dans le fichier');
+          ok()
+      });
+      writeStream.end();
+    })
+  }
+  static jsonData() {
+    var djson = Object.values(this.items).map(item => item.to_json)
+    return '[' + djson.join(', ') + ']'
+  }
+  static get jsonDataPath(){return PTexte.current.in_prox('canons.json')}
 
   /** ---------------------------------------------------------------------
     |
@@ -313,4 +334,47 @@ class Canon {
     }
     return false
   }
-}
+
+  /**
+    Les propriétés qui doivent être sauvées dans les fichiers propres à
+    proximit, c'est-à-dire ceux enregistrés en javascript lorsque des
+    corrections (ou non, d'ailleurs) ont été exécutée.
+    On en profite pour réduire la longueur des noms de propriétés afin
+    d'obtenir des fichiers json beaucoup moins volumineux en cas de texte
+    long, comme des romans.
+  **/
+  get properties(){
+    return {
+        'canon':              'c'
+      , 'distance_minimale':  'dm'
+      , 'nombre_proximites':  'np'
+      , 'nombre_occurences':  'nm'
+      , 'mots':               'ms'
+      , 'proximites':         'ps'
+    }
+  }
+  // Retourne les propriétés à sauver sous la forme d'une table json
+  get to_json(){
+    let djson = {}
+    for (var prop in this.properties ) {
+      var val = this.getValFor(prop)
+      if ( val === null || val === undefined ) continue ;
+      var propInFile = this.properties[prop]
+      Object.assign(djson, {[propInFile]: val})
+    }
+    return JSON.stringify(djson)
+  }
+
+  /**
+    Les valeurs étant presque toutes modifiées à l'instanciation du canon,
+    il faut les recalculer pour les enregistrer
+  **/
+  getValFor(property){
+    switch(property){
+      case 'mots':        return this.mots.map(mot => mot.id)
+      case 'proximites':  return this.proximites.map(prox => prox.id)
+      default:            return this[property]
+    }
+  }
+
+}// Canon
