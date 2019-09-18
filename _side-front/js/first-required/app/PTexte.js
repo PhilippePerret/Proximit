@@ -228,7 +228,7 @@ class PTexte {
     this.saveData()
     console.log("=== DONNÉES PROXIMIT SAUVEGARDÉES AVEC SUCCÈS ===")
     console.timeEnd('Sauvegarde')
-    UI.flash("Fin de la sauvegarde", 'neutre')
+    UI.flash("Fin de la sauvegarde", {style:'neutre', replace:true})
   }
 
   /**

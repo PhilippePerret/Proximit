@@ -56,6 +56,7 @@ Object.assign(UI,{
     UI.middleColumn.append(Dom.createDiv({id:'prox_message'}))
     UI.leftColumn.append(Dom.createDiv({id:'full_texte'}))
     UI.leftColumn.append(Dom.createDiv({id:'infos_current_proximity'}))
+    UI.leftColumn.append(Dom.createDiv({id:'infos_danger_proximity'}))
   }
 })
 
@@ -64,6 +65,9 @@ Object.defineProperties(UI,{
   // Le bloc où écrire l'intégralité du texte
   texte:{get(){return this._texte || (this._texte = new UIObject('#full_texte'))}}
 
+, infos_danger_proximity:{get(){
+    return this._infdangprox || (this._infdangprox = new UIObject('#infos_danger_proximity'))
+  }}
 , infos_current_proximity:{get(){
     return this._infcurprox || ( this._infcurprox = new UIObject('#infos_current_proximity'))
   }}

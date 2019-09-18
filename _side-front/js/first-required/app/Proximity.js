@@ -175,10 +175,12 @@ class Proximity {
     |
   **/
 
+  // Doit montrer la première proximité
   static showFirst(){
     this.current_index = -1
     this.showNext()
   }
+  // Doit montrer la dernière proximité
   static showLast(){
     this.current_index = this.sortedItems.length
     this.showPrev()
@@ -217,6 +219,15 @@ class Proximity {
     }
   }
 
+  // Afficher la proximité d'index +idx+
+  static show(idx){
+    this.unshowDangers() // chaque fois
+    if ( this.current ) this.unshowCurrent()
+    this.current_index = parseInt(idx,10)
+    this.current = this.sortedItems[idx]
+    this.current.show()
+  }
+
   static unshowCurrent(){
     this.current.unshow()
     delete this.current
@@ -243,14 +254,6 @@ class Proximity {
     } else {
       UI.error("Je ne peux pas désignorer une proximité qui n'est pas ignorée.")
     }
-  }
-
-  // Afficher la proximité d'index +idx+
-  static show(idx){
-    if ( this.current ) this.unshowCurrent()
-    this.current_index = parseInt(idx,10)
-    this.current = this.sortedItems[idx]
-    this.current.show()
   }
 
   // On enlève la classe 'danger' aux précédents mots mis en exergue
@@ -288,29 +291,33 @@ class Proximity {
     this.unshowDangers()
 
     // Il faut mettre en exergue le mot dataprox.motId (celui qui a été changé)
-    $(UI.texte.find(`.mot[data-id="${dataprox.motId}"]`)).addClass('danger')
+    let refObj = UI.texte.find(`.mot[data-id="${dataprox.motId}"]`)
+      , nearObj, nearDataId, nearSelector
+    $(refObj).addClass('danger')
 
-    if ( dataprox.prevMot ) {
-      var prevSelector = `.mot[data-id="${dataprox.prevMot.id}"]`
-      $(UI.texte.find(prevSelector)).addClass('danger')
-    }
-    if ( dataprox.nextMot ) {
-      var nextSelector = `.mot[data-id="${dataprox.nextMot.id}"]`
-      $(UI.texte.find(nextSelector)).addClass('danger')
-    }
+    nearDataId    = dataprox.prevMot ? dataprox.prevMot.id : dataprox.nextMot.id
+    nearSelector  = `.mot[data-id="${nearDataId}"]`
+    nearObj       = UI.texte.find(nearSelector)
+    $(nearObj).addClass('danger')
+
+    // Il faut la rendre visible (autant que possible)
+    UI.rendVisible(nearObj, {smooth:false})
+    UI.rendVisible(refObj, {fromTop: 10})
 
     // Pour renseigner sur la proximité
-    let proxInfo = [`avec`]
+    let proxInfo = []
     if (dataprox.prevMot){
-      proxInfo.push(`le mot précédent "${dataprox.prevMot.mot}" (#${dataprox.prevMot.id}) à ${dataprox.prevDistance} signes`)
+      proxInfo.push(dataprox.prevMot.mot, '⇤', dataprox.prevDistance, '→')
     }
+    proxInfo.push(Mot.get(dataprox.motId).mot)
     if (dataprox.nextMot) {
-      if (dataprox.prevMot) proxInfo.push('et')
-      proxInfo.push(`le mot suivant "${dataprox.nextMot.mot}" (#${dataprox.nextMot.id}) à ${dataprox.nextDistance} signes`)
+      proxInfo.push('←', dataprox.nextDistance, '⇥', dataprox.nextMot.mot)
     }
-    proxInfo = proxInfo.join(' ')
-    UI.proxMessage(`Une nouvelle proximité a été trouvée ${proxInfo}.\nPour confirmer ce choix, cliquez sur « Confirmer ».\nDans le cas contraire, modifiez-la.`, 'warning')
+    proxInfo.push(`<button type="button" onclick="ProxModif.confirmCurrent.call(ProxModif)">Confirmer</button>`)
+    UI.infos_danger_proximity.clean().append(proxInfo.join(' '))
+    UI.proxMessage(`Nouvelle proximité trouvée. Pour confirmer ce choix, cliquez sur le bouton « Confirmer » ou corrigez-la.`, 'warning')
   }
+
 
   /**
     Pour afficher les proximités, on ne procède pas toujours dans le sens
@@ -570,7 +577,7 @@ class Proximity {
   **/
   ignore(){
     var cancelLink = Dom.createButton({onclick:`Proximity.unignore.call(Proximity,${this.id})`,text:'Annuler'})
-    UI.flash(`Cette proximité est ignorée. ${cancelLink.outerHTML}.`, {keep:true})
+    UI.flash(`Cette proximité est ignorée. ${cancelLink.outerHTML}`, {keep:true})
     this.ignored = true
     if ( Proximity.current.id === this.id ) Proximity.unshowCurrent()
     Proximity.modified = true

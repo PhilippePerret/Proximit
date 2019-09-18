@@ -18,13 +18,16 @@ body > section#left-column #infos_current_proximity {
   font-size:9pt;
 }
 
-body > section#right-column #infos_texte {
-  width:90%;
+body > section#left-column #infos_danger_proximity {
+  text-align:center;
+  font-family:Arial;
+  font-size:9pt;
+  color:red;
+  font-weight:bold;
 }
 
-section#left-column div#current_proximity {
-  /* display:inline-block; */
-  margin:1em;
+body > section#right-column #infos_texte {
+  width:90%;
 }
 
 section#middle-column div.buttons {

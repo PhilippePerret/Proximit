@@ -14,6 +14,25 @@ class ProxModif {
     delete this._current; this._current = undefined;
   }
 
+  /**
+    Méthode permettant de confirmer la proximité créée (en en corrigeant une
+    autre). Toute les données se trouve dans ProxModif.current
+
+    Cette méthode ne peut être appelée que lorsque pour supprimer une proximité
+    on en a généré une nouvelle (volontairement ou involontairement).
+
+  **/
+  static confirmCurrent(){
+    console.log("Donnée de la modif :", this.current)
+    const proxData = this.current
+    // On supprime la proximité qui disparait (en fait, on doit faire le
+    // même travail que lorsque le nouveau mot ne crée pas de problème)
+    // TODO
+    // On ajoute la nouvelle proximité créée
+    // TODO
+    UI.flash("Modification confirmée.", 'neutre')
+  }
+
   // Instanciation d'une modification de proximité demandée.
   // Note : avant d'appeler cette instanciation, il faut s'assurer que les
   // mots sont différents.
@@ -220,6 +239,7 @@ class ProxModif {
     if ( data_proxims.closestMot ) {
       // Un mot proche a été trouvé
       // Il faut l'indiquer à l'utilisateur en employant une autre couleur
+      this.dangerData = data_proxims
       Proximity.showDanger(data_proxims)
       return false
     } else {
