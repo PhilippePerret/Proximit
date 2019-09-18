@@ -141,7 +141,7 @@ class Proximity {
   }
 
   static showNombre(){
-    UI.infos_proximites.find('#nombre_proximites').innerHTML = this.count()
+    UI.infos_proximites.find('#nombre_proximites').innerHTML = this.realCount()
   }
   static showNombreCorrected(){
     UI.infos_proximites.find('#corrected_proximites').innerHTML = this.correctedCount || 0
