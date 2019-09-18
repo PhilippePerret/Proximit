@@ -100,6 +100,44 @@ class PTexte {
   **/
   static loadCurrent(){ this.current.load() }
 
+  static reloadCurrent(){
+    if ( this.current ) {
+      this.loadCurrent()
+    } else {
+      UI.error("Il faut d'abord choisir un texte à recharger !")
+    }
+  }
+
+  static resetCurrent(){
+    if ( this.current ) {
+      var opts = {
+        buttons: [
+            {text:'Non', onclick:()=>{UI.message('Opération abandonnée','neutre')}}
+          , {text:'OUI',onclick:this.proceedResetCurrent.bind(this)}
+        ]
+      }
+      ask("La ré-initialisation consiste à revenir à la dernière analyse du texte.\n\nCette ré-initialisation va détruire toutes les modifications et corrections opérées.\n\nVoulez-vous vraiment procéder à cette opération ?", opts)
+    } else {
+      UI.error("Aucun texte courant à réinitialiser…")
+    }
+  }
+  static async proceedResetCurrent(){
+    await UI.waiter("Ré-initialisation complète du texte…")
+    try {
+      const ptexte = this.current
+          , files  = ['mots.json','canons.json','proximites.json', 'corrected_text.txt']
+      files.forEach( fname => {
+        var fpath = ptexte.in_prox(fname)
+        fs.existsSync(fpath) && fs.unlinkSync(fpath)
+        fs.existsSync(fpath) && raise(`Le fichier "${fpath}" aurait dû être détruit…`)
+        console.log("Destruction du fichier '%s'", fname)
+      })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      UI.stopWaiter()
+    }
+  }
 
   /**
     |
@@ -144,6 +182,8 @@ class PTexte {
     On charge ses résultats s'il est déjà analysé et on affiche ses informations
   **/
   async init(){
+    UI.flash("Affichage du texte, merci de patienter…",{style:'neutre', keep:true, waiter:true})
+
     $('.texte_title').html(this.title)
     this.setTexteHeight()
     delete this.firstMot
@@ -154,6 +194,7 @@ class PTexte {
     this.writeState()
 
     this.inited = true
+    UI.flash("Texte prêt à être travaillé.", {style:'neutre',replace:true})
   }
 
   /**
@@ -173,14 +214,23 @@ class PTexte {
     et corrected_text.txt (et peut-être d'autres fichiers à l'avenir)
   **/
   async save(){
+    UI.flash("Enregistrement des données, merci de patienter…",{style:'warning', keep:true, waiter:true})
+    console.time('Sauvegarde')
     console.log("*** SAUVEGARDE DE L'ANALYSE DU TEXTE '%s'…", this.name)
+    console.log("* Sauvegarde des données mots…")
     await Mot       .saveData()
+    console.log("  = OK (mots)")
+    console.log("* Sauvegarde des données Canons…")
     await Canon     .saveData()
+    console.log("  = OK (canons)")
     await Proximity .saveData()
     await this      .saveTexte()
     this.saveData()
     console.log("=== DONNÉES PROXIMIT SAUVEGARDÉES AVEC SUCCÈS ===")
+    console.timeEnd('Sauvegarde')
+    UI.flash("Fin de la sauvegarde", 'neutre')
   }
+
   /**
     Sauvegarde de tous les canons du texte courant, sous une forme que
     pourra recharger Proximit
@@ -240,6 +290,10 @@ class PTexte {
 
       // On peuple les proximités (soit de la table des résultats)
       await Proximity.loadData()
+
+      // Les mots et les proximités sont enregistrés seulement par leur
+      // identifiant. Il faut les transformer en instance
+      Canon.dispatchMotsEtProximites.call(Canon)
 
       // Pour afficher les informations concernant les proximités et régler
       // les boutons qui permettent de les afficher.
@@ -302,10 +356,10 @@ class PTexte {
   **/
   checkData(){
     let datas = this.getDatas()
-    // On doit lire le fichier data.json
+
     // On doit vérifier que les nombres enregistrés dedans (if any) correspondent aux
     // nombre chargés
-    if ( undefined === datas.lastId_mot ) return ; // pas encore enregistré
+    if ( !fs.existsSync(this.correctedTextPath) ) return ; // pas encore enregistré
 
     this.checkValue('nombre mots')
     this.checkValue('nombre canons')

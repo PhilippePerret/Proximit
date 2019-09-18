@@ -125,6 +125,7 @@ div#flash {
 }
 div#flash > div {
   padding:8px 24px;
+  position:relative;
 }
 div#flash > div.neutre {
   background-color:black;
@@ -137,6 +138,10 @@ div#flash > div.notice {
 div#flash > div.warning {
   background-color:#E81212;
   color:white;
+}
+div#flash > div img.waiter {
+  position:absolute;
+  left: -20px;
 }
 div#flash.vanish {
   opacity:0;

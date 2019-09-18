@@ -47,9 +47,8 @@ class Canon {
     console.log("= Données Canon chargées.")
   }
 
-  static afterLoadingData(callback){
+  static dispatchMotsEtProximites(){
     this.forEach(canon => canon.dispatchMotsEtProximites())
-    callback.call() // le 'ok' de la promesse de IO.loadLargeJSONData
   }
 
   /**
@@ -70,8 +69,8 @@ class Canon {
     Sauvegarde de tous les canons du texte courant, sous une forme que
     pourra recharger Proximit
   **/
-  static async saveData(){
-    await IO.saveLargeJSONData(this, this.jsonDataPath)
+  static saveData(){
+    return IO.saveLargeJSONData(this, this.jsonDataPath)
   }
 
   // Chemin d'accès au fichier
@@ -175,8 +174,6 @@ class Canon {
     const my = this
     let canon = mot_init || can // 'mot_init' est null, si on a défini le canon 'can'
     let newCanon = my.createNew(canon)
-    // Il faut ajouter ce canon à la addendum
-    Addendum.addCanon(newCanon)
     if ( 'function' === typeof my.onSetCanon.poursuivre ) {
       my.onSetCanon.poursuivre(newCanon)
     }
@@ -254,7 +251,9 @@ class Canon {
     mots et proximites par des listes d'instances
   **/
   dispatchMotsEtProximites(){
-    this._mots        = this.mots.map(mot_id => Mot.get(mot_id))
+    let firstMot = this.mots[0]
+      , method   = 'number'==typeof(firstMot) ? Mot.get.bind(Mot) : Mot.add.bind(Mot)
+    this._mots        = this.mots.map(method)
     this._proximites  = this.proximites.map(px_id => Proximity.get(px_id))
   }
 
@@ -264,13 +263,15 @@ class Canon {
     this._mots
   **/
   dispatchMots(){
-    var arr = []
-    for ( var id in this.data.mots ) {
-      var mot = Mot.add(this.data.mots[id].datas)
-      arr.push(mot)
-    }
-    this._mots = arr
-    return arr
+    // Maintenant qu'on appelle toujours `dispatchMotsEtProximites`
+    this._mots = this.data.mots
+    // var arr = []
+    // for ( var id in this.data.mots ) {
+    //   var mot = Mot.add(this.data.mots[id].datas)
+    //   arr.push(mot)
+    // }
+    // this._mots = arr
+    return this._mots
   }
 
   // Retourne la liste {Array} des instances {Mot} des mots
@@ -358,8 +359,8 @@ class Canon {
     if ( undefined === this._proximites ) {
       this._proximites = []
       this.forEachMot( mot => {
-        if ( mot.proxP ) this._proximites.push(mot.proxP.id)
-        if ( mot.proxN ) this._proximites.push(mot.proxN.id)
+        if ( !isNullish(mot.proxP) ) this._proximites.push(mot.proxP.id)
+        if ( !isNullish(mot.proxN) ) this._proximites.push(mot.proxN.id)
       })
     }
     return this._proximites
@@ -422,7 +423,14 @@ class Canon {
   getValFor(property){
     switch(property){
       case 'mots':        return this.mots.map(mot => mot.id)
-      case 'proximites':  return this.proximites.map(prox => prox.id)
+      case 'proximites':
+        return this.proximites.map(prox => {
+          if ( prox ) { return prox.id }
+          else {
+            console.error("Problème avec la proximité ", prox)
+            return undefined
+          }
+        })
       default:            return this[property]
     }
   }

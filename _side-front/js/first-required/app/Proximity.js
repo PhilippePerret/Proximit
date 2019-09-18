@@ -548,8 +548,8 @@ class Proximity {
     Sauvegarde de toutes les Proximités du texte courant, sous une forme que
     pourra recharger Proximit
   **/
-  static async saveData(){
-    await IO.saveLargeJSONData(this, this.jsonDataPath)
+  static saveData(){
+    return IO.saveLargeJSONData(this, this.jsonDataPath)
   }
 
   static get jsonDataPath(){return PTexte.current.in_prox('proximites.json')}
@@ -629,7 +629,7 @@ class Proximity {
 
   showInfos(){
     let infos = `« ${this.motA.mot} » ← ${this.distance} → « ${this.motB.mot} » | dist.min : ${this.motA.icanon.proxDistance} | Offsets ${this.motA.offset} ↹ ${this.motB.offset}`
-    UI.infos_current_proximity.append(infos)
+    UI.infos_current_proximity.clean().append(infos)
   }
 
   get motA(){

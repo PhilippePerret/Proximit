@@ -21,9 +21,30 @@ const ObjMenus = {
       , submenu: [
           {
               label: 'Choisir le texte…'
+            , id: 'choose-ptexte'
             , accelerator: 'CmdOrCtrl+O'
             , enabled: true
             , click:function(){execJS("PTexte.chooseText.call(PTexte)")}
+          }
+        , {
+              label:'Recharger'
+            , id: 'reload-ptexte'
+            , accelerator: 'CmdOrCtrl+Shift+R'
+            , click:function(){execJS('PTexte.reloadCurrent.call(PTexte)')}
+          }
+        , { type:'separator' }
+        , {
+              label:'Reset…'
+            , id: 'reset-ptexte'
+            , click:function(){execJS('PTexte.resetCurrent.call(PTexte)')}
+          }
+        , { type:'separator' }
+        , {
+                label: 'Sauver'
+              , id: 'save-ptexte'
+              , accelerator: 'CmdOrCtrl+S'
+              , enabled: true
+              , click:function(){execJS("PTexte.saveCurrent.call(PTexte)")}
           }
         , { type:'separator' }
         , { role: 'quit' }

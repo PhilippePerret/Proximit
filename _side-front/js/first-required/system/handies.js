@@ -1,8 +1,18 @@
 'use strict'
 /**
   Handies
-  version : 1.0.1
+  version : 1.1.0
+
+  # 1.1.0
+    Ajout de la méthode isNullish
+    
 **/
+
+// Pour tester si une valeur est nulle ou indéfinie, mais pas égale à 0
+function isNullish(foo) {
+  return foo === undefined || foo === null
+}
+
 // Pour pouvoir utiliser par exemple 'correct || raise("Ça n’est pas correct")'
 function raise(msgErr) {
   throw new Error(msgErr)

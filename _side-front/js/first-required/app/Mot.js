@@ -59,8 +59,8 @@ class Mot {
      que pourra recharger Proximit
     @async
   **/
-  static async saveData(){
-    await IO.saveLargeJSONData(this, this.jsonDataPath)
+  static saveData(){
+    return IO.saveLargeJSONData(this, this.jsonDataPath)
   }
 
   // Chemin d'accès au fichier JSON contenant les données mots lorsqu'elles
@@ -84,6 +84,8 @@ class Mot {
     @return {Mot} l'instance créée.
   **/
   static add(dmot) {
+    // console.log("Mot::add(dmot =)", dmot)
+    if ( undefined !== dmot.datas) dmot = dmot.datas // depuis table résultats
     const mot = new Mot(dmot)
     if ( mot.id > this.lastId ) this.lastId = parseInt(mot.id,10)
     if ( null === mot._idP || undefined === mot._idP ) {

@@ -1,10 +1,13 @@
 * Ajouter le menu "Sauver" qui enregistrera les modifications
 
+* [BUG] Quand on demande à ignorer une proximité, il faut vérifier que cela ne provoque pas une nouvelle proximité par "saut". Par exemple, si on supprime la deuxième proximité de "un texte dans le texte pour un texte", est-ce qu'il ne faut pas que le premier et le troisième "texte" soit mis en proximité ? Ce serait en tout cas important de prévenir l'auteur
+  -> faire un test pour tester ce cas précis.
+
 * [BUG] Quand on charge un nouveau texte il faut nettoyer l'inferface
   - vider UI.texte
   - vider UI.infos_current_proximity
   - Autre ?
-  
+
 * Maintenant qu'on a tout le texte :
   - Rendre visible (dans la fenêtre) la proximité choisie
   - corriger le bug qui fait que tout le texte n'est pas affiché (en fait, quand un mot ne peut pas être analysé, il est quand même mis en mot suivant du précédent et ça coupe complètement la chaine — c'est arrivé avec un mot qui était un chiffre (les chiffres sont maintenant pris en compte et c'et arrivé avec un mot vide à cause de deux apostrophes qui se suivaient))
@@ -15,25 +18,10 @@
   - corriger le test qui ne passe pas
   - vérifier la validité des fichiers de données
 
-* Poursuivre l'utilisation des inside-tests pour tester l'application
-
-* Quand on relance l'analyse d'un texte, si une proximité est affichée, il faut la supprimer pour repartir à zéro.
 
 * Poursuivre la procédure de correction d'une proximité (en la testant au fur et à mesure)
-  - pour le moment, j'arrive à trouver ou définir le canon, à créer un nouveau canon si nécessaire, à créer un nouveau mot
-  La procédure de création du nouveau mot laisse à désirer car elle ne définit ni l'offset, ni les idP (mot avant) idN (mot après), tbw (texte entre le mot et le mot suivant), prox_id si le mot se retrouve en proximité avec d'autres mots et peut-être aussi d'autres propriétés
-  De ce que je vois aujourd'hui, il faut encore :
-    - programme Addendum pour enregistrer les modifications opérées au cours du processus
-    - inspecter les proximités des nouveaux mots fournis. S'il y en a, l'indiquer (sans demander confirmation, c'est l'auteur qui décide)
-    - retirer l'ancien mot de son canon
-    - modifier l'instance de proximité en fonction des modifications.
-
-* Maintenant, tous les mots sont enregistrés dans les canons, même lorsqu'ils sont non traitables (trop courts ou appartenant à des listes exclusions). Cela est nécessaire pour tous les avoir afin de reconstruire le texte correctement.
 
 * Étudier les cas de modification dans le document "Reflexions.md" > « Principe lors de la modification d'une proximité »
-
-* Créer un bouton "Déconsidérer" avec en title "déconsidérer une proximité signifie qu'on ne doit plus en tenir compte". Cette suppression fera une recherche pour voir si les deux mots rentrent en proximité avec d'autres mots autour.
-
 
 * # Quand on redemande l'analyse du texte, il semble que la précédente reste là. Il faut tout recharger après une analyse du texte courant ouvert.
 

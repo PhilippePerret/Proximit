@@ -20,15 +20,22 @@ const IO = {
                 notamment ses items et son pointeur
     @async
   **/
-, saveLargeJSONData(objet, path) {
-    return new Promise((ok,ko)=>{
+, saveLargeJSONData(objet, fpath) {
+    console.log("-> IO.saveLargeJSONData")
+    return new Promise((ok,ko) => {
       var transStream   = JSONStream.stringify()
-      var outputStream  = fs.createWriteStream(path)
+      var outputStream  = fs.createWriteStream(fpath)
       transStream.pipe( outputStream )
-      objet.forEach( mot => transStream.write (mot.forJSON))
+      objet.forEach( item => {
+        // console.log("Écriture de l'item", item)
+        transStream.write(item.forJSON)
+      })
       // objet[proprerty].forEach( transStream.write )
       transStream.end()
-      outputStream.on('finish', ok)
+      outputStream.on('finish', function handlerFinis(){
+        console.log("   <- fin saveLargeJSONData(%s)", fpath)
+        ok()
+      })
     })
   }
   /**

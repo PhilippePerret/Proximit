@@ -83,12 +83,13 @@ class MDialog {
   static ask(msg, options){
     options = options || {}
     Object.assign(options, {type: 'ask'})
+    options.buttons || raise("Il faut définir les boutons, avec la méthode 'aks' !")
     return (new HTMLDialog(msg,options)).show()
   }
 
 
   constructor(msg, options){
-    this.message = msg
+    this.message = msg.replace(/\n/g,'<br>')
     this.options = options
   }
   // Ouvre le fenêtre

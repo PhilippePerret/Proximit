@@ -1,12 +1,17 @@
 'use strict'
 /**
   Constante UI
-  version 1.3.0
+  version 1.3.1
   ------------
 
   Requis :
     - UI.css
     - img/divers/waiter-rond-bleu.gif
+
+  # version 1.3.1
+    * Option 'waiter' pour ajouter le "waiter" au bout d'un message.
+    * Option 'replace' pour remplacer le message précédent
+    * Amélioration de la gestion des messages
 
   # version 1.3.0
     Méthode `waiter` pour mettre un waiter d'attente sur la page
@@ -31,7 +36,7 @@
     Pour afficher des messages en bas de page.
 **/
 
-const HORLOGE_ATTENTE = '<img src="img/divers/waiter-rond-bleu.gif" />'
+const HORLOGE_ATTENTE = '<img class="waiter" src="img/divers/waiter-rond-bleu.gif" />'
 
 const UI = {
 
@@ -49,15 +54,24 @@ const UI = {
     @param {Hash|String}  options   Les options ou le style
                           keep:     Si true, on ne fait pas disparaitre le message
                           style:    Le style, 'notice', 'neutre' ou 'warning'
+                          replace:  Si true, le texte précédente est effacé et
+                                    remplacé par celui-là
+                          waiter:   Si true, un "waiter" est placé devant le message
   **/
 , flash(msg, options){
     const my = this
     if ( 'string' === typeof options ) options = {style:options}
     else { options = options || {} }
+    if ( options.waiter ) msg = `${HORLOGE_ATTENTE} ${msg}`
     // Si un timer de destruction est en route, il faut l'interrompre
     my.flashTimer && this.clearFlashTimer()
-    let divFlash = document.querySelector('#flash') || Dom.createDiv({id:'flash'})
-      , divMsg   = Dom.createDiv({class:options.style||'notice', text:msg})
+    let divFlash = document.querySelector('#flash')
+    if ( options.replace && divFlash ){
+      divFlash.remove()
+      divFlash = undefined
+    }
+    divFlash || (divFlash = Dom.createDiv({id:'flash'}))
+    let divMsg   = Dom.createDiv({class:options.style||'notice', text:msg})
     divFlash.append(divMsg)
     document.body.append(divFlash)
     // Sauf si l'option 'keep' est activée, il faudra supprimer le message
@@ -71,8 +85,8 @@ const UI = {
         flash.classList.add('vanish')
         my.clearFlashTimer()
         my.flashTimer = setTimeout(()=>{
-          flash.remove()
           my.clearFlashTimer()
+          flash.remove()
         }, laps + 5000)
       }, laps)
     }
@@ -82,13 +96,14 @@ const UI = {
     const my = this
     clearTimeout(my.flashTimer)
     my.flashTimer = null
+    document.querySelector('#flash').classList.remove('vanish')
   }
 
 , waiter(msg, container, img) {
     if (undefined === this.waiters) this.waiters = []
     img = img || HORLOGE_ATTENTE
     container = container || document.body
-    let divWaiter = Dom.createDiv({id:'#waiter'})
+    let divWaiter = Dom.createDiv({id:'waiter'})
     if ( msg ) divWaiter.append(Dom.createDiv({text:msg, class:'message center'}))
     divWaiter.append(Dom.createDiv({text:img, class:'waiter center'}))
     $(container).append(divWaiter)
