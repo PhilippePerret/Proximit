@@ -12,6 +12,12 @@ body > section#left-column #full_texte {
   font-family:Georgia;
 }
 
+body > section#left-column #infos_current_proximity {
+  text-align:center;
+  font-family:Arial;
+  font-size:9pt;
+}
+
 body > section#right-column #infos_texte {
   width:90%;
 }

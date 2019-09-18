@@ -585,7 +585,7 @@ class Proximity {
     correction par exemple.
   **/
   unshow(){
-    // On sélectionne le premier mot
+
     var mA = this.spanA
       , mB = this.spanB
 
@@ -594,6 +594,9 @@ class Proximity {
     mA.contentEditable = false
     $(mB).removeClass('exergue')
     mB.contentEditable = false
+
+    // On supprime les infos sur la proximité
+
   }
 
   /**
@@ -611,6 +614,9 @@ class Proximity {
     $(mB).addClass('exergue')
     mB.contentEditable = true
 
+    // Il faut afficher les infos sur cette proximités
+    this.showInfos()
+
     // Il faut observer les deux mots
     $(mA)
       .on('focus', this.motA.onFocus.bind(this.motA, this))
@@ -622,73 +628,9 @@ class Proximity {
       .on('blur', this.motB.onBlur.bind(this.motB, this))
   }
 
-  // Retourne le texte comprennant les deux mots
-  /**
-    | Retourne :
-    |   - la portion avant le premier mot (:before)
-    |   - le mot tel qu'il doit être affiché (:first_word)
-    |   - la portion entre les deux mots (:between)
-    |   - le mot tel qu'il doit être affiché (:second_word)
-    |   - la portion après le second mot (:after)
-  **/
-  textAround(min){
-    var addedLen = 0
-
-    // Longueur de texte qui doit être prise. On la calcule en fonction de
-    // l'éloignement des deux mots, pouor obtenir toujours la distance minimale.
-    const len = (this.motB.offset + this.motB.length) - this.motA.offset
-    // Si une longueur minimale est définie, il faut voir si elle est atteinte
-    // par l'intervalle entre les deux mots. Si ce n'est pas le cas, on
-    // aggrandit ce qu'on doit prendre autour
-    if ( undefined !== min && len < min) {
-      addedLen = Math.round((min - len) / 2)
-    }
-
-    // Pour obtenir le texte entre les deux mots, on boucle depuis l'id
-    // du premier mot (motA), jusqu'à l'id du second (motB) en ajoutant entre
-    // chaque mot l'espace :tbw
-    var next_mot = Mot.get(this.motA.idN) // il doit forcément exister
-    var between = this.motA.tbw // texte entre le motA et le mot suivant
-    while ( next_mot && next_mot.id != this.motB_id ) {
-      between += `<span class="mot" data-id="${next_mot.id}">${next_mot.mot}</span>`
-      between += next_mot.tbw
-      next_mot = Mot.get(next_mot.idN)
-    }
-    // console.log("between = '%s'", between)
-
-    // Reconstitution du texte avant
-    var before = ''
-    var before_len = 0
-    // console.log("this.motA.idP = ", this.motA.idP)
-    if ( undefined !== this.motA.idP ) {
-      // <= Il y a un mot avant le premier mot
-      // => On prend la longueur de texte voulue
-      var motref = Mot.get(this.motA.idP)
-      // console.log("motref:", motref)
-      while ( motref && (before_len < AROUND_LENGTH + addedLen) ) {
-        before = `<span class="mot" data-id="${motref.id}">${motref.mot}</span>` + motref.tbw + before
-        before_len += motref.mot.length + motref.tbw.length
-        motref = Mot.get(motref.idP)
-      }
-    }
-    // console.log("Before = '%s'", before)
-
-    // Reconstitution du texte après le second mot (motB)
-    var after = this.motB.tbw
-    var after_len = after.length
-    if ( undefined !== this.motB.idN) {
-      var motref = Mot.get(this.motB.idN)
-      while ( motref && (after_len < AROUND_LENGTH + addedLen) ) {
-        after += `<span class="mot" data-id="${motref.id}">${motref.mot}</span>` + motref.tbw
-        after_len += motref.mot.length + motref.tbw.length
-        motref = Mot.get(motref.idN)
-      }
-    }
-    // console.log("After = '%s'", after)
-
-    return {
-      before:before, first_word:this.motA.mot, between:between, second_word:this.motB.mot, after:after
-    }
+  showInfos(){
+    let infos = `« ${this.motA.mot} » ← ${this.distance} → « ${this.motB.mot} » | dist.min : ${this.motA.icanon.proxDistance} | Offsets ${this.motA.offset} ↹ ${this.motB.offset}`
+    UI.infos_current_proximity.append(infos)
   }
 
   get motA(){
@@ -737,7 +679,10 @@ class Proximity {
     long, comme des romans.
   **/
   get properties(){return this.constructor.properties}
+
   // Retourne les propriétés à sauver sous la forme d'une table json
+  // Dans cet enregistrements, les noms de propriétés sont toutes remplacées
+  // par des noms courts sur une ou deux lettres max.
   get forJSON(){
     let djson = {}
     for (var prop in this.properties ) {

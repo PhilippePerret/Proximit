@@ -1,20 +1,12 @@
 * Maintenant qu'on a tout le texte :
-  - afficher et tenir à jour le nombre de proximités ignorées/restantes
-  - Rendre visible la proximité choisie
-  - afficher les informations de la proximité courante
-  - pouvoir l'ignorer, et ce sera enregistré dans la proximité pour être retenu à chaque fois
-    => donc il faut mettre en place la procédure de rechargement des informations à partir des fichiers produits par javascript et non pas par ruby
+  - Rendre visible (dans la fenêtre) la proximité choisie
   - corriger le fait que tout le texte n'est pas affiché (en fait, quand un mot ne peut pas être analysé, il est quand même mis en mot suivant du précédent et ça coupe complètement la chaine — c'est arrivé avec un mot qui était un chiffre (les chiffres sont maintenant pris en compte et c'et arrivé avec un mot vide à cause de deux apostrophes qui se suivaient))
-  - quand on ignore une proximité, il faut en décrémenter le nombre
 
 * Peut-être qu'à l'avenir, avec les grands textes, on pourra fonctionner en n'en affichant qu'une partie. Mais garder beaucoup autour, afin de toujours donner l'impression qu'on a la totalité
-
 
 * Poursuivre les tests de l'enregistrement des données modifiées
   - corriger le test qui ne passe pas
   - vérifier la validité des fichiers de données
-
-* Pouvoir recharger les données à partir des nouveaux fichiers mots.json, canons.json, etc.
 
 * Poursuivre l'utilisation des inside-tests pour tester l'application
 
