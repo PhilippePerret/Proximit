@@ -613,6 +613,10 @@ class Proximity {
     $(mB).addClass('exergue')
     mB.contentEditable = true
 
+    // Il faut la rendre visible (autant que possible)
+    UI.rendVisible(mB, {smooth:false})
+    UI.rendVisible(mA, {fromTop: 40})
+
     // Il faut afficher les infos sur cette proximités
     this.showInfos()
 

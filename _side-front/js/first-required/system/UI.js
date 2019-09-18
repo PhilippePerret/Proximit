@@ -1,13 +1,19 @@
 'use strict'
 /**
   Constante UI
-  version 1.3.1
+  version 1.4.0
   ------------
 
   Requis :
     - UI.css
     - img/divers/waiter-rond-bleu.gif
 
+  # version 1.4.0
+    * Possibilité d'envoyer des options à la méthode 'rend_visible' pour
+      affiner les possibilité. 1. déterminer l'écartement avec le haut,
+      2. empêcher le déplacement 'smooth' pour placer deux éléments dans la
+      page
+      
   # version 1.3.1
     * Option 'waiter' pour ajouter le "waiter" au bout d'un message.
     * Option 'replace' pour remplacer le message précédent
@@ -144,8 +150,21 @@ const UI = {
   }
   /**
     Rend visible l'élément +o+ {HTMLElement} dans son parent
+
+    @param {Hash} options   Permet de définir des valeurs fixes.
+                            fromTop:  Si défini, détermine l'écart depuis le
+                                      haut de l'élément. Par défaut, c'est un
+                                      tiers si on descend et deux tiers si on
+                                      monte.
+                            :smooth   Si false, on se rend directement à l'objet
+                                      sans animation douce. Sert en général pour
+                                      placer deux éléments, le premier devant se
+                                      placer immédiatement à sa place pour ré-a-
+                                      juster avec le second.
   **/
-, rendVisible(o) {
+, rendVisible(o, options) {
+    options = options || {}
+
     let parent = o.parentNode
 
     let pBounds = parent.getBoundingClientRect()
@@ -184,16 +203,20 @@ const UI = {
       //   // <= On est en train de monter et l'item se trouve au-dessus
       //   // => Il faut placer l'item en bas
       //   tscroll = oSpace.from + pBounds.height - oBounds.height
-      tscrol = Math.round(oSpace.from - h.twoTiers)
+      tscrol = Math.round(oSpace.from - (options.fromTop || h.twoTiers))
       } else {
       //   // <= On est en train de descendre et l'item se trouve en dessous
       //   // => Il faut placer l'item en haut
       //   tscroll = oSpace.from
-      tscrol = Math.round(oSpace.from - h.oneTiers)
+      tscrol = Math.round(oSpace.from - (options.fromTop || h.oneTiers))
       }
       // console.log("L'item est en dehors, il faut le replacer. Scroll appliqué :", tscrol)
       // parent.scrollTo(0, tscrol)
-      parent.scroll({top: tscrol, behavior:'smooth'})
+      if ( options.smooth === false ) {
+        parent.scroll({top: tscrol, behavior:'auto'})
+      } else {
+        parent.scroll({top: tscrol, behavior:'smooth'})
+      }
     }
   }
 
