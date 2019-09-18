@@ -1,6 +1,13 @@
+* Ajouter le menu "Sauver" qui enregistrera les modifications
+
+* [BUG] Quand on charge un nouveau texte il faut nettoyer l'inferface
+  - vider UI.texte
+  - vider UI.infos_current_proximity
+  - Autre ?
+  
 * Maintenant qu'on a tout le texte :
   - Rendre visible (dans la fenêtre) la proximité choisie
-  - corriger le fait que tout le texte n'est pas affiché (en fait, quand un mot ne peut pas être analysé, il est quand même mis en mot suivant du précédent et ça coupe complètement la chaine — c'est arrivé avec un mot qui était un chiffre (les chiffres sont maintenant pris en compte et c'et arrivé avec un mot vide à cause de deux apostrophes qui se suivaient))
+  - corriger le bug qui fait que tout le texte n'est pas affiché (en fait, quand un mot ne peut pas être analysé, il est quand même mis en mot suivant du précédent et ça coupe complètement la chaine — c'est arrivé avec un mot qui était un chiffre (les chiffres sont maintenant pris en compte et c'et arrivé avec un mot vide à cause de deux apostrophes qui se suivaient))
 
 * Peut-être qu'à l'avenir, avec les grands textes, on pourra fonctionner en n'en affichant qu'une partie. Mais garder beaucoup autour, afin de toujours donner l'impression qu'on a la totalité
 

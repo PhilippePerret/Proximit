@@ -142,12 +142,15 @@ class Proximity {
 
   static showNombre(){
     UI.infos_proximites.find('#nombre_proximites').innerHTML = this.realCount()
+    this.showPourcentage()
   }
   static showNombreCorrected(){
     UI.infos_proximites.find('#corrected_proximites').innerHTML = this.correctedCount || 0
+    this.showNombre()
   }
   static showNombreIgnored(){
     UI.infos_proximites.find('#ignored_proximites').innerHTML = this.ignoredCount || 0
+    this.showNombre()
   }
   static showPourcentage(){
     UI.infos_proximites.find('#pourcentage_proximites').innerHTML = `${this.calcPourcentage()} %`
@@ -225,7 +228,6 @@ class Proximity {
       this.current.ignore.call(this.current)
       ++ this.ignoredCount
       this.showNombreIgnored()
-      this.showPourcentage()
     } else {
       UI.error("Il faut choisir la proximité à ignorer à l'aide des boutons ▶️ ou ◀️.")
     }
@@ -238,7 +240,6 @@ class Proximity {
       this.modified = true
       -- this.ignoredCount
       this.showNombreIgnored()
-      this.showPourcentage()
     } else {
       UI.error("Je ne peux pas désignorer une proximité qui n'est pas ignorée.")
     }
@@ -463,6 +464,7 @@ class Proximity {
 
   }
 
+
   /**
     Boucle sur toutes les proximités
 
@@ -474,6 +476,7 @@ class Proximity {
       if ( false === fun(this.items[idx]) ) break ;
     }
   }
+
 
   /**
     | Méthodes d'interaction avec l'interface
@@ -511,13 +514,6 @@ class Proximity {
     // est corrigée.
     if ( this.current && this.current.id === iprox.id) this.unshowCurrent()
 
-    // Dans les résultats
-    // ------------------
-    // On détruit cette proximité dans les résultats
-    // Note : peut-être que ça n'est pas nécessaire si on recalcule tout avec
-    // d'enregistrer la donnée.
-    RESULTATS.removeProximity(iprox)
-
     // Dans les items de Proximity
     // ---------------------------
     delete this.items[iprox.id]
@@ -542,6 +538,9 @@ class Proximity {
     //  - la resélectionner si elle existe toujours
     //  - sélectionner la suivante ou la nouvelle si elles existent
     this.semi_reset()
+
+    // On actualise l'affichage
+    this.showNombreCorrected()
 
   }
 
