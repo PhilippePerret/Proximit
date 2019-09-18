@@ -7,9 +7,65 @@
 **/
 class Mot {
 
-  static init(){
-    this.reset()
+  static get properties(){
+    return {
+        'id':         'id'
+      , 'idN':        'iN'
+      , 'idP':        'iP'
+      , 'file_id':    'f'
+      , 'canon':      'c'
+      , 'real_init':  'ri'
+      , 'real':       'r'
+      , 'downcase':   'd'
+      , 'lemma':      'l'
+      , 'sortish':    's'
+      , 'tbw':        't'
+      , 'offset':     'o'
+      , 'rel_offset': 'ro'
+    }
   }
+
+  /**
+    Méthode principale de chargement des données des canons, prises soit dans
+    la table des résultats produite par ruby soit dans le fichier canons.json
+    produite par le travail sur les proximités.
+  **/
+  static async loadData(){
+    this.reset()
+    if ( fs.existsSync(this.jsonDataPath) ) {
+      console.log("* Chargement des données Mot depuis le fichier mots.json…")
+      await IO.loadLargeJSONData(this,this.jsonDataPath)
+      console.log("= Données Mots chargées.")
+    } else {
+      console.log("* Chargement des données Mots depuis la table de résultats… (donc par les canons)")
+    }
+  }
+
+  /**
+    Pour ajouter une donnée depuis le fichier mots.json
+  **/
+  static addFromJSON(data) {
+    let realData = {}
+    for (var prop in this.properties ) {
+      var propInFile = this.properties[prop]
+      Object.assign(realData, {[prop]: data[propInFile]})
+    }
+    this.add(realData)
+    // console.log("Création du mot :", imot)
+  }
+
+  /**
+    Sauvegarde de tous les Mots du texte courant (instances Mot), sous une forme
+     que pourra recharger Proximit
+    @async
+  **/
+  static async saveData(){
+    await IO.saveLargeJSONData(this, this.jsonDataPath)
+  }
+
+  // Chemin d'accès au fichier JSON contenant les données mots lorsqu'elles
+  // ont été enregistrées.
+  static get jsonDataPath(){return PTexte.current.in_prox('mots.json')}
 
   static reset(){
     this.items  = {}
@@ -34,7 +90,13 @@ class Mot {
       if ( undefined === PTexte.current.firstMot ) {
         PTexte.current.firstMot = mot
       } else {
-        throw new Error(`"Le texte comporte déjà un premier mot, il ne devrait pas en avoir deux (premier mot : "${PTexte.current.firstMot.mot}" (#${PTexte.current.firstMot.id}), autre mot sans idP : "${mot.mot}" (#${mot.id}))…`)
+        if ( PTexte.current.firstMot.id == mot.id ) {
+          // c'est le même, c'est un ajout du même mot
+          console.error("Bizarrement, le mot '%s' (#%d) est ajouté deux fois…", mot.mot, mot.id)
+        } else {
+          // Là c'est vraiment une erreur avec deux mots qui n'ont pas d'idP
+          throw new Error(`"Le texte comporte déjà un premier mot, il ne devrait pas en avoir deux (premier mot : "${PTexte.current.firstMot.mot}" (#${PTexte.current.firstMot.id}), autre mot sans idP : "${mot.mot}" (#${mot.id}))…`)
+        }
       }
     }
     // console.log("Ajout du mot %d :", mot.id, mot)
@@ -42,28 +104,15 @@ class Mot {
     return mot
   }
 
-  /**
-    Sauvegarde de tous les mots du texte courant, sous une forme que
-    pourra recharger Proximit
-  **/
-  static save(){
-    const my = this
-    return new Promise((ok,ko)=>{
-      let writeStream = fs.createWriteStream(my.jsonDataPath);
-      writeStream.write(my.jsonData(), 'utf-8');
-      writeStream.on('finish', () => {
-          console.log('Tous les mots ont été écrits dans le fichier');
-          ok()
-      });
-      writeStream.end();
-    })
-  }
-  static jsonData(){
-    var djson = Object.values(this.items).map(item => item.to_json)
-    return '[' + djson.join(', ') + ']'
-  }
-  static get jsonDataPath(){return PTexte.current.in_prox('mots.json')}
 
+  /**
+    Boucle la fonction +fun+ sur chaque mot
+  **/
+  static forEach(fun){
+    for ( var motid in this.items ) {
+      if ( false === fun(this.items[motid]) ) break ; // pour pouvoir interrompre
+    }
+  }
   /**
     Supprime le mot qui a pour instance {Mot} +imot+
 
@@ -89,20 +138,6 @@ class Mot {
     // tés
     delete this._alphaSorted
     delete this._nbProxSorted
-  }
-
-  /**
-    Définitions des mots
-    On récupère la donnée +items+ du fichier de résultat
-  **/
-  static set(datas){
-    // console.log("-> Mot.set()",datas)
-    this.items = {}
-    for (var mot in datas.items) {
-      datas.items[mot].forEach( mot_id => {
-        Object.assign(this.items, {[mot_id]: new Mot({mot:mot, id:mot_id})})
-      })
-    }
   }
 
   /**
@@ -132,7 +167,12 @@ class Mot {
   }
 
   static showNombre(){
-    UI.infos_proximites.find('#nombre_mots').innerHTML = Object.keys(this.items).length
+    UI.infos_proximites.find('#nombre_mots').innerHTML = this.count()
+  }
+
+  // retourne en le calculant le nombre de mots courant
+  static count() {
+    return Object.keys(this.items).length
   }
 
 
@@ -249,25 +289,10 @@ class Mot {
     d'obtenir des fichiers json beaucoup moins volumineux en cas de texte
     long, comme des romans.
   **/
-  get properties(){
-    return {
-        'id':         'id'
-      , 'idN':        'iN'
-      , 'idP':        'iP'
-      , 'file_id':    'f'
-      , 'canon':      'c'
-      , 'real_init':  'ri'
-      , 'real':       'r'
-      , 'downcase':   'd'
-      , 'lemma':      'l'
-      , 'sortish':    's'
-      , 'tbw':        't'
-      , 'offset':     'o'
-      , 'rel_offset': 'ro'
-    }
-  }
+  get properties(){ return this.constructor.properties }
+
   // Retourne les propriétés à sauver sous la forme d'une table json
-  get to_json(){
+  get forJSON(){
     let djson = {}
     for (var prop in this.properties ) {
       var val = this[prop]
@@ -275,7 +300,7 @@ class Mot {
       var propInFile = this.properties[prop]
       Object.assign(djson, {[propInFile]: val})
     }
-    return JSON.stringify(djson)
+    return djson
   }
 
   // ---------------------------------------------------------------------

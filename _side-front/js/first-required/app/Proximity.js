@@ -9,6 +9,46 @@ const AROUND_LENGTH = 100 //200 // 50
 **/
 class Proximity {
 
+  /**
+    Méthode de chargement des informations. Soit elles sont prises depuis
+    la table de résultats produite par ruby (première utilisation), soit
+    elles sont prises du fichier proximites.json produit par Proximit en
+    javascript après des premières corrections.
+
+    L'alternative dépend de la présence ou non du fichier proximites.json
+  **/
+  static async loadData(){
+    this.reset()
+    if ( fs.existsSync(this.jsonDataPath) ) {
+      console.log("* Chargement des données depuis le fichier proximites.json…")
+      await IO.loadLargeJSONData(this,this.jsonDataPath)
+    } else {
+      console.log("* Chargement des données proximités depuis la table de résultats…")
+      this.set(PTexte.current.resultats.datas.proximites.datas)
+    }
+    console.log("= Données Proximity chargées.")
+  }
+
+  /**
+    Les noms des propriétés de l'instance Proximity. La clé correspond à la
+    valeur ici, dans le programme et la valeur correspond à la clé pour
+    l'enregistrement dans le fichier, afin de prendre moins de place dans les
+    gros textes.
+  **/
+  static get properties(){
+    return {
+        'id':         'id'
+      , 'ignored':    'i'
+      , 'motA_id':    'ma'
+      , 'motB_id':    'mb'
+      , 'distance':   'd'
+      , 'distance_minimale': 'dm'
+      // Propriétés normalement inutile puisque la proximité est détruite
+      , 'fixed':      'f' // inutile
+      , 'erased':     'e' // inutile
+    }
+  }
+
   // Retourne la proximité d'identifiant +prox_id+
   static get(prox_id){return this.items[prox_id]}
 
@@ -26,10 +66,30 @@ class Proximity {
   }
 
   /**
+    Quand la donnée vient du fichier proximites.json et non pas de la table
+    de résultats produite par l'analyse ruby.
+
+    Lorsque les données proximités viennent de l'analyse, elles sont lues
+    et parsées par la méthode précédente `set`
+  **/
+  static addFromJSON(data) {
+    let realData = {}
+    for (var prop in this.properties ) {
+      var propInFile = this.properties[prop]
+      Object.assign(realData, {[prop]: data[propInFile]})
+    }
+    var iprox = new Proximity(realData)
+    Object.assign(this.items, {[iprox.id]: iprox})
+    if ( iprox.ignored ) ++ this.ignoredCount
+    // console.log("Création de la proximité :", iprox)
+  }
+
+  /**
     Remise à zéro des proximités
   **/
   static reset(){
     this.items = {}
+    this.ignoredCount = 0
     this.semi_reset()
     UI.infos_proximites.clean()
     UI.buttons_proximites.clean()
@@ -51,8 +111,8 @@ class Proximity {
     // l'indice de la proximité courante, affichée
     this.current_index  = -1
     delete this.current
-    this.correctedCount = 0
     this.showInfos(itext)
+    this.updateInfos()
     UI.showButtonsProximites(itext)
   }
 
@@ -63,25 +123,47 @@ class Proximity {
     UI.infos_proximites
       .clean()
       .append(Dom.createDiv({class:'bold', text:'Proximités'}))
-      .append(rowData(null,"Nombre de proximités",itext.resultats.datas.proximites.datas.nombre,'nombre_proximites'))
-      .append(rowData(null,"Nombre de mots",itext.resultats.datas.mots.datas.nombre_total_mots,'nombre_mots'))
-      .append(rowData(null,"Nombre de canons",itext.resultats.datas.canons.datas.nombre,'nombre_canons'))
-      .append(rowData(null,"Pourcentage proximités",itext.resultats.datas.proximites.datas.pourcentage,'pourcentage_proximites'))
-      .append(rowData(null,"Proximités corrigés", "à voir",'corrected_proximites'))
+      .append(rowData(null,"Nombre de mots",'---','nombre_mots'))
+      .append(rowData(null,"Nombre de canons",'---','nombre_canons'))
+      .append(rowData(null,"Nombre de proximités",'---','nombre_proximites'))
+      .append(rowData(null,"Pourcentage proximités",'---','pourcentage_proximites'))
+      .append(rowData(null,"Proximités ignorées", '---','ignored_proximites'))
+      .append(rowData(null,"Proximités corrigées", '---','corrected_proximites'))
   }
 
   static updateInfos(){
     Proximity .showNombre()
     Proximity .showNombreCorrected()
+    Proximity .showNombreIgnored()
+    Proximity .showPourcentage()
     Canon     .showNombre()
     Mot       .showNombre()
   }
 
   static showNombre(){
-    UI.infos_proximites.find('#nombre_proximites').innerHTML = Object.keys(this.items).length
+    UI.infos_proximites.find('#nombre_proximites').innerHTML = this.count()
   }
   static showNombreCorrected(){
     UI.infos_proximites.find('#corrected_proximites').innerHTML = this.correctedCount || 0
+  }
+  static showNombreIgnored(){
+    UI.infos_proximites.find('#ignored_proximites').innerHTML = this.ignoredCount || 0
+  }
+  static showPourcentage(){
+    UI.infos_proximites.find('#pourcentage_proximites').innerHTML = `${this.calcPourcentage()} %`
+  }
+
+  static count(){return Object.keys(this.items).length }
+
+  // Le nombre de proximités en tenant compte des ignorées
+  static realCount() { return this.count() - this.ignoredCount }
+
+  /**
+    Retourne le pourcentage de proximités
+
+  **/
+  static calcPourcentage(){
+    return ( Math.round((this.realCount() / Mot.count())*1000) ) / 10
   }
 
   /**
@@ -141,6 +223,9 @@ class Proximity {
   static ignoreCurrent(){
     if ( this.current ) {
       this.current.ignore.call(this.current)
+      ++ this.ignoredCount
+      this.showNombreIgnored()
+      this.showPourcentage()
     } else {
       UI.error("Il faut choisir la proximité à ignorer à l'aide des boutons ▶️ ou ◀️.")
     }
@@ -151,6 +236,9 @@ class Proximity {
     if ( iprox.ignored ) {
       iprox.ignored = false
       this.modified = true
+      -- this.ignoredCount
+      this.showNombreIgnored()
+      this.showPourcentage()
     } else {
       UI.error("Je ne peux pas désignorer une proximité qui n'est pas ignorée.")
     }
@@ -457,27 +545,14 @@ class Proximity {
 
   }
 
-
   /**
-    Sauvegarde de tous les canons du texte courant, sous une forme que
+    Sauvegarde de toutes les Proximités du texte courant, sous une forme que
     pourra recharger Proximit
   **/
-  static save(){
-    const my = this
-    return new Promise((ok,ko)=>{
-      let writeStream = fs.createWriteStream(my.jsonDataPath);
-      writeStream.write(my.jsonData(), 'utf-8');
-      writeStream.on('finish', () => {
-          console.log('Toutes les proximités ont été écrites dans le fichier');
-          ok()
-      });
-      writeStream.end();
-    })
+  static async saveData(){
+    await IO.saveLargeJSONData(this, this.jsonDataPath)
   }
-  static jsonData(){
-    var djson = Object.values(this.items).map(item => item.to_json)
-    return '[' + djson.join(', ') + ']'
-  }
+
   static get jsonDataPath(){return PTexte.current.in_prox('proximites.json')}
 
 
@@ -661,21 +736,9 @@ class Proximity {
     d'obtenir des fichiers json beaucoup moins volumineux en cas de texte
     long, comme des romans.
   **/
-  get properties(){
-    return {
-        'id':         'id'
-      , 'ignored':    'i'
-      , 'motA_id':    'ma'
-      , 'motB_id':    'mb'
-      , 'distance':   'd'
-      , 'distance_minimale': 'dm'
-      // Propriétés normalement inutile puisque la proximité est détruite
-      , 'fixed':      'f' // inutile
-      , 'erased':     'e' // inutile
-    }
-  }
+  get properties(){return this.constructor.properties}
   // Retourne les propriétés à sauver sous la forme d'une table json
-  get to_json(){
+  get forJSON(){
     let djson = {}
     for (var prop in this.properties ) {
       var val = this[prop]
@@ -683,7 +746,7 @@ class Proximity {
       var propInFile = this.properties[prop]
       Object.assign(djson, {[propInFile]: val})
     }
-    return JSON.stringify(djson)
+    return djson
   }
 
 }

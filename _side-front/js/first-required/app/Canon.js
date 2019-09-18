@@ -19,12 +19,72 @@ const NLP_CONFIG = {
 
 class Canon {
 
-  static reset(){
-    this.items = {}
+  static get properties() {
+    return {
+        'canon':              'c'
+      , 'distance_minimale':  'dm'
+      , 'nombre_proximites':  'np'
+      , 'nombre_occurences':  'nm'
+      , 'mots':               'ms'
+      , 'proximites':         'ps'
+    }
   }
 
-  static set(datas) {
+  /**
+    Méthode principale de chargement des données des canons, prises soit dans
+    la table des résultats produite par ruby soit dans le fichier canons.json
+    produite par le travail sur les proximités.
+  **/
+  static async loadData(){
     this.reset()
+    if ( fs.existsSync(this.jsonDataPath) ) {
+      console.log("* Chargement des données Canon depuis le fichier canons.json…")
+      await IO.loadLargeJSONData(this,this.jsonDataPath)
+    } else {
+      console.log("* Chargement des données Canons depuis la table de résultats…")
+      this.set(PTexte.current.resultats.datas.canons.datas)
+    }
+    console.log("= Données Canon chargées.")
+  }
+
+  static afterLoadingData(callback){
+    this.forEach(canon => canon.dispatchMotsEtProximites())
+    callback.call() // le 'ok' de la promesse de IO.loadLargeJSONData
+  }
+
+  /**
+    Pour ajouter une donnée depuis le fichier mots.json
+  **/
+  static addFromJSON(data) {
+    let realData = {}
+    for (var prop in this.properties ) {
+      var propInFile = this.properties[prop]
+      Object.assign(realData, {[prop]: data[propInFile]})
+    }
+    var icanon = new Canon(realData)
+    Object.assign(this.items, {[icanon.id /* = .canon*/]: icanon})
+    // console.log("Création du canon :", icanon)
+  }
+
+  /**
+    Sauvegarde de tous les canons du texte courant, sous une forme que
+    pourra recharger Proximit
+  **/
+  static async saveData(){
+    await IO.saveLargeJSONData(this, this.jsonDataPath)
+  }
+
+  // Chemin d'accès au fichier
+  static get jsonDataPath(){return PTexte.current.in_prox('canons.json')}
+
+  static reset(){
+    this.items = {}
+    delete this.current
+  }
+
+  // Quand on charge les données depuis la table des résultats produite par
+  // l'analyse ruby (et non pas depuis le fichier canons.json)
+  static set(datas) {
     // console.log("-> Canon.set()", datas.items)
     for ( var mot in datas.items ) {
       var canon = new Canon(datas.items[mot].datas)
@@ -34,9 +94,15 @@ class Canon {
   }
 
   // @return {Canon} le canon du mot +motstr+
-  // Il doit exister, ici, sinon invoquer plutôt la méthode `Canon.of`
+  // Il doit exister ici sinon invoquer plutôt la méthode `Canon.of`
   static get(motstr){
     return this.items[motstr]
+  }
+
+  static forEach(fun){
+    for (var canon in this.items ) {
+      if ( false === fun(this.items[canon]) ) break ; // pour interrompre
+    }
   }
 
   /**
@@ -139,27 +205,6 @@ class Canon {
     UI.infos_proximites.find('#nombre_canons').innerHTML = Object.keys(this.items).length
   }
 
-  /**
-    Sauvegarde de tous les canons du texte courant, sous une forme que
-    pourra recharger Proximit
-  **/
-  static save(){
-    const my = this
-    return new Promise((ok,ko)=>{
-      let writeStream = fs.createWriteStream(my.jsonDataPath);
-      writeStream.write(my.jsonData(), 'utf-8');
-      writeStream.on('finish', () => {
-          console.log('Tous les canons ont été écrits dans le fichier');
-          ok()
-      });
-      writeStream.end();
-    })
-  }
-  static jsonData() {
-    var djson = Object.values(this.items).map(item => item.to_json)
-    return '[' + djson.join(', ') + ']'
-  }
-  static get jsonDataPath(){return PTexte.current.in_prox('canons.json')}
 
   /** ---------------------------------------------------------------------
     |
@@ -171,14 +216,14 @@ class Canon {
     this.data = data
     // console.log("data canon:", data)
     for ( var k in data ){
-      if ( k === 'mots' ) continue ;
-      else if ( k === 'distance_minimale' )  ;
+      if ( k === 'distance_minimale' )  ;
       else {
         switch(k){
-          case 'mots': continue ;
+          case 'mots':
+          case 'proximites':
+            this[`_${k}`] = data[k] ; break ;
           case 'distance_minimale': this._proxdistance = data[k]; break;
           // Les valeurs à passer
-          case 'proximites': // sera calculé d'après la liste
           case 'nombre_proximites': // sera calculé d'après la liste
             break ;
           default:
@@ -187,6 +232,8 @@ class Canon {
       }
     }
   }
+
+  get id(){ return this.canon }
 
   /**
     Pour appliquer la fonction +func+ à tous les mots du canon
@@ -200,6 +247,17 @@ class Canon {
       if ( false === func(mot) /* pour interrompre la boucle */ ) break
     }
   }
+
+  /**
+    À l'instanciation, quand les données viennent du fichier canons.json et
+    non pas de la table de résultats ruby, il faut remplacer les listes d'id
+    mots et proximites par des listes d'instances
+  **/
+  dispatchMotsEtProximites(){
+    this._mots        = this.mots.map(mot_id => Mot.get(mot_id))
+    this._proximites  = this.proximites.map(px_id => Proximity.get(px_id))
+  }
+
   /**
     À l'instanciation, on peut demander à dispatcher les mots
     Retourne la liste des instances {Mot} créées et la met aussi dans
@@ -343,18 +401,10 @@ class Canon {
     d'obtenir des fichiers json beaucoup moins volumineux en cas de texte
     long, comme des romans.
   **/
-  get properties(){
-    return {
-        'canon':              'c'
-      , 'distance_minimale':  'dm'
-      , 'nombre_proximites':  'np'
-      , 'nombre_occurences':  'nm'
-      , 'mots':               'ms'
-      , 'proximites':         'ps'
-    }
-  }
+  get properties(){ return this.constructor.properties }
+
   // Retourne les propriétés à sauver sous la forme d'une table json
-  get to_json(){
+  get forJSON(){
     let djson = {}
     for (var prop in this.properties ) {
       var val = this.getValFor(prop)
@@ -362,7 +412,7 @@ class Canon {
       var propInFile = this.properties[prop]
       Object.assign(djson, {[propInFile]: val})
     }
-    return JSON.stringify(djson)
+    return djson
   }
 
   /**

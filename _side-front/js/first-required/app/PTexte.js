@@ -1,4 +1,5 @@
-'use strict'
+'use strict';
+
 /**
   |
   | Classe PTexte
@@ -73,12 +74,6 @@ class PTexte {
     this.reset()
     this._current = new PTexte({path: pth})
     this._current.init()
-    // On met la propriété RESULTATS, qui permet de gérer les résultats en
-    // direct (attention, il s'agit bien d'une instance {Resultats}, pas de la
-    // propriété +resultats+ du texte, qui contient l'analyse). RESULTATS, au
-    // départ, contient dans sa propriété `datas`la valeur de :
-    // `ptexte.resultats.datas`
-    // RESULTATS = new Resultats(this._current)
   }
 
   static reset(){
@@ -88,6 +83,23 @@ class PTexte {
     Mot.reset()
     ProxModif.reset()
   }
+
+  /**
+    Méthode appelée par le bouton ou le menu pour sauver le texte courant
+    (toutes ses données)
+  **/
+  static saveCurrent(){ this.current.save() }
+
+  /**
+    Méthode appelée pour charger toutes les données du texte courant
+    (quand elles ne viennent pas de ruby mais de javascript)
+
+    Normalement, elle n'est appelée que pour un rechargement. Lorsque le
+    texte est ouvert normalement, c'est la méthode d'instance 'init' qui
+    s'occupe de tout charger.
+  **/
+  static loadCurrent(){ this.current.load() }
+
 
   /**
     |
@@ -120,7 +132,6 @@ class PTexte {
       }
   }}
 
-
   /** ---------------------------------------------------------------------
     | INSTANCE
   **/
@@ -132,13 +143,16 @@ class PTexte {
     Initialisation du texte courant
     On charge ses résultats s'il est déjà analysé et on affiche ses informations
   **/
-  init(){
+  async init(){
     $('.texte_title').html(this.title)
     this.setTexteHeight()
     delete this.firstMot
-    this.isAnalyzed && this.initWhenAnalyzed()
-    // Écriture de l'état du texte
+    if ( this.isAnalyzed ) {
+      await this.initWhenAnalyzed()
+    }
+    // Écriture de l'état de l'analyse des proximités du texte
     this.writeState()
+
     this.inited = true
   }
 
@@ -160,10 +174,11 @@ class PTexte {
   **/
   async save(){
     console.log("*** SAUVEGARDE DE L'ANALYSE DU TEXTE '%s'…", this.name)
-    await Mot.save()
-    await Canon.save()
-    await Proximity.save()
-    await this.saveTexte()
+    await Mot       .saveData()
+    await Canon     .saveData()
+    await Proximity .saveData()
+    await this      .saveTexte()
+    this.saveData()
     console.log("=== DONNÉES PROXIMIT SAUVEGARDÉES AVEC SUCCÈS ===")
   }
   /**
@@ -208,18 +223,138 @@ class PTexte {
   **/
   async initWhenAnalyzed(){
     await UI.waiter("Affichage du texte. Merci de patienter…", UI.rightColumn.domObj)
-    Mot.init()
-    // On peuple les canons
-    // + peuplement des mots
-    Canon.set(this.resultats.datas.canons.datas)
-    // On peuple les proximités
-    Proximity.set(this.resultats.datas.proximites.datas)
-    Proximity.init(this)
-    // On écrit le texte dans la page
-    this.writeTexte()
-    UI.stopWaiter()
+
+    // Pour chaque objet Mot, Canon et Proximity, on charge les données soit
+    // de la table des résultats produite par ruby, soit des fichiers propres
+    // enregistrés après les premières modifications.
+
+    console.time('Fin du chargement')
+
+    try {
+      // Les mots
+      await Mot.loadData()
+
+      // On peuple les canons
+      // + peuplement des mots s'ils ne sont pas définis dans un fichier
+      await Canon.loadData()
+
+      // On peuple les proximités (soit de la table des résultats)
+      await Proximity.loadData()
+
+      // Pour afficher les informations concernant les proximités et régler
+      // les boutons qui permettent de les afficher.
+      Proximity.init(this)
+      Proximity.correctedCount = this.datas.nombre_corrections
+
+      // Pour finir, on enregistre les données dans le fichier data.json qui, au départ,
+      // ne contient pas grand-chose, mais qui, ici, permet d'enregistrer le nombre d'éléments
+      // afin de vérifier que le chargement a été correctement effectué
+      this.checkData()
+
+      // On écrit le texte dans la page
+      this.writeTexte()
+
+    } catch (e) {
+        console.error(e)
+        UI.error("Une erreur est malheureusement survenue.")
+    } finally {
+      UI.stopWaiter()
+    }
+
+    console.timeEnd('Fin du chargement')
+
   }
 
+  /**
+    Retourne les données du fichier data.json (qui permet notamment de
+    vérifier que le chargement s'est bien passé en controlant le nombre
+    d'instances de chaque type et quelques autres valeurs — cf. ci-dessous la
+    méthode `checkData`)
+  **/
+  getDatas(){
+    // note : ne pas utiliser 'require', pour les tests
+    return JSON.parse(fs.readFileSync(this.dataPath,'utf-8'))
+  }
+  /**
+    Enregistre les données courantes pour vérifier le bon chargement des
+    données plus tard.
+  **/
+  saveData(){
+    const my = this
+    let datas = this.getDatas()
+    console.log("datas:", datas)
+    Object.assign(datas,{
+        nombre_proximites:  Object.keys(Proximity.items).length
+      , nombre_corrections: Proximity.correctedCount // pas pour vérification, mais vraiment pour le compte
+      , nombre_ignored:     Proximity.ignoredCount
+      , nombre_canons:      Object.keys(Canon.items).length
+      , nombre_mots:        Object.keys(Mot.items).length
+      , firstMot_id:        my.firstMot.id
+      , lastId_mot:         Mot.lastId
+      , lastId_proximity:   Proximity.lastId
+      , updated_at:         String(new Date())
+    })
+    fs.writeFileSync(this.dataPath, JSON.stringify(datas))
+    return true
+  }
+  /**
+    Vérifie la conformité des données chargées
+  **/
+  checkData(){
+    let datas = this.getDatas()
+    // On doit lire le fichier data.json
+    // On doit vérifier que les nombres enregistrés dedans (if any) correspondent aux
+    // nombre chargés
+    if ( undefined === datas.lastId_mot ) return ; // pas encore enregistré
+
+    this.checkValue('nombre mots')
+    this.checkValue('nombre canons')
+    this.checkValue('nombre proximités')
+    this.checkValue('nombre ignorées')
+    this.checkValue('id first mot')
+    this.checkValue('last id mot')
+    this.checkValue('last id proximity')
+
+    return true
+  }
+
+  get datas() { return this._datas || (this._datas = this.getDatas() )}
+
+  checkValue(value_id) {
+    const my = this
+    var [msg, expected, actual ] = (function(vid){
+      switch (vid) {
+        case 'nombre mots':
+          return ['nombre de mots', my.datas.nombre_mots, Object.keys(Mot.items).length]
+        case 'nombre canons':
+          return ['nombre de canons', my.datas.nombre_canons, Object.keys(Canon.items).length]
+        case 'nombre proximités':
+          return ['nombre de proximités', my.datas.nombre_proximites, Object.keys(Proximity.items).length]
+        case 'nombre ignorées':
+          return ['nombre de proximités ignorées', my.datas.nombre_ignored, Proximity.ignoredCount]
+        case 'id first mot':
+          return ['ID du premier mot', my.datas.firstMot_id, my.firstMot.id]
+        case 'last id mot':
+          return ['dernier ID pour un mot', my.datas.lastId_mot, Mot.lastId]
+        case 'last id proximity':
+          return ['dernier ID pour une proximité', my.datas.lastId_proximity, Proximity.lastId]
+
+        default:
+          return ['rien', 0, 0]
+      }
+    })(value_id)
+    if ( expected != actual ) {
+      console.error("Problème avec le %s ! Nombre attendu : %d, nombre réel : %d", msg, expected, actual)
+    } else {
+      console.log("Après chargement, le %s est conforme (%d)", msg, expected)
+    }
+  }
+
+  get dataPath(){ return this.in_prox('data.json') }
+
+  /**
+    Écrit tout le texte à l'écran
+  **/
   writeTexte(){
     const my = this
     var curmot = this.firstMot

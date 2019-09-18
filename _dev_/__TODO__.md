@@ -1,4 +1,5 @@
 * Maintenant qu'on a tout le texte :
+  - afficher et tenir à jour le nombre de proximités ignorées/restantes
   - Rendre visible la proximité choisie
   - afficher les informations de la proximité courante
   - pouvoir l'ignorer, et ce sera enregistré dans la proximité pour être retenu à chaque fois

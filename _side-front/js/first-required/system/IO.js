@@ -1,10 +1,62 @@
 'use strict'
+
+const JSONStream = require('JSONStream')
 /**
   Pour les paths et les entrées sorties
 **/
 
 const IO = {
   name: 'IO'
+
+  /**
+    Méthode qui permet d'enregistrer un flot conséquent d'information.
+
+    ::forEach   Méthode de classe de l'objet +objet+ qui doit boucler sur chaque
+                instance de l'objet +objet+
+    #forJSON    Méthode d'instance qui doit retourner une table des données pour
+                l'enregistrement. Cette méthode, par exemple, peut remplacer les
+                clés longues par de simples lettres.
+    ::reset()   Méthode de classe de l'objet +objet+ qui remet à zéro l'objet,
+                notamment ses items et son pointeur
+    @async
+  **/
+, saveLargeJSONData(objet, path) {
+    return new Promise((ok,ko)=>{
+      var transStream   = JSONStream.stringify()
+      var outputStream  = fs.createWriteStream(path)
+      transStream.pipe( outputStream )
+      objet.forEach( mot => transStream.write (mot.forJSON))
+      // objet[proprerty].forEach( transStream.write )
+      transStream.end()
+      outputStream.on('finish', ok)
+    })
+  }
+  /**
+    Définir objet.afterLoadingData(ok) si une méthode doit être appelée
+    après le chargement.
+    @async
+  **/
+, loadLargeJSONData(objet, pth){
+    objet.reset()
+    return new Promise((ok,ko)=>{
+      var transStream = JSONStream.parse( "*" )
+      var inputStream = fs.createReadStream(pth)
+      inputStream
+        .pipe(transStream)
+        .on('data', function handleRecord(data){
+          objet.addFromJSON(data)
+          // console.log("J'ai lu la donnée ", data)
+        })
+        .on('end', function handleEndReading(){
+          // console.log("J'ai fini de charger le fichier ", pth)
+          if ( 'function' === typeof objet.afterLoadingData ) {
+            objet.afterLoadingData.call(objet, ok)
+          } else {
+            ok()
+          }
+        })
+    })
+  }
 
 , saveSync(fpath, value) {
     return fs.writeFileSync(fpath, value)

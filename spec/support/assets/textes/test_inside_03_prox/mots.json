@@ -1,0 +1,35 @@
+[
+{"id":0,"iN":1,"f":0,"c":"test","ri":"Test","r":"Test","d":"test","l":"test","s":"test","t":" ","o":0,"ro":0}
+,
+{"id":1,"iN":2,"iP":0,"f":0,"c":"de","ri":"de","r":"de","d":"de","l":"de","s":"de","t":" ","o":5,"ro":5}
+,
+{"id":2,"iN":3,"iP":1,"f":0,"c":"le","ri":"la","r":"la","d":"la","l":"le","s":"la","t":" ","o":8,"ro":8}
+,
+{"id":3,"iN":4,"iP":2,"f":0,"c":"sauvegarde","ri":"sauvegarde","r":"sauvegarde","d":"sauvegarde","l":"sauvegarde","s":"sauvegarde","t":" ","o":11,"ro":11}
+,
+{"id":4,"iN":5,"iP":3,"f":0,"c":"du","ri":"du","r":"du","d":"du","l":"du","s":"du","t":" ","o":22,"ro":22}
+,
+{"id":5,"iN":6,"iP":4,"f":0,"c":"texte","ri":"texte","r":"texte","d":"texte","l":"texte","s":"texte","t":" ","o":25,"ro":25}
+,
+{"id":6,"iN":7,"iP":5,"f":0,"c":"modifier","ri":"modifié","r":"modifié","d":"modifié","l":"modifié","s":"modifie","t":".\n\n","o":31,"ro":31}
+,
+{"id":7,"iN":8,"iP":6,"f":0,"c":"le","ri":"Le","r":"Le","d":"le","l":"le","s":"le","t":" ","o":41,"ro":41}
+,
+{"id":8,"iN":9,"iP":7,"f":0,"c":"texte","ri":"texte","r":"texte","d":"texte","l":"texte","s":"texte","t":" ","o":44,"ro":44}
+,
+{"id":9,"iN":10,"iP":8,"f":0,"c":"avoir","ri":"a","r":"a","d":"a","l":"a","s":"a","t":" ","o":50,"ro":50}
+,
+{"id":10,"iN":11,"iP":9,"f":0,"c":"être","ri":"été","r":"été","d":"été","l":"été","s":"ete","t":" ","o":52,"ro":52}
+,
+{"id":11,"iN":12,"iP":10,"f":0,"c":"corriger","ri":"corrigé","r":"corrigé","d":"corrigé","l":"corrigé","s":"corrige","t":" ","o":56,"ro":56}
+,
+{"id":12,"iN":13,"iP":11,"f":0,"c":"ou","ri":"ou","r":"ou","d":"ou","l":"ou","s":"ou","t":" ","o":64,"ro":64}
+,
+{"id":13,"iN":14,"iP":12,"f":0,"c":"non","ri":"non","r":"non","d":"non","l":"non","s":"non","t":" ","o":67,"ro":67}
+,
+{"id":14,"iN":15,"iP":13,"f":0,"c":"avant","ri":"avant","r":"avant","d":"avant","l":"avant","s":"avant","t":" ","o":71,"ro":71}
+,
+{"id":15,"iN":16,"iP":14,"f":0,"c":"son","ri":"sa","r":"sa","d":"sa","l":"son","s":"sa","t":" ","o":77,"ro":77}
+,
+{"id":16,"iP":15,"f":0,"c":"sauvegarde","ri":"sauvegarde","r":"sauvegarde","d":"sauvegarde","l":"sauvegarde","s":"sauvegarde","t":".\n\n\n","o":80,"ro":80}
+]
