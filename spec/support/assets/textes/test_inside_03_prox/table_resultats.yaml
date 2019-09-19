@@ -448,8 +448,8 @@
             :nombre_occurences: 1
             :nombre_proximites: 0
             :distance_minimale: 20
-      :created_at: 2019-09-19 09:24:58.164712000 +03:00
-      :updated_at: 2019-09-19 09:24:58.164717000 +03:00
+      :created_at: 2019-09-19 14:56:52.364449000 +03:00
+      :updated_at: 2019-09-19 14:56:52.364450000 +03:00
   :mots:
     :class: TextAnalyzer::Analyse::TableResultats::Mots
     :datas:
@@ -498,8 +498,8 @@
         - 14
         son:
         - 15
-      :created_at: 2019-09-19 09:24:58.164771000 +03:00
-      :updated_at: 2019-09-19 09:24:58.164772000 +03:00
+      :created_at: 2019-09-19 14:56:52.364505000 +03:00
+      :updated_at: 2019-09-19 14:56:52.364506000 +03:00
   :proximites:
     :class: TextAnalyzer::Analyse::TableResultats::Proximites
     :datas:
@@ -516,8 +516,8 @@
             :motB_id: 16
             :distance: 59
             :distance_minimale: 1500.0
-            :created_at: 2019-09-19 09:24:58.164836000 +03:00
-            :updated_at: 2019-09-19 09:24:58.164837000 +03:00
+            :created_at: 2019-09-19 14:56:52.364574000 +03:00
+            :updated_at: 2019-09-19 14:56:52.364575000 +03:00
         1:
           :class: TextAnalyzer::Analyse::TableResultats::Proximite
           :datas:
@@ -528,9 +528,9 @@
             :motB_id: 8
             :distance: 14
             :distance_minimale: 1500.0
-            :created_at: 2019-09-19 09:24:58.164860000 +03:00
-            :updated_at: 2019-09-19 09:24:58.164860000 +03:00
-      :created_at: 2019-09-19 09:24:58.164864000 +03:00
-      :updated_at: 2019-09-19 09:24:58.164865000 +03:00
-  :created_at: 2019-09-19 09:24:58.164867000 +03:00
-  :updated_at: 2019-09-19 09:24:58.164867000 +03:00
+            :created_at: 2019-09-19 14:56:52.364595000 +03:00
+            :updated_at: 2019-09-19 14:56:52.364596000 +03:00
+      :created_at: 2019-09-19 14:56:52.364599000 +03:00
+      :updated_at: 2019-09-19 14:56:52.364599000 +03:00
+  :created_at: 2019-09-19 14:56:52.364601000 +03:00
+  :updated_at: 2019-09-19 14:56:52.364602000 +03:00

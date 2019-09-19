@@ -52,17 +52,23 @@ class Proximity {
   // Retourne la proximité d'identifiant +prox_id+
   static get(prox_id){return this.items[prox_id]}
 
+  static newId(){
+    if ( undefined === this.lastId ) this.lastId = 0
+    return ++ this.lastId
+  }
   /**
     On définit la valeur globale, qui est définie dans le fichier des
     résultats de l'analyse
   **/
   static set(datas){
     this.reset()
-    for(var idx in datas.items){
+    var idx
+    for(idx in datas.items){
       var iprox = new Proximity(datas.items[idx].datas)
-      iprox.id = parseInt(idx,10)
-      Object.assign(this.items, {[idx]: iprox})
+      iprox.id = 1 /* pour ne pas commencer à 0 */ + parseInt(idx,10)
+      Object.assign(this.items, {[iprox.id]: iprox})
     }
+    this.lastId = parseInt(iprox.id,10)
   }
 
   /**
@@ -80,6 +86,7 @@ class Proximity {
     }
     var iprox = new Proximity(realData)
     Object.assign(this.items, {[iprox.id]: iprox})
+    if (iprox.id > this.lastId) this.lastId = parseInt(iprox.id,10)
     if ( iprox.ignored ) ++ this.ignoredCount
     // console.log("Création de la proximité :", iprox)
   }
@@ -88,7 +95,8 @@ class Proximity {
     Remise à zéro des proximités
   **/
   static reset(){
-    this.items = {}
+    this.items  = {}
+    this.lastId = 0 // pour commencer à 1
     this.ignoredCount = 0
     this.semi_reset()
     UI.infos_proximites.clean()
@@ -100,6 +108,10 @@ class Proximity {
   **/
   static semi_reset(){
     this.current_index  = -1
+    this.resetLists()
+  }
+
+  static resetLists(){
     delete this._sortByCanon
     delete this._sorteditems
   }
@@ -132,10 +144,10 @@ class Proximity {
   }
 
   static updateInfos(){
-    Proximity .showNombre()
+    // Proximity .showNombre()        // traité par showNombreCorrected
+    // Proximity .showPourcentage()   // idem
     Proximity .showNombreCorrected()
     Proximity .showNombreIgnored()
-    Proximity .showPourcentage()
     Canon     .showNombre()
     Mot       .showNombre()
   }
@@ -197,7 +209,7 @@ class Proximity {
     }
     // console.log("showPrev. current_index = %d", chkidx)
     if ( chkidx < 0 ){
-      UI.message("DÉBUT DU TEXTE", {style:'neutre',replace:true})
+      UI.flash("DÉBUT DU TEXTE", {style:'neutre',replace:true})
     } else {
       this.show(this.current_index = chkidx)
     }
@@ -213,7 +225,7 @@ class Proximity {
     }
     // console.log("showNext. current_index = %d", chkidx)
     if ( chkidx + 1 > this.sortedItems.length ){
-      UI.message("FIN DU TEXTE", {style:'neutre',replace:true})
+      UI.flash("FIN DU TEXTE", {style:'neutre', replace:true})
     } else {
       this.show(this.current_index = chkidx)
     }
@@ -313,9 +325,9 @@ class Proximity {
     if (dataprox.nextMot) {
       proxInfo.push('←', dataprox.nextDistance, '⇥', dataprox.nextMot.mot)
     }
-    proxInfo.push(`<button type="button" onclick="ProxModif.confirmCurrent.call(ProxModif)">Confirmer</button>`)
+    proxInfo.push(`<button type="button" class="warning" onclick="ProxModif.confirmCurrent.call(ProxModif)">Confirmer</button>`)
     UI.infos_danger_proximity.clean().append(proxInfo.join(' '))
-    UI.proxMessage(`Nouvelle proximité trouvée. Pour confirmer ce choix, cliquez sur le bouton « Confirmer » ou corrigez-la.`, 'warning')
+    UI.proxMessage.append(`Nouvelle proximité trouvée. Pour confirmer ce choix, cliquez sur le bouton « Confirmer » ou corrigez-la.`, 'warning')
   }
 
 
@@ -512,7 +524,7 @@ class Proximity {
 
   **/
   static remove(iprox){
-
+    console.log("Destruction de la proximité :", iprox)
 
     const motA = iprox.motA
     const motB = iprox.motB
@@ -552,6 +564,65 @@ class Proximity {
   }
 
   /**
+    |
+    | Méthode qui ajoute une proximité
+    |
+    | Et oui, ça peut le faire provisoirement, lorsqu'on fait un changement
+    | plutôt complexe, ou alors qu'on remplace une proximité vraiment gênante
+    | avec une proximité qui l'est moins (qui change de page, qui est proche de
+    | la limite, etc.)
+    |
+    @param {Mot} motA     Le mot avant (obligatoirement celui avant)
+    @param {Mot} motB     Le mot après (obligatoirement celui après)
+    @param {Hash} params  Quelques paramètres requis. Pour le moment, c'est
+                          :distance et :distance_minimale
+  **/
+  static create(motA, motB, params) {
+    // Si le mot avant est déjà en proximité avec un mot après
+    if ( motA.proxN ) this.remove( motA.proxN )
+
+    // Si le mot après est déjà en proximité avec un mot avant
+    if ( motB.proxP ) this.remove( motB.proxP)
+
+    // Les données pour créer une nouvelle proximité
+    let dataNewProx = {
+        id:       this.newId()
+      , motA_id:  motA.id
+      , motB_id:  motB.id
+      , distance: params.distance
+      , distance_minimale: params.distance_minimale
+      , ignored:  false
+      , erased:   false // inutile, mais bon…
+      , fixed:    false // idem, mais bon…
+    }
+
+    // On instancie cette nouvelle proximité
+    const newProx = new Proximity(dataNewProx)
+
+    // L'ajouter à la liste des items
+    Object.assign(this.items, {[newProx.id]: newProx})
+
+    // On ajoute cette proximit aux deux mots
+    motA._proxN   = newProx
+    motA._px_idN  = newProx.id
+    motB._proxP   = newProx
+    motB._px_idP  = newProx.id
+
+    motA.icanon.reinit() // notamment pour forcer le recalcul des proximités
+                          // motA et motB ont le même canon, fatalement
+
+    // Pour vérifier
+    // console.log("newProx = ", newProx)
+    // console.log("motA, motB = ", motA, motB)
+
+    // Réinitialiser les listes
+    this.resetLists()
+
+    // Incrémenter l'affichage (toutes les infos)
+    this.updateInfos()
+  }
+
+  /**
     Sauvegarde de toutes les Proximités du texte courant, sous une forme que
     pourra recharger Proximit
   **/
@@ -562,10 +633,12 @@ class Proximity {
   static get jsonDataPath(){return PTexte.current.in_prox('proximites.json')}
 
 
+
   /** ---------------------------------------------------------------------
     |
     | INSTANCE DE LA PROXIMITÉ
     |
+    | ---------------------------------------------------------------------
   **/
   constructor(data){
     this.data = data
@@ -639,7 +712,7 @@ class Proximity {
   }
 
   showInfos(){
-    console.log("this.motA = ", this.motA)
+    // console.log("this.motA = ", this.motA)
     let infos = `« ${this.motA.mot} » ← ${this.distance} → « ${this.motB.mot} » | dist.min : ${this.motA.icanon.proxDistance} | Offsets ${this.motA.offset} ↹ ${this.motB.offset}`
     UI.infos_current_proximity.clean().append(infos)
   }

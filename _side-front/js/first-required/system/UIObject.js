@@ -1,8 +1,20 @@
 'use strict'
 /**
   Class UIObject
+  verson 1.1.1
   --------------
   Gestion des objets DOM
+
+  # version 1.1.1
+    * amélioration de la méthode 'append' pour qu'elle puisse recevoir des
+      paramètres, pour le moment le style (class CSS) du message.
+
+  # version 1.1.0
+    * amélioration générale
+
+  # version 1.0.0.
+    * première version utilisable
+    
 **/
 class UIObject {
   constructor(selector){
@@ -12,8 +24,12 @@ class UIObject {
   // Ajoute le contenu +contenu+ (string ou HTMLElement)
   // Retourne l'objet lui-même pour pouvoir chainer :
   //  objet.append(...).append(...).append etc.
-  append(contenu){
+  append(contenu, options){
+    if ( 'string' === typeof options ) { options = {css: options}}
+    else if ( undefined === options ) options = {}
     if ( 'string' === typeof contenu) {
+      contenu = contenu.replace(/\n/g, '<br>')
+      if ( options.css ) contenu = `<span class="${options.css}">${contenu}</span>`
       this.domObj.insertAdjacentHTML('beforeend', contenu)
     } else {
       this.domObj.append(contenu)

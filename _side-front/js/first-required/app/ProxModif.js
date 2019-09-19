@@ -23,14 +23,22 @@ class ProxModif {
 
   **/
   static confirmCurrent(){
-    console.log("Donnée de la modif :", this.current)
-    const proxData = this.current
+    // console.log("Donnée de la modif :", this.current)
+
     // On supprime la proximité qui disparait (en fait, on doit faire le
     // même travail que lorsque le nouveau mot ne crée pas de problème)
-    // TODO
+    this.current.remplaceMot()
+
     // On ajoute la nouvelle proximité créée
-    // TODO
-    UI.flash("Modification confirmée.", 'neutre')
+    this.current.addProximity()
+
+    // Il faut supprimer l'exergue des dangers
+    Proximity.unshowDangers()
+
+    // Il faut supprime le message
+    UI.proxMessage.clean()
+
+    UI.flash("Modification confirmée.", {style:'neutre', replace:true})
   }
 
   // Instanciation d'une modification de proximité demandée.
@@ -77,7 +85,7 @@ class ProxModif {
     // exergue au cours d'une correction précédente.
     Proximity.unshowDangers()
 
-    UI.proxMessage('')
+    UI.proxMessage.clean()
     await UI.waiter('Recherche de proximités…', '#prox_message')
 
     // Avant toute chose, on conserve la trace de la proximité courante
@@ -124,8 +132,15 @@ class ProxModif {
     // par l'auteur
     let choix = this.check_new_word()
     if ( ! choix ) return false
-    UI.proxMessage('')
+    UI.proxMessage.clean()
 
+    this.remplaceMot()
+
+    // console.log("<- ProxModif#traitement_simple")
+    return true
+  }
+
+  remplaceMot(options) {
     const imot_id = this.imot.id
 
     // On détruit l'ancien mot, en récupérant son ID pour l'utiliser
@@ -133,11 +148,12 @@ class ProxModif {
     // destruction détruirait en vérité le nouveau mot, et pas celui-ci
     // Note : cette destruction détruit aussi les proximités que le mot
     // peut entretenir et son appartenance au canon.
+    // console.log("this.imot = ", this.imot)
     Mot.remove(this.imot)
 
     // On crée un nouveau mot avec le nouveau mot, en reprenant quelques
     // information de l'ancien mot, tel que son id, son offset
-    const newMot = this.createNewWord({
+    this.createNewWord({
         mot:this.newText
       , id:this.imot.id
       , offset:this.imot.offset
@@ -147,8 +163,31 @@ class ProxModif {
       , tbw: this.imot.tbw
     })
 
-    // console.log("<- ProxModif#traitement_simple")
-    return true
+    // Là, il faut peut-être détruire vraiment imot
+    delete this.imot
+
+  }
+
+  /**
+    Lorsqu'on force une nouvelle proximité, il faut la gérer
+
+    Note : c'est l'instance {Mot} this.newMot qui contient le nouveau
+    mot créé.
+    D'autres part, this.dangerData contient tout ce qu'il faut savoir sur
+    la nouvelle proximité créée (avec le canon, etc.)
+  **/
+  addProximity(){
+    // console.log("Données pour l'ajout de la nouvelle proximité : mot, et data", this.newMot, this.dangerData)
+    const newMot = this.newMot
+        , danger = this.dangerData
+
+    let dataprox = {distance_minimale:danger.distanceMin, distance:null}
+    if ( danger.prevMot ) {
+      Proximity.create(danger.prevMot, newMot, Object.assign(dataprox,{distance:danger.prevDistance}))
+    }
+    if ( danger.nextMot ) {
+      Proximity.create(newMot, danger.nextMot, Object.assign(dataprox,{distance:danger.nextDistance}))
+    }
   }
 
   traitement_complexe() {
@@ -269,9 +308,10 @@ class ProxModif {
     mdata.canon   = mdata.canon.canon
 
     // On peut créer le mot
-    let newMot = Mot.createNew(mdata)
+    this.newMot = Mot.createNew(mdata)
     // console.log("newMot:", newMot)
-    icanon.addMot(newMot)
+    icanon.addMot(this.newMot)
+
   }
 
   addCanonToWordData(mdata, icanon) {

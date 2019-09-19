@@ -1,3 +1,10 @@
+/* Hors formulaires */
+button.warning {
+  background-color:red!important;
+  color:white!important;
+  border-radius:0.45em!important;
+}
+/* Dans les formulaires */
 form {
   padding:1em;
   border:1px solid #BBBBBB;

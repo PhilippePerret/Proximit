@@ -7,12 +7,6 @@
 Object.assign(UI,{
   name:'Extension de UI propre à l’application'
 
-, proxMessage(msg, style){
-    msg = msg.replace(/\n/g, '<br>')
-    if ( style ) msg = `<div class="${style}">${msg}</div>`
-    $('div#prox_message').html(msg||'')
-  }
-
   /**
     Affichage des boutons pour gérer les proximités
   **/
@@ -65,6 +59,9 @@ Object.defineProperties(UI,{
   // Le bloc où écrire l'intégralité du texte
   texte:{get(){return this._texte || (this._texte = new UIObject('#full_texte'))}}
 
+, proxMessage:{get(){
+    return this._proxmsg || (this._proxmsg = new UIObject('#prox_message'))
+  }}
 , infos_danger_proximity:{get(){
     return this._infdangprox || (this._infdangprox = new UIObject('#infos_danger_proximity'))
   }}

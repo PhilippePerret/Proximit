@@ -1,13 +1,17 @@
 'use strict'
 /**
   Constante UI
-  version 1.4.1
+  version 1.4.2
   ------------
 
   Requis :
     - UI.css
     - img/divers/waiter-rond-bleu.gif
 
+  # version 1.4.2
+    * Correction des arguments de UI.message, pour pouvoir mettre des options
+      et pas seulement un style.
+      
   # version 1.4.1
     * UI.error retourne false (pour pouvoir faire 'return UI.error("...")')
     * On peut utiliser des retours chariots dans les messages ("\n")
@@ -51,7 +55,9 @@ const HORLOGE_ATTENTE = '<img class="waiter" src="img/divers/waiter-rond-bleu.gi
 const UI = {
 
   // Pour écrire un message dans le pied de page
-  message(msg, style){
+  message(msg, options){
+    if ( 'string' === typeof options) options = {style: options}
+    else if ( undefined === options ) options = {}
     this.flash(msg, {style: style || 'notice'})
     return true
   }

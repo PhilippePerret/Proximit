@@ -1,9 +1,8 @@
-* [BUG] Voir le bug avec Text inside 03 quand on veut afficher la deuxième proximité
+* Poursuivre la procédure de confirmation d'une proximité corrigée qui en crée une nouvelle.
+-> essayer de mettre en place tout de suite le test.
+  - [BUG] Après avoir supprimé la proximité (mais en supprimant la mauvaise), ça ne supprime plus la proximité.
 
 * Bouton pour voir toutes les proximités visibles
-
-* Poursuivre la procédure de confirmation d'une proximité corrigée qui en crée une nouvelle.
-  -> essayer de mettre en place tout de suite le test.
 
 * Maintenant que le versionning est géré, mémoriser la date de la dernière version et faire une
   alerte lorsque la dernière version est lointaine.
