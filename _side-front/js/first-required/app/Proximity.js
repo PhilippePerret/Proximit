@@ -197,7 +197,7 @@ class Proximity {
     }
     // console.log("showPrev. current_index = %d", chkidx)
     if ( chkidx < 0 ){
-      UI.message("DÉBUT DU TEXTE")
+      UI.message("DÉBUT DU TEXTE", {style:'neutre',replace:true})
     } else {
       this.show(this.current_index = chkidx)
     }
@@ -213,7 +213,7 @@ class Proximity {
     }
     // console.log("showNext. current_index = %d", chkidx)
     if ( chkidx + 1 > this.sortedItems.length ){
-      UI.message("FIN DU TEXTE")
+      UI.message("FIN DU TEXTE", {style:'neutre',replace:true})
     } else {
       this.show(this.current_index = chkidx)
     }
@@ -639,6 +639,7 @@ class Proximity {
   }
 
   showInfos(){
+    console.log("this.motA = ", this.motA)
     let infos = `« ${this.motA.mot} » ← ${this.distance} → « ${this.motB.mot} » | dist.min : ${this.motA.icanon.proxDistance} | Offsets ${this.motA.offset} ↹ ${this.motB.offset}`
     UI.infos_current_proximity.clean().append(infos)
   }
