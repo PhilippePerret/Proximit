@@ -78,6 +78,7 @@ class PTexte {
 
   static reset(){
     delete this._current
+    UI.texte.clean()
     Proximity.reset()
     Canon.reset()
     Mot.reset()
@@ -184,7 +185,7 @@ class PTexte {
   async init(){
     UI.flash("Affichage du texte, merci de patienter…",{style:'neutre', keep:true, waiter:true})
 
-    $('.texte_title').html(this.title)
+    $('.texte_title').html(`${this.title} (<span class="texte-version">${this.version}</span>)`)
     this.setTexteHeight()
     delete this.firstMot
     if ( this.isAnalyzed ) {
@@ -250,6 +251,73 @@ class PTexte {
   get correctedTextPath(){return this.in_prox('corrected_text.txt')}
 
   /**
+    | ---------------------------------------------------------------------
+    |   VERSIONS
+    |
+  **/
+
+  /**
+    Permet de changer de version
+
+    On enregistre ce changement dans les données (data.json) afin de pouvoir
+    notamment surveiller si on fait assez de sauvegarde des fichiers.
+
+  **/
+  async newVersion(){
+    const Versioning = require('./js/modules/versioning.js')
+    let dataNewVersion = {
+        folder:     this.prox_folder
+      , extensions: 'json'
+      , excludes:   ['whole_text.json', 'table_resultats.json']
+    }
+    let newVersion = await Versioning.new(this, dataNewVersion)
+    UI.flash(`La nouvelle version ${newVersion} a été appliquée (l'ancienne sauvegardée).`, {style:'neutre', replace:true})
+    this.saveData()
+  }
+  get version(){ return this._version || this.getVersion() }
+  set version(vers) {
+    this._version = vers
+    fs.writeFileSync(this.pathVersion, vers)
+    $('.texte-version').html(vers) // TODO AJOUTER AU TITRE DU TEXTE EN SPAN
+  }
+  get pathVersion(){return this.in_prox('VERSION')}
+  getVersion(){
+    if ( fs.existsSync(this.pathVersion)) {
+      return fs.readFileSync(this.pathVersion, 'utf-8')
+    } else {
+      return '0.0.0'
+    }
+  }
+
+  /**
+    Méthode, à l'ouverture, qui regarde si la dernière version n'est pas trop
+    lointaine.
+  **/
+  checkLastVersionDate(){
+    let lastDate = Number(this.dateLastVersion)
+      , now = Number(new Date())
+      , diff = (now - lastDate) / 1000 // pour l'avoir en secondes
+      , nombre_jours = diff / (24 * 3600)
+    if ( nombre_jours > 5 ) {
+      UI.error("La dernière version date d'il y a plus de 5 jours. Ne serait-il pas temps de passer à la suivante ?")
+    }
+  }
+
+  // Retourne la date de la dernière version
+  get dateLastVersion(){
+    if ( this.datas.dateVersion ) {
+      return new Date(this.datas.dateVersion)
+    } else {
+      var d = new Date(this.datas.created_at)
+      if ( d == 'Invalid Date' ) d = new Date(this.datas.created_at.split(' ')[0])
+      return d
+    }
+  }
+
+  // /Fin des méthodes version
+  // ---------------------------------------------------------------------
+
+  /**
     Retourne le texte intégral corrigé
     Attention, ce texte peut être immense (tout un livre)
   **/
@@ -308,6 +376,9 @@ class PTexte {
       // On écrit le texte dans la page
       this.writeTexte()
 
+      // On regarde s'il ne faudrait pas faire une nouvelle version
+      this.checkLastVersionDate()
+
     } catch (e) {
         console.error(e)
         UI.error("Une erreur est malheureusement survenue.")
@@ -327,7 +398,9 @@ class PTexte {
   **/
   getDatas(){
     // note : ne pas utiliser 'require', pour les tests
-    return JSON.parse(fs.readFileSync(this.dataPath,'utf-8'))
+    var d = JSON.parse(fs.readFileSync(this.dataPath,'utf-8'))
+    if ( undefined !== d.datas ) d = d.datas
+    return d
   }
   /**
     Enregistre les données courantes pour vérifier le bon chargement des
@@ -336,7 +409,6 @@ class PTexte {
   saveData(){
     const my = this
     let datas = this.getDatas()
-    console.log("datas:", datas)
     Object.assign(datas,{
         nombre_proximites:  Object.keys(Proximity.items).length
       , nombre_corrections: Proximity.correctedCount // pas pour vérification, mais vraiment pour le compte
@@ -347,7 +419,10 @@ class PTexte {
       , lastId_mot:         Mot.lastId
       , lastId_proximity:   Proximity.lastId
       , updated_at:         String(new Date())
+      , version:            this.version
+      , dateVersion:        String(new Date())
     })
+    console.log("datas:", datas)
     fs.writeFileSync(this.dataPath, JSON.stringify(datas))
     return true
   }
@@ -447,6 +522,8 @@ class PTexte {
     UI.infos_texte.append(analyzed?"Le texte a été analysé":"Le texte n'a pas encore été analysé.")
     // Le nom du texte (affixe)
     this.writeRowInfo(true, 'Nom du texte', this.affixe)
+    // La version
+    this.writeRowInfo(fs.existsSync(this.pathVersion),"Version courante", this.version)
     // Note : même si le texte n'a pas encore été analysé, on affiche l'état
     // de présence des fichiers pour infos.
     // Existence du dossier affixe_prox

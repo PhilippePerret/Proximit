@@ -1,12 +1,28 @@
-* Ajouter le menu "Sauver" qui enregistrera les modifications
+* Retirer les console.log
+* Mettre une alerte visible lorsque les nombres ne correspondent pas.
 
-* [BUG] Quand on demande à ignorer une proximité, il faut vérifier que cela ne provoque pas une nouvelle proximité par "saut". Par exemple, si on supprime la deuxième proximité de "un texte dans le texte pour un texte", est-ce qu'il ne faut pas que le premier et le troisième "texte" soit mis en proximité ? Ce serait en tout cas important de prévenir l'auteur
+* [BUG] Voir le bug avec Text inside 03 quand on veut afficher la deuxième proximité
+
+* Poursuivre la procédure de confirmation d'une proximité corrigée qui en crée une nouvelle.
+  -> essayer de mettre en place tout de suite le test.
+
+* Maintenant que le versionning est géré, mémoriser la date de la dernière version et faire une
+  alerte lorsque la dernière version est lointaine.
+
+* Mettre en place une procédure d'avertissement si l'on ferme ou recharge l'application et que le texte est modifié.
+
+* [BUG] Quand on demande à ignorer une proximité, il faut vérifier que cela ne provoque pas une nouvelle proximité par "saut". Par exemple, si on supprime la deuxième proximité de "un texte dans le texte pour un texte", est-ce qu'il ne faut pas que le premier et le troisième "texte" soit mis en proximité ? Ce serait en tout cas important de prévenir l'auteur.
   -> faire un test pour tester ce cas précis.
 
 * [BUG] Quand on charge un nouveau texte il faut nettoyer l'inferface
   - vider UI.texte
   - vider UI.infos_current_proximity
   - Autre ?
+
+* Pouvoir voir toutes les proximités "à proximité" (l'espace de texte affiché)
+  => Trouver un moyen de déterminer le premier mot et le dernier mot affichés
+
+* Pouvoir lire le texte (commande 'say')
 
 * Maintenant qu'on a tout le texte :
   - Rendre visible (dans la fenêtre) la proximité choisie

@@ -72,6 +72,13 @@ const ObjMenus = {
             , enabled: true // à corriger plus tard
             , click:function(){execJS("PTexte.current.correctProximities.call(PTexte.current)")}
           }
+        , {type:'separator'}
+        , {
+              label: 'Nouvelle version…'
+            , id: 'texte-new-version'
+            , enabled:true // à régler plus tard
+            , click:function(){execJS('PTexte.current.newVersion.call(PTexte.current)')}
+          }
         ]
       }
     , {
