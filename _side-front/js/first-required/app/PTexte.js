@@ -195,7 +195,9 @@ class PTexte {
     this.writeState()
 
     this.inited = true
-    UI.flash("Texte prêt à être travaillé.", {style:'neutre',replace:true})
+    if ( ! this.comparedValuesError ) {
+      UI.flash("Texte prêt à être travaillé.", {style:'neutre',replace:true})
+    }
   }
 
   /**
@@ -271,7 +273,7 @@ class PTexte {
       , excludes:   ['whole_text.json', 'table_resultats.json']
     }
     let newVersion = await Versioning.new(this, dataNewVersion)
-    UI.flash(`La nouvelle version ${newVersion} a été appliquée (l'ancienne sauvegardée).`, {style:'neutre', replace:true})
+    UI.flash(`La nouvelle version ${newVersion} a été appliquée.\n(l'ancienne est sauvegardée dans 'xversions').`, {style:'neutre', replace:true})
     this.saveData()
   }
   get version(){ return this._version || this.getVersion() }
@@ -368,13 +370,11 @@ class PTexte {
       Proximity.init(this)
       Proximity.correctedCount = this.datas.nombre_corrections
 
-      // Pour finir, on enregistre les données dans le fichier data.json qui, au départ,
-      // ne contient pas grand-chose, mais qui, ici, permet d'enregistrer le nombre d'éléments
-      // afin de vérifier que le chargement a été correctement effectué
-      this.checkData()
-
       // On écrit le texte dans la page
       this.writeTexte()
+
+      // On vérifie la conformité des élément
+      this.checkData()
 
       // On regarde s'il ne faudrait pas faire une nouvelle version
       this.checkLastVersionDate()
@@ -422,7 +422,7 @@ class PTexte {
       , version:            this.version
       , dateVersion:        String(new Date())
     })
-    console.log("datas:", datas)
+    // console.log("datas:", datas)
     fs.writeFileSync(this.dataPath, JSON.stringify(datas))
     return true
   }
@@ -436,6 +436,8 @@ class PTexte {
     // nombre chargés
     if ( !fs.existsSync(this.correctedTextPath) ) return ; // pas encore enregistré
 
+    this.comparedValuesError = false
+
     this.checkValue('nombre mots')
     this.checkValue('nombre canons')
     this.checkValue('nombre proximités')
@@ -444,7 +446,11 @@ class PTexte {
     this.checkValue('last id mot')
     this.checkValue('last id proximity')
 
-    return true
+    if ( this.comparedValuesError ) {
+      return UI.error("Des erreurs ont été trouvées au niveau des nombres d'éléments.\nConsultez la console pour de plus amples détails.",{replace:true})
+    } else {
+      return true
+    }
   }
 
   get datas() { return this._datas || (this._datas = this.getDatas() )}
@@ -473,6 +479,7 @@ class PTexte {
       }
     })(value_id)
     if ( expected != actual ) {
+      this.comparedValuesError = true
       console.error("Problème avec le %s ! Nombre attendu : %d, nombre réel : %d", msg, expected, actual)
     } else {
       console.log("Après chargement, le %s est conforme (%d)", msg, expected)

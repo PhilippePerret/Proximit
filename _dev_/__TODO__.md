@@ -1,7 +1,6 @@
-* Retirer les console.log
-* Mettre une alerte visible lorsque les nombres ne correspondent pas.
-
 * [BUG] Voir le bug avec Text inside 03 quand on veut afficher la deuxième proximité
+
+* Bouton pour voir toutes les proximités visibles
 
 * Poursuivre la procédure de confirmation d'une proximité corrigée qui en crée une nouvelle.
   -> essayer de mettre en place tout de suite le test.

@@ -1,19 +1,23 @@
 'use strict'
 /**
   Constante UI
-  version 1.4.0
+  version 1.4.1
   ------------
 
   Requis :
     - UI.css
     - img/divers/waiter-rond-bleu.gif
 
+  # version 1.4.1
+    * UI.error retourne false (pour pouvoir faire 'return UI.error("...")')
+    * On peut utiliser des retours chariots dans les messages ("\n")
+
   # version 1.4.0
     * Possibilité d'envoyer des options à la méthode 'rend_visible' pour
       affiner les possibilité. 1. déterminer l'écartement avec le haut,
       2. empêcher le déplacement 'smooth' pour placer deux éléments dans la
       page
-      
+
   # version 1.3.1
     * Option 'waiter' pour ajouter le "waiter" au bout d'un message.
     * Option 'replace' pour remplacer le message précédent
@@ -49,9 +53,13 @@ const UI = {
   // Pour écrire un message dans le pied de page
   message(msg, style){
     this.flash(msg, {style: style || 'notice'})
+    return true
   }
-, error(msg){
-    this.flash(msg, {style:'warning'})
+, error(msg, options){
+    options = options || {}
+    options.style = 'warning'
+    this.flash(msg, options)
+    return false
   }
 
   /**
@@ -77,6 +85,7 @@ const UI = {
       divFlash = undefined
     }
     divFlash || (divFlash = Dom.createDiv({id:'flash'}))
+    msg = msg.replace(/\n/g,'<br>')
     let divMsg   = Dom.createDiv({class:options.style||'notice', text:msg})
     divFlash.append(divMsg)
     document.body.append(divFlash)
