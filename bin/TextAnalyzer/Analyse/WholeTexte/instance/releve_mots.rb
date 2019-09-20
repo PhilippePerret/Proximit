@@ -113,7 +113,7 @@ class WholeText
     current_file_id = get_current_file_id(tres.current_offset)
 
     # Le premier identifiant/index
-    tres.current_id_mot ||= -1
+    tres.current_id_mot ||= 0
 
     # Pour conserver le dernier mot traité afin de :
     #   - définir la propriété `idP` du mot courant

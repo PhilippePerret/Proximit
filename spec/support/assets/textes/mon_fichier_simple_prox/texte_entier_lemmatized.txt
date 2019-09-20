@@ -1,4 +1,0 @@
-Un	DET:ART	un
-simple	ADJ	simple
-texte	NOM	texte
-.	SENT	.

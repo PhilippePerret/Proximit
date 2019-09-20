@@ -126,8 +126,8 @@ class Mot {
 
     // S'il est en proximité avec d'autres mots avant ou après, il faut
     // détruire cette proximité.
-    console.log("imot.proxP = ", imot.proxP)
-    console.log("imot.proxN = ", imot.proxN)
+    console.log("imot.px_idP = ", imot.px_idP)
+    console.log("imot.px_idN = ", imot.px_idN)
     imot.proxP && Proximity.remove.call(Proximity, imot.proxP)
     imot.proxN && Proximity.remove.call(Proximity, imot.proxN)
 
@@ -336,7 +336,7 @@ class Mot {
   get file_id()     {return this._file_id}
 
   // Identifiant de la proximité avant (if any)
-  get px_idP(){return this._px_idP}
+  get px_idP() { return this._px_idP }
   // Identifiant de la proximité après (if any)
-  get px_idN(){return this._px_idN}
+  get px_idN() { return this._px_idN }
 }

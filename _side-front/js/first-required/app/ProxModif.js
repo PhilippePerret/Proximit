@@ -78,7 +78,7 @@ class ProxModif {
     lorsque la forme est complexe.
   **/
   async treate(){
-    console.log("-> ProxModif.treate")
+    // console.log("-> ProxModif.treate")
     var res
 
     // On supprime toutes les proximités qui auraient pu être mises en

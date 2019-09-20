@@ -65,7 +65,7 @@ class Proximity {
     var idx
     for(idx in datas.items){
       var iprox = new Proximity(datas.items[idx].datas)
-      iprox.id = 1 /* pour ne pas commencer à 0 */ + parseInt(idx,10)
+      iprox.id = parseInt(idx,10)
       Object.assign(this.items, {[iprox.id]: iprox})
     }
     this.lastId = parseInt(iprox.id,10)
@@ -372,7 +372,7 @@ class Proximity {
   static for(str, fromId, canon) {
     // Distance en dessous de laquelle on considère que les mots sont en
     // proximité
-    console.log("-> Proximity.for(str,fromId,canon)",str,fromId,canon)
+    // console.log("-> Proximity.for(str,fromId,canon)",str,fromId,canon)
 
     // Le mot de référence
     // -------------------
@@ -439,7 +439,7 @@ class Proximity {
       }
     }// fin de boucle tant qu'on trouve un mot avant
 
-    console.log("data_proxims après la boucle en arrière : ", data_proxims)
+    // console.log("data_proxims après la boucle en arrière : ", data_proxims)
 
     var mot_checked = imot
     var cur_distance = 0
@@ -462,7 +462,7 @@ class Proximity {
     } // fin de boucle tant qu'on trouve un mot après et que la distance
       // minimum n'est pas atteinte
 
-    console.log("data_proxims après la recherche en avant", data_proxims)
+    // console.log("data_proxims après la recherche en avant", data_proxims)
 
     // --- Le mot le plus proche (si les deux) ---
     // Pour terminer, on regarde quel est le mot le plus proche pour
@@ -503,7 +503,7 @@ class Proximity {
 
   // Méthode appelée quand on clique sur la case à cocher "Afficher par canon"
   static onCheckSortByCanon(ev){
-    console.log("-> Proximity.onCheckSortByCanon")
+    // console.log("-> Proximity.onCheckSortByCanon")
     this._sortByCanon = document.querySelector('#cb-sort-by-canon').checked
     // Pour forcer le recalcul de la liste
     delete this._sorteditems
@@ -524,7 +524,7 @@ class Proximity {
 
   **/
   static remove(iprox){
-    console.log("Destruction de la proximité :", iprox)
+    // console.log("Destruction de la proximité :", iprox)
 
     const motA = iprox.motA
     const motB = iprox.motB

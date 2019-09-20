@@ -22,8 +22,8 @@ class TableResultats
   # Doit être appelé avant chaque analyse.
   def reset
     self.current_offset     = 0
-    self.current_id_mot     = -1
-    self.last_id_proximite  = -1
+    self.current_id_mot     = 0
+    self.last_id_proximite  = 0
   end
 
 end #/TableResultats
