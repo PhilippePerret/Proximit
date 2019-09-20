@@ -41,7 +41,9 @@ Object.assign(UI,{
       // .append(Dom.createButton({text:"⏹⏸⏩⏪"}))
       .append(Dom.createButton({id:'btn-first-prox', text:"⏮", title:"Première proximité visible"}))
       .append(Dom.createButton({id:'btn-last-prox', text:"⏭", title:"Dernière proximité visible"}))
-      .append(Dom.createButton({id:'btn-save-corrections', text:"⏺", title:"Enregistrer les corrections"}))
+      // .append(Dom.createButton({id:'btn-save-corrections', text:"⏺", title:"Enregistrer les corrections"}))
+      .append(Dom.createButton({id:'btn-show-all-prox', text:"🔡", title:"Afficher toutes les proximités des environs"}))
+      .append(Dom.createButton({id:'btn-destroy-mot', text:"✂️", title:"Détruire le mot courant"}))
       .append(Dom.createButton({id:'btn-prev-prox', text:"◀️", title:"Proximité précédente"}))
       .append(Dom.createButton({id:'btn-next-prox', text:"▶️", title:"Proximité suivante"}))
 
@@ -60,6 +62,9 @@ Object.assign(UI,{
     $('button#btn-first-prox').on('click', Proximity.showFirst.bind(Proximity))
     $('button#btn-last-prox').on('click', Proximity.showLast.bind(Proximity))
     $('button#btn-ignore-prox').on('click', Proximity.ignoreCurrent.bind(Proximity))
+    $('button#btn-destroy-mot').on('click', Proximity.destroyCurrentMot.bind(Proximity))
+    $('button#btn-show-all-prox').on('click', Proximity.showAllAround.bind(Proximity))
+
     $('input#cb-sort-by-canon').on('click', Proximity.onCheckSortByCanon.bind(Proximity))
   }
 

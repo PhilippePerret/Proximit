@@ -2,7 +2,7 @@
 /**
   Tests pour tester l'enregistrement des modifications
 **/
-TESTS.add(true, "On peut enregistrer un texte ouvert (sans modifications)", async function(){
+TESTS.add("On peut enregistrer un texte ouvert (sans modifications)", async function(){
   await TESTS.openTexte('test_inside_03.txt', {reset:true, analyze:true})
   const ptexte = PTexte.current
   await ptexte.save()
@@ -23,7 +23,7 @@ TESTS.add(true, "On peut enregistrer un texte ouvert (sans modifications)", asyn
   assert(iniText == finText, "Le texte a bien été enregistré", `Le texte final n'est pas bon.\nTexte initial: "${iniText}"\nTexte final: "${finText}"`)
 
 })
-TESTS.add(true, "On peut enregistrer un texte ouvert avec ses modifications de proximité", async function(){
+TESTS.add("On peut enregistrer un texte ouvert avec ses modifications de proximité", async function(){
   await TESTS.openTexte('test_inside_03.txt', {reset:true, analyze:true})
   const ptexte = PTexte.current
 

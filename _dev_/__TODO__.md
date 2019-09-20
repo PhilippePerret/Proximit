@@ -1,3 +1,4 @@
+* Bouton pour supprimer le mot courant
 * Bouton pour voir toutes les proximités visibles dans la fenêtre
 
 * Maintenant que le versionning est géré, mémoriser la date de la dernière version et faire une

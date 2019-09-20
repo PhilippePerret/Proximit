@@ -212,16 +212,26 @@ Object.assign(TESTS,{
 
   /**
     Attend jusqu'à ce que la fonction +funTrue+ retourne true
+    @param {Function|Number} funTrue    Soit une fonction qui doit retourner
+                                        true.
+                                        Soit un nombre de secondes à attendre.
   **/
 , waitFor(funTrue, options){
     options = options || {}
     const timeout   = options.timeout   || TESTS_TIMEOUT_DEFAULT
     const frequence = options.frequence || TESTS_FREQUENCE_DEFAULT
+    var waitingLaps
+    if ( 'number' === typeof(funTrue) ) {
+      waitingLaps = funTrue * 1000
+      funTrue = function(laps){
+        return laps > waitingLaps
+      }
+    }
     return new Promise((ok,ko)=>{
       // Tous les laps millisecondes, on teste la méthode
       var laps  = 0
       var timer = setInterval(()=>{
-        if ( funTrue.call() === true ) {
+        if ( funTrue.call(null,laps) === true ) {
           clearInterval(timer)
           ok()
         } else if ( laps > timeout ) {

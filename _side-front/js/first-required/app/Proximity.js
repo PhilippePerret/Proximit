@@ -245,6 +245,15 @@ class Proximity {
     delete this.current
   }
 
+  /**
+    | Méthode qui affiche (met en exergue) toutes les proximités visibles dans
+    | la page
+    |
+  **/
+  static showAllAround(){
+
+  }
+
   // Pour ignorer (et donc passer) la proximité courante
   static ignoreCurrent(){
     if ( this.current ) {
@@ -561,6 +570,31 @@ class Proximity {
     // On actualise l'affichage
     this.showNombreCorrected()
 
+  }
+
+  /**
+    Méthode pour détruire le mot courant (qui appartient à la proximité courante)
+
+    Noter que cela détruit la proximité courante, mais peut en provoquer une
+    autre aussi.
+  **/
+  static async destroyCurrentMot(){
+    // Vérifier que ce soit possible. C'est possible si une proximité courante
+    // est affichée et si un de ses mots à été focussé
+    // Rappel : le this.currentMot se règle quand on focusse dans le mot (cf.
+    // la méthode 'Mot#onFocus')
+    if ( ! this.current || ! this.currentMot ) {
+      return UI.error("Il faut afficher une proximité et sélectionner le mot à supprimer.")
+    }
+    // Demander confirmation
+    var dataAsk = {buttons:[
+        {text:'Détruire le mot', onclick:this.execDestroyCurrentMot.bind(this)}
+      , {text:'Renoncer', onclick:()=>{UI.message('Destruction abandonnée.')}}
+    ]}
+    var choix = await ask(`Voulez-vous vraiment détruire le mot « ${this.currentMot.mot} » ?`,dataAsk)
+  }
+  static execDestroyCurrentMot(){
+    console.log("Je vais détruire le mot courant", this.currentMot)
   }
 
   /**

@@ -6,13 +6,12 @@ Object.assign(TESTS,{
   /**
     Ouvre un texte (et vérifie qu'il a bien été chargé)
     Le texte doit se trouver dans './spec/support/assets/textes/'
+    @async => utiliser "await TESTS.openTexte("...")"
+
     @param {String} text_name Le nom du fichier dans le dossier
                               ./spec/support/assets/textes/
     @param {Hash} options
                   :reset    Si true, on doit détruire le dossier _prox
-                            ATTENTION, si reset est true, la méthode devient
-                            asynchrone, il faut donc utiliser
-                            `await PTexte.openTexte("...texte...")`
                   :analyze  Si true, on doit procéder à l'analyse du texte après
                             son ouverture.
   **/
@@ -24,12 +23,15 @@ Object.assign(TESTS,{
       let proxfolder = this.pathFolderTexte(path_texte)
       if ( fs.existsSync(proxfolder) ) await this.eraseProxFolder(proxfolder)
     }
-    PTexte.open(path_texte)
+    // On attend que le chargement soit terminé (par exemple pour une ouverture
+    // demandée dès le lancement)
+    await TESTS.waitFor(() => App.loading === false)
+    await PTexte.open(path_texte)
     if ( options.analyze ) {
       await this.analyzeTexte()
-      TESTS.waitFor(()=>{return PTexte.current.inited === true})
     }
-    assert(PTexte.current.name == text_name, `Le nom du texte courant doit être "${text_name}".`, `Le nom du texte courant devrait être "${text_name}", or, c'est "${PTexte.current.name}".`)
+    await TESTS.waitFor( () => PTexte.current.loading === false )
+    assert(PTexte.current.name == text_name, `Le nom du texte courant est bien "${text_name}".`, `Le nom du texte courant devrait être "${text_name}", or, c'est "${PTexte.current.name}".`)
   }
 
 , eraseProxFolder(proxfolder){

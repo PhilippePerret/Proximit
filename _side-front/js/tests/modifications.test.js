@@ -225,3 +225,5 @@ TESTS.add("Modification acceptée d'une proximité avec mot créant une nouvelle
 // * Faire une modification avec plusieurs mots et des ponctuations
 // * Faire une modification qui supprime deux proximités en même temps
 // * Faire une proximité qui touche le premier mot, et vérifier que le premier mot du texte (firstMot), qui permet de le reconstruire à l'enregistrement, ait bien été modifié (sinon, il sera impossible de reconstruire le texte sans rechercher le premier mot)
+// * Une destruction de mot qui ne fait que supprimer la proximité
+// * Une destruction de mot qui crée une autre proximité plus lointaine

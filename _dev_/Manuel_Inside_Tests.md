@@ -11,6 +11,7 @@
     * [assert](#assertion_assert)
     * [Les vérification silencieuses avec `assert`](#assertion_verif_silencieuse)
     * [Page.has](#assertion_page_has)
+  * [Boucles d'attente](#waiting_loops)
 * [Interactions avec la page](#interact_with_page)
   * [Obtenir un élément (`Page.get(<ref>[, <type>])`)](#page_get_method)
   * [Obtenir le contenu d'un élément (`Page.getInner`)](#page_getinner_method)
@@ -123,6 +124,24 @@ Les `<attributs>`, au-delà des attributs de la balise HTML `tag`, peut définir
 * `visible`. Si true, l'élément doit être visible.
 * `checked`. Si true, c'est une case à cocher qui doit être cochée.
 
+## Boucles d'attente {#waiting_loops}
+
+Pour faire une boucle d'attente, on utilise la méthode `TESTS.waitFor(args)`.
+
+Où `args` est soit une méthode qui doit retourner `true` pour interrompre la boucle, soit un nombre de secondes à attendre.
+
+```javascript
+
+await TESTS.waitFor(5)
+// 5 secondes plus tard, on passe
+
+await TESTS.waitFor(()=>{return $('#estLa').length > 0})
+// Quand l'élément #estLa est dans la page, on passe par ici
+
+// ou  
+await TESTS.waitFor(() => $('#estLa').length > 0)
+
+```
 ---------------------------------------------------------------------
 
 ## Interactions avec la page {#interact_with_page}

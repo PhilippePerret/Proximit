@@ -68,8 +68,10 @@ class Mot {
   static get jsonDataPath(){return PTexte.current.in_prox('mots.json')}
 
   static reset(){
+    delete this.items
+    delete this.lastId
     this.items  = {}
-    this.lastId = -1
+    this.lastId = 0
   }
 
   /**
@@ -84,7 +86,6 @@ class Mot {
     @return {Mot} l'instance créée.
   **/
   static add(dmot) {
-    // console.log("Mot::add(dmot =)", dmot)
     if ( undefined !== dmot.datas) dmot = dmot.datas // depuis table résultats
     const mot = new Mot(dmot)
     if ( mot.id > this.lastId ) this.lastId = parseInt(mot.id,10)
@@ -199,6 +200,8 @@ class Mot {
     // console.log("-> onFocus, iprox = ", iprox)
     try {
       UI.select(ev.currentTarget)
+      UI.select(ev.currentTarget)
+      Proximity.currentMot = this
     } catch (e) {
       console.error(e)
     }
@@ -217,6 +220,7 @@ class Mot {
     et on regarde si elle crée d'autre problème (en les affichant sur le côté)
   **/
   onBlur(iprox, ev){
+    // delete Proximity.currentMot //non, sinon on ne pourrait jamais rien faire dessus
     // On désélectionne le texte s'il l'était
     document.getSelection().removeAllRanges();
     const new_mot = ev.currentTarget.innerText.trim()

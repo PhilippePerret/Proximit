@@ -15,6 +15,10 @@ class PTexte {
     | dernier texte étudié.
   **/
   static get current(){return this._current}
+  static set current(v){
+    delete this._current
+    this._current = v
+  }
 
   /**
 
@@ -28,13 +32,13 @@ class PTexte {
     if ( undefined === my.current ) my.chooseText()
     if ( undefined === my.current ) return ; // annulation
     my.current.analyzed = null
-    UI.texte.clean()
-    UI.waiter("Analyse du texte. Merci de patienter…", UI.texte.domObj)
+    UI.clean()
+    UI.waiter("Analyse du texte.\nMerci de patienter…", UI.texte.domObj)
     execFile(`./bin/analyse_texte.rb`, [PTexte.current.path], (err, stdout, stderr) => {
-      UI.texte.clean()
+      UI.stopWaiter()
       if (err) {
         my.current.analyzed = false
-        console.error(err)
+        log.error(err)
         throw(err)
       } else {
         // Rappel : se trouve dans le stdout tout ce qui a été envoyé
@@ -70,19 +74,24 @@ class PTexte {
     état d'analyse et de correction (en tout cas pour le moment).
   **/
   static open(pth){
+    log.debug("-> PTexte::open(%s)",pth)
     // Il faut tout réinitialiser
     this.reset()
-    this._current = new PTexte({path: pth})
-    this._current.init()
+    this.current = new PTexte({path: pth})
+    this.current.init()
+    log.debug("<- PTexte::open(%s)",pth)
   }
 
   static reset(){
+    log.debug("-> PTexte::reset")
     delete this._current
+    this.current = undefined
     UI.clean() // on nettoie tout
     Proximity.reset()
     Canon.reset()
     Mot.reset()
     ProxModif.reset()
+    log.debug("<- PTexte::reset")
   }
 
   /**
@@ -131,7 +140,7 @@ class PTexte {
         var fpath = ptexte.in_prox(fname)
         fs.existsSync(fpath) && fs.unlinkSync(fpath)
         fs.existsSync(fpath) && raise(`Le fichier "${fpath}" aurait dû être détruit…`)
-        console.log("Destruction du fichier '%s'", fname)
+        log.debug("Destruction du fichier '%s'", fname)
       })
     } catch (e) {
       console.error(e)
@@ -176,6 +185,7 @@ class PTexte {
   **/
   constructor(data){
     for(var k in data) this[`_${k}`] = data[k] // data.path => this._path
+    delete this.firstMot
   }
 
   /**
@@ -183,11 +193,12 @@ class PTexte {
     On charge ses résultats s'il est déjà analysé et on affiche ses informations
   **/
   async init(){
+    this.loading = true
+    delete this.firstMot
     UI.flash("Affichage du texte, merci de patienter…",{style:'neutre', keep:true, waiter:true})
 
     $('.texte_title').html(`${this.title} (<span class="texte-version">${this.version}</span>)`)
     this.setTexteHeight()
-    delete this.firstMot
     if ( this.isAnalyzed ) {
       await this.initWhenAnalyzed()
     }
@@ -198,6 +209,7 @@ class PTexte {
     if ( ! this.comparedValuesError ) {
       UI.flash("Texte prêt à être travaillé.", {style:'neutre',replace:true})
     }
+    this.loading = false
   }
 
   /**
@@ -217,19 +229,19 @@ class PTexte {
     et corrected_text.txt (et peut-être d'autres fichiers à l'avenir)
   **/
   async save(){
-    UI.flash("Enregistrement des données, merci de patienter…",{style:'warning', keep:true, waiter:true})
+    log.info("Enregistrement des données, merci de patienter…",{style:'warning', keep:true, waiter:true})
     console.time('Sauvegarde')
-    console.log("*** SAUVEGARDE DE L'ANALYSE DU TEXTE '%s'…", this.name)
-    console.log("* Sauvegarde des données mots…")
+    log.debug("*** SAUVEGARDE DE L'ANALYSE DU TEXTE '%s'…", this.name)
+    log.debug("* Sauvegarde des données mots…")
     await Mot       .saveData()
-    console.log("  = OK (mots)")
-    console.log("* Sauvegarde des données Canons…")
+    log.debug("  = OK (mots)")
+    log.debug("* Sauvegarde des données Canons…")
     await Canon     .saveData()
-    console.log("  = OK (canons)")
+    log.debug("  = OK (canons)")
     await Proximity .saveData()
     await this      .saveTexte()
     this.saveData()
-    console.log("=== DONNÉES PROXIMIT SAUVEGARDÉES AVEC SUCCÈS ===")
+    log.info("=== DONNÉES PROXIMIT SAUVEGARDÉES AVEC SUCCÈS ===")
     console.timeEnd('Sauvegarde')
     UI.flash("Fin de la sauvegarde", {style:'neutre', replace:true})
   }
@@ -244,7 +256,7 @@ class PTexte {
       let writeStream = fs.createWriteStream(my.correctedTextPath);
       writeStream.write(my.correctedText, 'utf-8');
       writeStream.on('finish', () => {
-          console.log('Toutes les proximités ont été écrites dans le fichier');
+          log.debug('Toutes les proximités ont été écrites dans le fichier');
           ok()
       });
       writeStream.end();
@@ -330,7 +342,7 @@ class PTexte {
       fulltext  = fulltext.concat(curMot.mot, (curMot.tbw||''))
       curMot    = curMot.motN
     }
-    console.log("LONGUEUR TEXTE RETOURNÉ : %d", fulltext.length)
+    log.debug("LONGUEUR TEXTE RETOURNÉ : %d", fulltext.length)
     return fulltext
   }
 

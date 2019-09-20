@@ -62,7 +62,8 @@ const UI = {
   message(msg, options){
     if ( 'string' === typeof options) options = {style: options}
     else if ( undefined === options ) options = {}
-    this.flash(msg, {style: style || 'notice'})
+    options.style || Object.assign(options, {style:'neutre'})
+    this.flash(msg, options)
     return true
   }
 , error(msg, options){
