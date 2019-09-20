@@ -12,7 +12,6 @@ TESTS.add("Test de l'existence des objets", function(){
     , [typeof(Canon), "Canon"]
     , [typeof(App), "App"]
     // , [typeof(ErreurExpres), "ErreurExprès"]
-    , [typeof(Addendum), "Addendum"]
     , [typeof(ProxModif), "ProxModif"]
   ]
   classes.forEach( paire => {

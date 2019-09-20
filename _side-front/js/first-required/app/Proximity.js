@@ -20,13 +20,13 @@ class Proximity {
   static async loadData(){
     this.reset()
     if ( fs.existsSync(this.jsonDataPath) ) {
-      console.log("* Chargement des données depuis le fichier proximites.json…")
+      log.debug("* Chargement des données depuis le fichier proximites.json…")
       await IO.loadLargeJSONData(this,this.jsonDataPath)
     } else {
-      console.log("* Chargement des données proximités depuis la table de résultats…")
+      log.debug("* Chargement des données proximités depuis la table de résultats…")
       this.set(PTexte.current.resultats.datas.proximites.datas)
     }
-    console.log("= Données Proximity chargées.")
+    log.debug("= Données Proximity chargées.")
   }
 
   /**
@@ -722,7 +722,7 @@ class Proximity {
     if (undefined === this._motA){
       this._motA = Mot.get(this.motA_id)
       if ( ! this._motA ) {
-        console.error("Impossible d'obtenir le mot d'ID %d dans la liste : ", this.motA_id, Mot.items)
+        log.error("Impossible d'obtenir le mot d'ID %d dans la liste : ", this.motA_id, Mot.items)
       }
     }
     return this._motA
@@ -732,7 +732,7 @@ class Proximity {
     if (undefined === this._motB) {
       this._motB = Mot.get(this.motB_id)
       if ( ! this._motB ) {
-        console.error("Impossible d'obtenir le mot d'index %d dans la liste : ", this.motB_id, Mot.items)
+        log.error("Impossible d'obtenir le mot d'index %d dans la liste : ", this.motB_id, Mot.items)
       }
     }
     return this._motB

@@ -1,6 +1,4 @@
-* Mettre le waiter au milieu de la page, pas dans un container, tant pis
-
-* Bouton pour voir toutes les proximités visibles
+* Bouton pour voir toutes les proximités visibles dans la fenêtre
 
 * Maintenant que le versionning est géré, mémoriser la date de la dernière version et faire une
   alerte lorsque la dernière version est lointaine.

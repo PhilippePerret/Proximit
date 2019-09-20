@@ -15,7 +15,6 @@
 * Un mot définit son mot précédent (`idP`) et son mot suivant (`idN`) qui, s'ils sont définis, permettent de reconstruire le mot.
 * Une proximité est définie par deux mots à distance inférieure de la distance minimale par défaut ou la distance minimale personnalisée pour le texte. Le premier mot s'appelle `motA` et le second mot s'appelle `motB`.
 * L'analyse du texte/des mots se fait en back-side, en ruby. Mais une partie est tout de même dévolue à JS pour modifier les données en live.
-* La première analyse, fait côté "serveur", n'est pas modifiée en cours de travail, un Addendum permet de mémoriser les changemens. C'est seulement lorsque l'auteur le décide que le texte est vraiment modifié pour prendre en compte les changements et qu'une nouvelle analyse est produite.
 
 ---------------------------------------------------------------------
 
@@ -53,10 +52,4 @@ De nombreux cas peuvent se présenter, parmi :
 
 ## Appendum (gestion des modifications) {#laddendum}
 
-Au cours du travail sur les proximités, les données enregistrées en fichier, dans le dossier de proximités, ne sont jamais modifiées. Au lieu de ça, c'est un *Addendum* qui est géré, contenant toutes les modifications à faire.
-
-Par exemple, si un canon est créé pour un nouveau nom, il est enregistré dans l'addendum et sera recréé au chargement de la page. Si un mot est remplacé par un autre, il gardera le même identifiant mais le mot sera changé, ainsi que tous les changements enregistrés (son canon par exemple). Lorsqu'une proximité sera supprimée, elle le sera dans l'addendum.
-
-Les modifications seront vraiment effectuées lorsque l'auteur décidera de produire le nouveau texte prenant compte des modifications. Dans ce cas, le texte (ou les textes) original sera modifié et une nouvelle analyse sera produite, tenant compte évidemment des changements.
-
-Cf. le fichier `./js/first-required/app/Addendum.js` qui définit la constante gérant le fichier `Addendum.js` du dossier des proximités (qui contient)
+ABANDONNÉ. Maintenant, les modifications sont enregistrées.

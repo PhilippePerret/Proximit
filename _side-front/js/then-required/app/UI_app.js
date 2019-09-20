@@ -14,10 +14,8 @@ Object.assign(UI,{
                           Si non défini, tout est nettoyé.
   **/
 , clean(args){
-    console.log("args : ", args)
     // args = args || {all: true};
     if ( undefined === args ) args = {all:true}
-    console.log("args : ", args)
     ;(args.all || args.texte)        && this.cleanTexte()
     ;(args.all || args.infosProx)    && this.cleanInfosProximity()
     ;(args.all || args.infosProximites) && this.cleanInfosProximites()

@@ -378,15 +378,16 @@ class PTexte {
 
       // On regarde s'il ne faudrait pas faire une nouvelle version
       this.checkLastVersionDate()
+      console.timeEnd('Fin du chargement')
 
     } catch (e) {
         console.error(e)
         UI.error("Une erreur est malheureusement survenue.")
     } finally {
+      // Dans tous les cas, on stoppe le waiter
       UI.stopWaiter()
     }
 
-    console.timeEnd('Fin du chargement')
 
   }
 
@@ -480,9 +481,9 @@ class PTexte {
     })(value_id)
     if ( expected != actual ) {
       this.comparedValuesError = true
-      console.error("Problème avec le %s ! Nombre attendu : %d, nombre réel : %d", msg, expected, actual)
+      log.warn("Problème avec le %s ! Nombre attendu : %d, nombre réel : %d", msg, expected, actual)
     } else {
-      console.log("Après chargement, le %s est conforme (%d)", msg, expected)
+      log.debug("Après chargement, le %s est conforme (%d)", msg, expected)
     }
   }
 
@@ -571,9 +572,6 @@ class PTexte {
     }
     return this._resultats
   }
-
-  // l'instance addendum du texte courant
-  get addendum(){return this._addendum||(this._addendum = new Addendum(this))}
 
   // Retourne la date de la dernière analyse, si le texte a été analysé
   get analyse_date(){

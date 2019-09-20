@@ -24,10 +24,10 @@ const Prefs = {
     if ( fs.existsSync(this.path) ) {
       this.data = require(this.path)
     } else {
-      console.log("Le fichier '%s' n'existe pas, je ne peux pas le charger", this.path)
+      log.debug("Le fichier '%s' n'existe pas, je ne peux pas le charger", this.path)
       this.data = {}
     }
-    console.log("Prefs.data = ", this.data)
+    log.debug("Prefs.data = ", this.data)
   }
 
 

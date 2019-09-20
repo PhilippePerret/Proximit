@@ -33,11 +33,11 @@ class Mot {
   static async loadData(){
     this.reset()
     if ( fs.existsSync(this.jsonDataPath) ) {
-      console.log("* Chargement des données Mot depuis le fichier mots.json…")
+      log.debug("* Chargement des données Mot depuis le fichier mots.json…")
       await IO.loadLargeJSONData(this,this.jsonDataPath)
-      console.log("= Données Mots chargées.")
+      log.debug("= Données Mots chargées.")
     } else {
-      console.log("* Chargement des données Mots depuis la table de résultats… (donc par les canons)")
+      log.debug("* Chargement des données Mots depuis la table de résultats… (donc par les canons)")
     }
   }
 
@@ -94,7 +94,7 @@ class Mot {
       } else {
         if ( PTexte.current.firstMot.id == mot.id ) {
           // c'est le même, c'est un ajout du même mot
-          console.error("Bizarrement, le mot '%s' (#%d) est ajouté deux fois…", mot.mot, mot.id)
+          log.error("Bizarrement, le mot '%s' (#%d) est ajouté deux fois…", mot.mot, mot.id)
         } else {
           // Là c'est vraiment une erreur avec deux mots qui n'ont pas d'idP
           throw new Error(`"Le texte comporte déjà un premier mot, il ne devrait pas en avoir deux (premier mot : "${PTexte.current.firstMot.mot}" (#${PTexte.current.firstMot.id}), autre mot sans idP : "${mot.mot}" (#${mot.id}))…`)
@@ -126,8 +126,6 @@ class Mot {
 
     // S'il est en proximité avec d'autres mots avant ou après, il faut
     // détruire cette proximité.
-    console.log("imot.px_idP = ", imot.px_idP)
-    console.log("imot.px_idN = ", imot.px_idN)
     imot.proxP && Proximity.remove.call(Proximity, imot.proxP)
     imot.proxN && Proximity.remove.call(Proximity, imot.proxN)
 

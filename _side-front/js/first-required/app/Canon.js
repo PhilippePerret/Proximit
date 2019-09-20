@@ -38,13 +38,13 @@ class Canon {
   static async loadData(){
     this.reset()
     if ( fs.existsSync(this.jsonDataPath) ) {
-      console.log("* Chargement des données Canon depuis le fichier canons.json…")
+      log.debug("* Chargement des données Canon depuis le fichier canons.json…")
       await IO.loadLargeJSONData(this,this.jsonDataPath)
     } else {
-      console.log("* Chargement des données Canons depuis la table de résultats…")
+      log.debug("* Chargement des données Canons depuis la table de résultats…")
       this.set(PTexte.current.resultats.datas.canons.datas)
     }
-    console.log("= Données Canon chargées.")
+    log.debug("= Données Canon chargées.")
   }
 
   static dispatchMotsEtProximites(){
@@ -133,7 +133,7 @@ class Canon {
     const my = this
     options = options || {}
     let canon = this.canonicFormOf(motstr)
-    console.log("forme canonique de '%s' : ", motstr, canon)
+    log.debug("forme canonique de '%s' : ", motstr, canon)
     if ( canon === "<unknown>") {
       if ( options.force === true ) {
         my.onSetCanon.poursuivre = callback
@@ -145,19 +145,12 @@ class Canon {
       return null
     } else {
       let theCanon = this.get(canon)
-      console.log("theCanon de '%s' = ", canon, theCanon)
+      log.debug("theCanon de '%s' = ", canon, theCanon)
       if ( undefined === theCanon ) {
         // Ce canon n'existe pas, il n'y aura donc aucun problème de proximité
         // avec ce mot, on peut le créer (mais c'est peut-être juste un check)
         if ( options.create === true) {
           let newCanon = this.createNew(canon)
-          // Il faut indiquer que ce canon est une nouvelle donnée à
-          // prendre en compte pour le projet, nouvelle donnée qu'on doit
-          // tout de suite enregistrer sur fichier.
-          // NOTE : je suis parti maintenant pour modifier la donnée resultats, donc
-          // cet addendum devrait s'avérer inutile, ou juste pour l'historique des
-          // opérations.
-          Addendum.addCanon(newCanon)
           // On retourne ce canon
           return newCanon
         }
@@ -372,7 +365,7 @@ class Canon {
     DEPRECATED
   **/
   hasNearMot(offset){
-    console.log("DEPRECATED: La méthode Canon.hasNearMot ne doit plus être utilisée (lire la note N001)")
+    console.error("DEPRECATED: La méthode Canon.hasNearMot ne doit plus être utilisée (lire la note N001)")
     for ( var i in this.offsets ) {
       if ( Math.abs(this.offsets - offset) >= this.proxDistance ) {
         return this.mots[parseInt(i,10)]
@@ -427,7 +420,7 @@ class Canon {
         return this.proximites.map(prox => {
           if ( prox ) { return prox.id }
           else {
-            console.error("Problème avec la proximité ", prox)
+            log.error("Problème avec la proximité ", prox)
             return undefined
           }
         })

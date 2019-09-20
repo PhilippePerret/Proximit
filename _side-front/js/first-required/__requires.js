@@ -11,6 +11,10 @@ const execFile  = require('child_process').execFile
 const {clipboard} = require('electron')
 const remote    = require('electron').remote
 const Dialog    = remote.dialog
+const log       = require('electron-log')
+// Les messages s'afficheront dans la console quand ils atteindront le niveau
+// 'warn' (console.warn("<gros problème>"))
+log.transports.console.level = 'warn'
 
 
 window.onerror = function(err, url, line){
