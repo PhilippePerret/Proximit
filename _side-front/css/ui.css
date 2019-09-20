@@ -147,3 +147,18 @@ div#flash.vanish {
   opacity:0;
   transition:1s
 }
+
+div#waiter {
+  position:fixed;
+  top:200px;
+  left:calc(50% - 150px);
+  width:300px;
+  padding:2em;
+  text-align:center;
+  background-color:white;
+  opacity:0.75;
+  font-family:Arial,Helvetica;
+  font-size:15.7pt;
+  z-index:3000;
+}
+div#waiter img {width:40%;}

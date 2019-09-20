@@ -1,6 +1,4 @@
-* Poursuivre la procédure de confirmation d'une proximité corrigée qui en crée une nouvelle.
--> essayer de mettre en place tout de suite le test.
-  - [BUG] Après avoir supprimé la proximité (mais en supprimant la mauvaise), ça ne supprime plus la proximité.
+* Mettre le waiter au milieu de la page, pas dans un container, tant pis
 
 * Bouton pour voir toutes les proximités visibles
 

@@ -1,17 +1,21 @@
 'use strict'
 /**
   Constante UI
-  version 1.4.2
+  version 1.5.0
   ------------
 
   Requis :
     - UI.css
     - img/divers/waiter-rond-bleu.gif
 
+  # version 1.5.0
+    * "Isolation" du waiter, pour le faire apparaitre au milieu de la page
+      pas dans un container.
+
   # version 1.4.2
     * Correction des arguments de UI.message, pour pouvoir mettre des options
       et pas seulement un style.
-      
+
   # version 1.4.1
     * UI.error retourne false (pour pouvoir faire 'return UI.error("...")')
     * On peut utiliser des retours chariots dans les messages ("\n")
@@ -120,14 +124,14 @@ const UI = {
     document.querySelector('#flash').classList.remove('vanish')
   }
 
-, waiter(msg, container, img) {
-    if (undefined === this.waiters) this.waiters = []
-    img = img || HORLOGE_ATTENTE
-    container = container || document.body
+, HORLOGE_WAITER: '<img class="waiter" src="img/divers/waiter-droit.svg" />'
+, waiter(msg) {
+    if ( $('#waiter').length ) this.stopWaiter()
     let divWaiter = Dom.createDiv({id:'waiter'})
-    if ( msg ) divWaiter.append(Dom.createDiv({text:msg, class:'message center'}))
-    divWaiter.append(Dom.createDiv({text:img, class:'waiter center'}))
-    $(container).append(divWaiter)
+    msg = (msg||'').replace(/\r?\n/g,'<br>')
+    if ( msg ) divWaiter.append(Dom.createDiv({text:msg}))
+    divWaiter.append(Dom.createDiv({text:this.HORLOGE_WAITER}))
+    $(document.body).append(divWaiter)
     return new Promise((ok,ko)=>{setTimeout(ok,200)})
   }
 , stopWaiter(){
