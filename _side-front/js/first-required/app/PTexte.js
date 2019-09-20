@@ -380,7 +380,7 @@ class PTexte {
       // Pour afficher les informations concernant les proximités et régler
       // les boutons qui permettent de les afficher.
       Proximity.init(this)
-      Proximity.correctedCount = this.datas.nombre_corrections
+      Proximity.correctedCount = this.datas.nombre_corrections || 0
 
       // On écrit le texte dans la page
       this.writeTexte()

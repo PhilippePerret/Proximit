@@ -125,10 +125,21 @@ class Mot {
   **/
   static remove(imot) {
 
+    if ( imot.proxP && imot.proxN ) {
+      // Si le mot à supprimer est en proximité avec un frère ou un jumeau
+      // précédent, sa suppression va peut-être créer une nouvelle proximité
+      // entre un éventuel frère ou jumeau suivant. Dans les deux cas, pour
+      // que ce cas soit considéré, il faut que le mot possède une proximité
+      // avant et après
+      Proximity.createIfMotsProches(imot.proxP.motA, imot.proxN.motB)
+    }
     // S'il est en proximité avec d'autres mots avant ou après, il faut
     // détruire cette proximité.
     imot.proxP && Proximity.remove.call(Proximity, imot.proxP)
     imot.proxN && Proximity.remove.call(Proximity, imot.proxN)
+
+    // On détruit le mot dans l'affichage
+    imot.domObj.remove()
 
     // On retire le mot de son canon
     imot.icanon.removeMot(imot)
@@ -141,6 +152,9 @@ class Mot {
     // tés
     delete this._alphaSorted
     delete this._nbProxSorted
+
+    // On actualise l'affichage
+    Proximity.updateInfos()
   }
 
   /**
@@ -243,6 +257,11 @@ class Mot {
         Dom.create('SPAN',{text:this.mot, 'data-id':this.id, class:'mot'})
       , Dom.create('SPAN',{text:this.tbw.replace(/\r?\n/g,'<br>')})
     ]
+  }
+
+  // Retourne l'objet DOM (pour le détruire ou le rendre éditable, par exemple)
+  get domObj(){
+    return UI.texte.find(`.mot[data-id="${this.id}"]`)
   }
 
   // ---------------------------------------------------------------------

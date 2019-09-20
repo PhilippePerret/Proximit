@@ -97,7 +97,8 @@ class Proximity {
   static reset(){
     this.items  = {}
     this.lastId = 0 // pour commencer à 1
-    this.ignoredCount = 0
+    this.ignoredCount   = 0
+    this.correctedCount = 0
     this.semi_reset()
     UI.infos_proximites.clean()
     UI.buttons_proximites.clean()
@@ -157,7 +158,7 @@ class Proximity {
     this.showPourcentage()
   }
   static showNombreCorrected(){
-    UI.infos_proximites.find('#corrected_proximites').innerHTML = this.correctedCount || 0
+    UI.infos_proximites.find('#corrected_proximites').innerHTML = this.correctedCount
     this.showNombre()
   }
   static showNombreIgnored(){
@@ -528,6 +529,23 @@ class Proximity {
   }
 
   /**
+    Méthode qui crée une nouvelle proximité si les {Mot} mots +motAvant+ et
+    +motApres+ sont en proximité
+  **/
+  static createIfMotsProches(motAvant, motApres){
+    var dist = motApres.offset - motAvant.offset
+      , distMin = motAvant.icanon.proxDistance
+    if ( dist > distMin ) return ;
+    // Si on passe là, c'est qu'il faut créer la proximité entre les deux
+    // mot
+    var args = {
+        distance: dist
+      , distance_minimale: distMin
+      , dontRemoveCurProx: true // sinon, boucle sans fin
+    }
+    this.create(motAvant,motApres,args)
+  }
+  /**
 
     Méthode qui SUPPRIME LA PROXIMITÉ +iprox+
 
@@ -567,8 +585,14 @@ class Proximity {
     //  - sélectionner la suivante ou la nouvelle si elles existent
     this.semi_reset()
 
+    ++ this.correctedCount
+    console.log("this.correctedCount = ", this.correctedCount)
+
     // On actualise l'affichage
-    this.showNombreCorrected()
+    this.updateInfos()
+
+    // Marquer le texte modifié
+    PTexte.current.modified = true
 
   }
 
@@ -588,13 +612,10 @@ class Proximity {
     }
     // Demander confirmation
     var dataAsk = {buttons:[
-        {text:'Détruire le mot', onclick:this.execDestroyCurrentMot.bind(this)}
+        {text:'Détruire le mot', onclick:Mot.remove.bind(Mot,this.currentMot)}
       , {text:'Renoncer', onclick:()=>{UI.message('Destruction abandonnée.')}}
     ]}
-    var choix = await ask(`Voulez-vous vraiment détruire le mot « ${this.currentMot.mot} » ?`,dataAsk)
-  }
-  static execDestroyCurrentMot(){
-    console.log("Je vais détruire le mot courant", this.currentMot)
+    await ask(`Voulez-vous vraiment détruire le mot « ${this.currentMot.mot} » ?`,dataAsk)
   }
 
   /**
@@ -606,17 +627,28 @@ class Proximity {
     | avec une proximité qui l'est moins (qui change de page, qui est proche de
     | la limite, etc.)
     |
-    @param {Mot} motA     Le mot avant (obligatoirement celui avant)
-    @param {Mot} motB     Le mot après (obligatoirement celui après)
-    @param {Hash} params  Quelques paramètres requis. Pour le moment, c'est
-                          :distance et :distance_minimale
+    @param {Mot}  motA    Le mot avant (obligatoirement celui avant)
+    @param {Mot}  motB    Le mot après (obligatoirement celui après)
+    @param {Hash} params  Quelques paramètres requis ou optionnels
+                  Requis
+                  ------
+                    :distance
+                    :distance_minimale
+                  Optionnels
+                  ----------
+                    :dontRemoveCurProx  Si cette valeur est à true, on ne touche
+                                        pas aux proxN et proxP des mots. Cela
+                                        est utile pour ne pas avoir une boucle
+                                        sans fin.
   **/
   static create(motA, motB, params) {
-    // Si le mot avant est déjà en proximité avec un mot après
-    if ( motA.proxN ) this.remove( motA.proxN )
 
-    // Si le mot après est déjà en proximité avec un mot avant
-    if ( motB.proxP ) this.remove( motB.proxP)
+    if ( !dontRemoveCurProx ) {
+      // Si le mot avant est déjà en proximité avec un mot après
+      if ( motA.proxN ) this.remove( motA.proxN )
+      // Si le mot après est déjà en proximité avec un mot avant
+      if ( motB.proxP ) this.remove( motB.proxP)
+    }
 
     // Les données pour créer une nouvelle proximité
     let dataNewProx = {

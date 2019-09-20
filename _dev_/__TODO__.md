@@ -1,5 +1,7 @@
-* Bouton pour supprimer le mot courant
+* Poursuivre le test sur la destruction d'un mot
+
 * Bouton pour voir toutes les proximités visibles dans la fenêtre
+  - Il est installé, il faut le rendre efficace.
 
 * Maintenant que le versionning est géré, mémoriser la date de la dernière version et faire une
   alerte lorsque la dernière version est lointaine.

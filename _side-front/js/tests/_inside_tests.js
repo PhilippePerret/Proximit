@@ -8,7 +8,11 @@ const CONSOLE_TITLE_STYLE = "font-weight:bold;font-size:2em;text-decoration:unde
 
   inside_tests
   ------------
-  version 1.0.0
+  version 1.0.1
+
+  # version 1.0.1
+    * Ajout de la valeur 'strict' au second argument de Page.get, pour prendre
+      strictement le premier argument pour un sélecteur.
 **/
 Object.assign(TESTS,{
   name: 'Méthodes de TESTS'
@@ -339,11 +343,13 @@ const Page = {
     | contenu (titre).
     | Si +type+ est indéfini ou "link", on cherchera un lien également par
     | son titre/texte.
+    | Si +type+ est 'strict', on cherchera strictement la ref donnée, qui doit
+    | être un sélecteur valide (mais pas forcément existant)
     |
   **/
 , get(ref, type){
     var c = document.querySelector(ref)
-    if ( c ) return c
+    if ( c || type === 'strict') return c
     c = document.querySelector(`#${ref}`)
     if ( c ) return c
     if ( undefined === type || type == 'button' ) {
