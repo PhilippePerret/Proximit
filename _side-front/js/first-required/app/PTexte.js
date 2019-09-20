@@ -78,7 +78,7 @@ class PTexte {
 
   static reset(){
     delete this._current
-    UI.texte.clean()
+    UI.clean() // on nettoie tout
     Proximity.reset()
     Canon.reset()
     Mot.reset()

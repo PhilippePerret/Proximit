@@ -8,6 +8,31 @@ Object.assign(UI,{
   name:'Extension de UI propre à l’application'
 
   /**
+    Procédure de nettoyage de l'interface
+
+    @param {Hash} params  Paramètres du nettoyage.
+                          Si non défini, tout est nettoyé.
+  **/
+, clean(args){
+    console.log("args : ", args)
+    // args = args || {all: true};
+    if ( undefined === args ) args = {all:true}
+    console.log("args : ", args)
+    ;(args.all || args.texte)        && this.cleanTexte()
+    ;(args.all || args.infosProx)    && this.cleanInfosProximity()
+    ;(args.all || args.infosProximites) && this.cleanInfosProximites()
+    ;(args.all || args.infosDanger)  && this.cleanDangerProx()
+    ;(args.all || args.messageProx)  && this.cleanMessageProx()
+    ;(args.all || args.infosTexte)   && this.cleanInfosTexte()
+  }
+, cleanTexte(){UI.texte.clean()}
+, cleanInfosProximity(){UI.infos_current_proximity.clean()}
+, cleanDangerProx(){UI.infos_danger_proximity.clean()}
+, cleanMessageProx(){UI.proxMessage.clean()}
+, cleanInfosTexte(){UI.infos_texte.clean()}
+, cleanInfosProximites(){UI.infos_proximites.clean()}
+
+  /**
     Affichage des boutons pour gérer les proximités
   **/
 , showButtonsProximites(itext){

@@ -1,0 +1,11 @@
+---
+:class: TextAnalyzer::Analyse::Data
+:analyse_path: "/Users/philippeperret/Programmation/Proximit/spec/support/assets/textes/test_inside_03_prox/analyse.yaml"
+:datas:
+  :text_analyzer_version: 0.2.0
+  :paths:
+  - "./test_inside_03.txt"
+  :started_at: 2019-09-20 08:21:25.165066000 +03:00
+  :ended_at: 2019-09-20 08:21:26.840648000 +03:00
+  :created_at: 2019-09-20 08:21:26.840871000 +03:00
+  :updated_at: 2019-09-20 08:21:26.840873000 +03:00
