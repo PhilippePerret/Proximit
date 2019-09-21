@@ -1,4 +1,7 @@
+* Poursuivre l'affichage de toutes les proximités "around"
+
 * Poursuivre le test sur la destruction d'un mot
+  - prochain : un mot avant mais trop loin pour créé une proximité (donc : le mot à supprimer doit être assez près de ce mot avant pour créer la proximité, mais ce mot avant doit être trop loin du mot suivant du mot supprimé).
 
 * Quand on ré-analyse le texte, il faut détruire l'intégralité des fichiers d'analyse (en particulier ceux produits avec ruby)
   - avant de le faire, il faut cependant demander confirmation lorsqu'il y a déjà eu un travail conséquent sur le texte, au niveau des corrections de proximités.

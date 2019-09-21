@@ -7,6 +7,68 @@
 Object.assign(UI,{
   name:'Extension de UI propre à l’application'
 
+, forEachMotVisible(fun){
+    for ( var mot of this.getMotsVisibles() ) {
+      if ( false === fun.call(null,mot) ) break ; // pour interrompre
+    }
+  }
+  /**
+    Retourne la liste de tous les mots actuellement visibles
+  **/
+, getMotsVisibles(){
+    this.waiter("Recherche des mots visibles…")
+    let parent = UI.texte.domObj
+      , pBounds = parent.getBoundingClientRect()
+      , pStyle  = window.getComputedStyle(parent)
+      , h = {
+            pBounds:pBounds
+          , pHeight: pBounds.height
+          , pTopBorder: parseInt(pStyle['borderTopWidth'],10)
+          , pTopPadding: parseInt(pStyle['paddingTop'],10)
+          , pScroll:      parent.scrollTop
+          , pSpace:       null
+          , soust: null
+        }
+    h.soust = h.pTopBorder + h.pTopPadding
+    h.pSpace = {from:h.pScroll, to:h.pHeight + h.pScroll}
+
+    // On cherche le premier mot affiché
+    let firstMot = null
+
+    console.log(" h = ", h)
+
+    if ( h.pScroll < 20 ) {
+      firstMot = PTexte.current.firstMot
+    } else {
+      Mot.forEach( mot => {
+        var oBounds = mot.domObj.getBoundingClientRect()
+          , oTop    = mot.domObj.offsetTop - h.soust
+          , oSpace  = {from:oTop, to:oTop+oBounds.height}
+        if ( oSpace.from >= h.pSpace.from && oSpace.to <= h.pSpace.to ) {
+          firstMot = mot
+          return false // pour interrompre
+        }
+      })
+    }
+    firstMot || raise("Bizarrement, aucun premier mot n'a été trouvé")
+
+    var mot = firstMot
+      , motList = [firstMot]
+    while ( mot = mot.motN ) {
+      var oBounds = mot.domObj.getBoundingClientRect()
+        , oTop    = mot.domObj.offsetTop - h.soust
+        , oSpace  = {from:oTop, to:oTop+oBounds.height}
+      if ( oSpace.to + 32 > h.pSpace.to ) {
+        break
+      } else {
+        motList.push(mot)
+      }
+    } // Fin de la boucle
+
+    this.stopWaiter()
+    console.log("Liste des mots visibles : ", motList)
+    return motList
+  }
   /**
     Procédure de nettoyage de l'interface
 

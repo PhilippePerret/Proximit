@@ -1,6 +1,6 @@
 'use strict'
 
-TESTS.add(true, "Une destruction du premier mot d'une proximité détruit la proximité", async function(){
+TESTS.add("Une destruction du premier mot d'une proximité détruit la proximité", async function(){
 
   await TESTS.openTexte('test_inside_03.txt')
 

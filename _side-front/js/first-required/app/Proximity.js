@@ -255,7 +255,7 @@ class Proximity {
     |
   **/
   static showAllAround(){
-
+    UI.getMotsVisibles()
   }
 
   // Pour ignorer (et donc passer) la proximité courante

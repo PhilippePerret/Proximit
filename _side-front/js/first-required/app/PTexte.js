@@ -217,7 +217,7 @@ class PTexte {
   **/
   setTexteHeight(){
     let wHeight = window.innerHeight
-      , hTexte  = wHeight - (80 /*header et info prox*/ + 25 /* footer */ + 88 /* padding */)
+      , hTexte  = wHeight - (80 /*header et info prox*/ + 25 /* footer */ + 88 /* padding */ + 5 )
     $(UI.texte.domObj).css('height',`${hTexte}px`)
   }
 
