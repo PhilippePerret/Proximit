@@ -1,10 +1,15 @@
 'use strict'
 
 TESTS.add(true, "Une destruction du premier mot d'une proximité détruit la proximité", async function(){
+
   await TESTS.openTexte('test_inside_03.txt')
+
   // --- Quelques vérifications préliminaires ---
-  let nombreProx = Object.keys(Proximity.items).length
-  assert(6/* => simple vérification*/, nombreProx == 2, `Il y a bien 2 proximités au départ (nombre d'items dans Proximity.items : ${nombreProx}).`)
+  var silencieux = true
+
+  // En utilisant TESTS.verif
+  TESTS.assert({proximites_count: 2}, silencieux)
+
   click("▶️")
 
   let motA    = Proximity.current.motA
@@ -12,15 +17,21 @@ TESTS.add(true, "Une destruction du premier mot d'une proximité détruit la pro
     , motB    = Proximity.current.motB
     , icanon  = motA.icanon
     , proxId  = parseInt(Proximity.current.id,10)
+    , nombreProx = parseInt(Object.keys(Proximity.items).length,10)
 
   // --- Vérifications préliminaires ---
-  assert(6, Page.getInner('#nombre_proximites')=='2', `Le nombre de proximités affiché est 2 (${Page.getInner('#nombre_proximites')})`)
-  assert(6, Page.getInner('#corrected_proximites') == '0', `Le nombre de mots affiché est 0 (${Page.getInner('#corrected_proximites')})`)
-  assert(6, Page.getInner('#nombre_mots') == '17', `Le nombre de mots affiché est 17 (${Page.getInner('#nombre_mots')})`)
-  assert(6, motB.px_idP == Proximity.current.id, `Le motB a la bonne valeur px_idP (#${motB.px_idP})`)
-  assert(6, icanon.nombre_occurences == 2, `Le canon "${icanon.id}" a bien 2 occurences (icanon.nombre_occurences = ${icanon.nombre_occurences})`)
-  assert(6, icanon.nombre_proximites == 1, `Le canon "${icanon.id}" a bien 1 proximités (icanon.nombre_proximites = ${icanon.nombre_proximites})`)
-  assert(6, !isNullish(Page.get(`.mot[data-id="${motA_id}"]`)), "Le mot se trouve dans le texte affiché.")
+  silencieux = true
+  let data = {
+      proximites_count: 2
+    , corrected_proximites: 0
+    , mots_count: 17
+    , motB_px_idP: Proximity.current.id, motB: motB
+    , canon: motA.icanon
+    , nombre_occurences_canon: 2
+    , nombre_proximites_canon: 1
+    , mots_existants: [motA]
+  }
+  TESTS.assert(data, silencieux)
 
   // === TEST ===
   Proximity.current.spanA.focus()
@@ -39,37 +50,103 @@ TESTS.add(true, "Une destruction du premier mot d'une proximité détruit la pro
 
   // Le mot a été détruit (même si ça a été vérifié indirectement dans le
   // waitFor ci-dessus)
-  assert(isNullish(Mot.get(motA_id)), `Le mot #${motA_id} n'existe plus.`)
-  // Le mot a été détruit dans l'affichage
-  assert(isNullish(Page.get(`.mot[data-id="${motA_id}"]`,'strict')), "Le mot a été détruit dans le texte affiché.")
-
-  // La proximité a été détruite
-  assert(isNullish(Proximity.get(proxId)), `La proximité #${proxId} a été détruite.`)
-
-  // Une proximité en moins
-  var newNombreProx = Object.keys(Proximity.items).length
-  assert(newNombreProx == nombreProx - 1, `Le nombre de proximité s'est décrémenté (${nombreProx} - 1 = ${newNombreProx}).`)
-
-  // Le nombre de mots du canon a changé
-  assert(icanon.nombre_occurences == 1, `Le canon "${icanon.id}" n'a plus qu'une seule d'occurence (icanon.nombre_occurences = ${icanon.nombre_occurences})`)
-  assert(icanon.nombre_proximites == 0, `Le canon "${icanon.id}" n'a plus de proximités (icanon.nombre_proximites = ${icanon.nombre_proximites})`)
-
-  assert(Page.getInner('#nombre_proximites')=='1', `Le nombre de proximités affiché est 1 (${Page.getInner('#nombre_proximites')})`)
-  assert(Page.getInner('#corrected_proximites') == '1', `Le nombre affiché de proximités corrigées est 1 (${Page.getInner('#corrected_proximites')})`)
+  TESTS.assert({
+      mots_inexistants: [motA_id]
+    , mots_count: 16
+    , proximites_inexistantes: [proxId]
+    , proximites_count: nombreProx - 1
+    , canon: motA.icanon
+    , nombre_occurences_canon: 1
+    , nombre_proximites_canon: 0
+    , proximites_count: 1
+    , corrected_proximites: 1
+    , motB: motB
+    , motB_px_idP: null
+  })
 
   // L'autre mot n'est plus en proximité précédente
-  assert(isNullish(motB.px_idP), `Le motB n'a plus de px_idP (#${motB.px_idP})`)
   assert(isNullish(motB.proxP), "Le motB n'a plus de .proxP")
-
-  // Le nombre de mots affichés a changé
-  assert(Page.getInner('#nombre_mots') == '16', `Le nombre de mots affiché est 16 (${Page.getInner('#nombre_mots')})`)
 
 })
 
+// Mot avant mais hors proximité
 TESTS.add("Une destruction de second mot de prox détruit la proximité", async function(){
 
 })
-TESTS.add("Destruction de premier mot de prox avec création d'une autre prox avant", async function(){
+// Mot avant à proximité
+TESTS.add(true, "Destruction de mot en proximité avec mot assez proche (avant)", async function(){
+
+  await TESTS.openTexte('test_inside_04.txt')
+
+  // --- Quelques vérifications préliminaires ---
+  var silencieux = false
+
+  click("▶️") // cette… cette
+  click("▶️") // Première proximité… proximité
+
+  let motA    = Proximity.current.motA
+    , motA_id = parseInt(motA.id,10)
+    , motB    = Proximity.current.motB
+    , motB_id = parseInt(motB.id,10)
+    , icanon  = motA.icanon
+    , proxId  = parseInt(Proximity.current.id,10)
+    , nombreProx = parseInt(Object.keys(Proximity.items).length,10)
+
+  // --- Vérifications préliminaires ---
+  silencieux = true
+  let data = {
+      proximites_count: 3
+    , corrected_proximites: 0
+    , mots_count: 19
+    , canon: Canon.get('proximité')
+    , nombre_proximites_canon: 2
+    , nombre_occurences_canon: 3
+    , motB: motB
+    , motB_px_idP: Proximity.current.id
+    , motA: motA
+    , motA_px_idN: Proximity.current.id
+  }
+  TESTS.assert(data, silencieux)
+
+  // === TEST ===
+  Proximity.current.spanB.focus()
+  await TESTS.waitFor(1)
+
+  click("✂️")
+  await TESTS.waitFor(1)
+  // Une fenêtre doit s'afficher
+  click("Détruire le mot")
+  await TESTS.waitFor(1)
+
+  // On doit attendre jusqu'à ce que le mot soit détruit
+  await TESTS.waitFor( isNullish.bind(null, Mot.get(motB_id)) )
+
+  // === VÉRIFICATION ===
+
+  // Le mot a été détruit (même si ça a été vérifié indirectement dans le
+  // waitFor ci-dessus).
+  // Mais cette destruction a dû créer une nouvelle proximité entre le
+  // premier "proximité" et le troisième.
+  TESTS.assert({
+      mots_inexistants: [motB_id]
+    , mots_existants: [motA]
+    , mots_count: 18
+    , proximites_inexistantes: [proxId]
+    , proximites_count: nombreProx // car une nouvelle a dû être créée
+    , canon: motA.icanon
+    , nombre_occurences_canon: 2
+    , nombre_proximites_canon: 1
+    , proximites_count: 2
+    , corrected_proximites: 2
+    , added_proximites: 1
+    , motA: motB
+    , motA_px_idP: null
+    , motA_px_idN: null // non
+  })
+
+})
+// Mot après à proximité
+TESTS.add("Destruction de mot en proximité avec mot assez proche (après)", async function(){
 
 })
 TESTS.add("Destruction de second mot de prox avec création d'une autre prox après", async function(){

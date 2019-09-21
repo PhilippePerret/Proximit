@@ -23,8 +23,9 @@ class TableResultats
     total_distances_common = 0
 
     canons.each do |canon, dcanon|
-      # On ne traite pas les mots de moins de trois lettres
-      next if canon.length < 3
+      # On ne traite pas les canons de moins de trois lettres
+      # SI ! Car ils peuvent comporter des mots de plus de 3 lettres
+      # next if canon.length < 3
       dcanon.mots.each_with_index do |motB, mot_idx|
         mot_idx > 0 || next
         motA = dcanon.mots[mot_idx - 1]

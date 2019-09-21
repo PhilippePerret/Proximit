@@ -1,5 +1,9 @@
 * Poursuivre le test sur la destruction d'un mot
 
+* Quand on ré-analyse le texte, il faut détruire l'intégralité des fichiers d'analyse (en particulier ceux produits avec ruby)
+  - avant de le faire, il faut cependant demander confirmation lorsqu'il y a déjà eu un travail conséquent sur le texte, au niveau des corrections de proximités.
+
+* Il faudra traiter la répétition de "cette" (canon "ce") dans 'inside_tests_04.txt'. En fait, il faut prendre la longueur du mot réel, pour voir s'il faut le traiter, il ne faut pas prendre la longueur de son canon.
 * Bouton pour voir toutes les proximités visibles dans la fenêtre
   - Il est installé, il faut le rendre efficace.
 

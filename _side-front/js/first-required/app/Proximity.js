@@ -99,6 +99,7 @@ class Proximity {
     this.lastId = 0 // pour commencer à 1
     this.ignoredCount   = 0
     this.correctedCount = 0
+    this.addedCount     = 0
     this.semi_reset()
     UI.infos_proximites.clean()
     UI.buttons_proximites.clean()
@@ -142,28 +143,30 @@ class Proximity {
       .append(rowData(null,"Pourcentage proximités",'---','pourcentage_proximites'))
       .append(rowData(null,"Proximités ignorées", '---','ignored_proximites'))
       .append(rowData(null,"Proximités corrigées", '---','corrected_proximites'))
+      .append(rowData(null,"Proximités ajoutées", '---','added_proximites'))
   }
 
   static updateInfos(){
-    // Proximity .showNombre()        // traité par showNombreCorrected
-    // Proximity .showPourcentage()   // idem
+    Proximity .showNombre()
+    Proximity .showPourcentage()
     Proximity .showNombreCorrected()
     Proximity .showNombreIgnored()
+    Proximity .showNombreAdded()
     Canon     .showNombre()
     Mot       .showNombre()
   }
 
   static showNombre(){
     UI.infos_proximites.find('#nombre_proximites').innerHTML = this.realCount()
-    this.showPourcentage()
   }
   static showNombreCorrected(){
     UI.infos_proximites.find('#corrected_proximites').innerHTML = this.correctedCount
-    this.showNombre()
   }
   static showNombreIgnored(){
-    UI.infos_proximites.find('#ignored_proximites').innerHTML = this.ignoredCount || 0
-    this.showNombre()
+    UI.infos_proximites.find('#ignored_proximites').innerHTML = this.ignoredCount
+  }
+  static showNombreAdded(){
+    UI.infos_proximites.find('#added_proximites').innerHTML = this.addedCount || 0
   }
   static showPourcentage(){
     UI.infos_proximites.find('#pourcentage_proximites').innerHTML = `${this.calcPourcentage()} %`
@@ -585,8 +588,9 @@ class Proximity {
     //  - sélectionner la suivante ou la nouvelle si elles existent
     this.semi_reset()
 
+    // On incrémente le nombre total de proximités corrigées (depuis
+    // le départ du travail sur le texte, pas pour cette session seulement)
     ++ this.correctedCount
-    console.log("this.correctedCount = ", this.correctedCount)
 
     // On actualise l'affichage
     this.updateInfos()
@@ -643,7 +647,9 @@ class Proximity {
   **/
   static create(motA, motB, params) {
 
-    if ( !dontRemoveCurProx ) {
+    // console.log("-> Proximity::create(motA, motB, params)", motA, motB, params)
+
+    if ( !params.dontRemoveCurProx ) {
       // Si le mot avant est déjà en proximité avec un mot après
       if ( motA.proxN ) this.remove( motA.proxN )
       // Si le mot après est déjà en proximité avec un mot avant
@@ -669,10 +675,11 @@ class Proximity {
     Object.assign(this.items, {[newProx.id]: newProx})
 
     // On ajoute cette proximit aux deux mots
-    motA._proxN   = newProx
     motA._px_idN  = newProx.id
-    motB._proxP   = newProx
+    delete motA._proxN
     motB._px_idP  = newProx.id
+    delete motB._proxP
+    // Ici, les _px_idN et _px_idP sont bien affectés, cela a été vérifié
 
     motA.icanon.reinit() // notamment pour forcer le recalcul des proximités
                           // motA et motB ont le même canon, fatalement
@@ -683,6 +690,9 @@ class Proximity {
 
     // Réinitialiser les listes
     this.resetLists()
+
+    // On ajoute une proximité ajoutée
+    ++ this.addedCount
 
     // Incrémenter l'affichage (toutes les infos)
     this.updateInfos()

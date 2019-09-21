@@ -14,6 +14,8 @@ class Mot {
       , 'idP':        'iP'
       , 'file_id':    'f'
       , 'canon':      'c'
+      , 'px_idN':     'pn'
+      , 'px_idP':     'pp'
       , 'real_init':  'ri'
       , 'real':       'r'
       , 'downcase':   'd'
@@ -125,18 +127,23 @@ class Mot {
   **/
   static remove(imot) {
 
-    if ( imot.proxP && imot.proxN ) {
+    let motA = imot.proxP && imot.proxP.motA
+      , motB = imot.proxN && imot.proxN.motB
+      , proxAvantEtApresExiste = !!(motA && motB)
+
+    // S'il est en proximité avec d'autres mots avant ou après, il faut
+    // détruire cette proximité.
+    imot.proxP && Proximity.remove.call(Proximity, imot.proxP)
+    imot.proxN && Proximity.remove.call(Proximity, imot.proxN)
+
+    if ( proxAvantEtApresExiste ) {
       // Si le mot à supprimer est en proximité avec un frère ou un jumeau
       // précédent, sa suppression va peut-être créer une nouvelle proximité
       // entre un éventuel frère ou jumeau suivant. Dans les deux cas, pour
       // que ce cas soit considéré, il faut que le mot possède une proximité
       // avant et après
-      Proximity.createIfMotsProches(imot.proxP.motA, imot.proxN.motB)
+      Proximity.createIfMotsProches(motA,motB)
     }
-    // S'il est en proximité avec d'autres mots avant ou après, il faut
-    // détruire cette proximité.
-    imot.proxP && Proximity.remove.call(Proximity, imot.proxP)
-    imot.proxN && Proximity.remove.call(Proximity, imot.proxN)
 
     // On détruit le mot dans l'affichage
     imot.domObj.remove()
@@ -165,6 +172,8 @@ class Mot {
       // Note : ne devrait pas arriver, car datamot devrait toujours contenir
       // au moins la version string du mot et l'offset
 
+    // console.log("Création du mot avec datamot = ", datamot)
+
     undefined !== datamot.id || Object.assign(datamot, {id: this.newId()})
     datamot.real_init || Object.assign(datamot, {real_init: datamot.mot})
     datamot.real      || Object.assign(datamot, {real: datamot.real_init})
@@ -174,6 +183,8 @@ class Mot {
     // console.log("datamot pour la création du mot : ", datamot)
     let imot = new Mot(datamot)
     Object.assign(this.items, {[imot.id]: imot})
+    // On doit l'ajouter à son canon
+    imot.icanon.addMot(imot)
     return imot
   }
 
@@ -200,9 +211,9 @@ class Mot {
   **/
   constructor(data){
     this.data = data
-    // console.log("data du mot : ", data)
     // on dispatche les données
     for ( var k in data ) { this[`_${k}`] = data[k] }
+    // console.log("Instanciation du mot avec les données : ", data, this)
   }
 
   /**
@@ -291,7 +302,7 @@ class Mot {
   // La proximité avec un mot avant (if any)
   get proxP(){
     if (undefined === this._proxP){
-      this._proxP = isNullish(this.px_idP) ? null : Proximity.get(this.px_idP)
+      this._proxP = this.px_idP ? Proximity.get(this.px_idP) : null
     }
     return this._proxP
   }
@@ -299,7 +310,7 @@ class Mot {
   // La proximité avec un mot après (if any)
   get proxN(){
     if (undefined === this._proxN){
-      this._proxN = isNullish(this.px_idN) ? null : Proximity.get(this.px_idN)
+      this._proxN = this.px_idN ? Proximity.get(this.px_idN) : null
     }
     return this._proxN
   }

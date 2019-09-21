@@ -380,7 +380,9 @@ class PTexte {
       // Pour afficher les informations concernant les proximités et régler
       // les boutons qui permettent de les afficher.
       Proximity.init(this)
-      Proximity.correctedCount = this.datas.nombre_corrections || 0
+      Proximity.correctedCount  = this.datas.nombre_corrections || 0
+      Proximity.addedCount      = this.datas.nombre_added || 0
+      Proximity.ignoredCount    = this.datas.nombre_ignored || 0
 
       // On écrit le texte dans la page
       this.writeTexte()
@@ -426,6 +428,7 @@ class PTexte {
         nombre_proximites:  Object.keys(Proximity.items).length
       , nombre_corrections: Proximity.correctedCount // pas pour vérification, mais vraiment pour le compte
       , nombre_ignored:     Proximity.ignoredCount
+      , nombre_added:       Proximity.addedCount
       , nombre_canons:      Object.keys(Canon.items).length
       , nombre_mots:        Object.keys(Mot.items).length
       , firstMot_id:        my.firstMot.id

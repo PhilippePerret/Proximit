@@ -302,6 +302,7 @@ class Canon {
 
   **/
   addMot(imot){
+    // console.log("Ajout du mot #%d au canon '%s'", imot.id, this.canon)
     // On commence par rechercher la place qu'il doit avoir
     var offoff = -1
     for ( var idx in this.offsets ) {
@@ -352,27 +353,14 @@ class Canon {
     if ( undefined === this._proximites ) {
       this._proximites = []
       this.forEachMot( mot => {
-        if ( !isNullish(mot.proxP) ) this._proximites.push(mot.proxP.id)
-        if ( !isNullish(mot.proxN) ) this._proximites.push(mot.proxN.id)
+        mot.proxP && this._proximites.push(mot.proxP.id)
+        mot.proxN && this._proximites.push(mot.proxN.id)
       })
     }
     return this._proximites
   }
   get nombre_proximites(){ return this.proximites.length }
 
-  /**
-    Retourne true si le canon possède un mot proche de l'offset +offset+
-    DEPRECATED
-  **/
-  hasNearMot(offset){
-    console.error("DEPRECATED: La méthode Canon.hasNearMot ne doit plus être utilisée (lire la note N001)")
-    for ( var i in this.offsets ) {
-      if ( Math.abs(this.offsets - offset) >= this.proxDistance ) {
-        return this.mots[parseInt(i,10)]
-      }
-    }
-    return null
-  }
   /**
     Retourne true si le canon possède un mot qui pourrait être proche de
     l'offset +offset+ avec une grande tolérance.
