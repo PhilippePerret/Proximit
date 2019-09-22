@@ -34,11 +34,11 @@ class PTexte {
     my.current.analyzed = null
     // Si ce texte a déjà été enregistré, il faut confirmer deux fois
     // la destruction des corrections
-    if ( Proximity.correctedCount > 0 ) {
+    if ( my.current.hasBeenModified ) {
       ask("Ce texte a déjà été corrigé à l'aide de Proximit.\nSi vous relancez son analyse, TOUTES LES MODIFICATIONS SERONT DÉFINITIVEMENT PERDUES.\n\nVoulez-vous vraiment perdre toutes les modifications ?",{
         buttons:[
             {text:'Renoncer',onclick:function(){UI.message('Analyse abandonnée.')}}
-          , {text:'Détruire les modifications', onclick:this.proceedAnalyseCurrent.bind(this,callback)}
+          , {text:'Recommencer l’analyse', onclick:this.proceedAnalyseCurrent.bind(this,callback)}
         ]
       })
     } else {
@@ -72,6 +72,24 @@ class PTexte {
     Méthode appelée quand on joue le menu "Fichier > Choisir le texte…"
   **/
   static chooseText(){
+    const my = this
+    if ( this.current && this.current.modified ) {
+      ask("Le texte courant a été modifié.\nVoulez-vous perdre les modifications ?",{
+        buttons:[
+            {text:'Renoncer',onclick:function(){UI.message('Opération annulée.')}}
+          , {text:'Sauver le texte puis choisir', onclick:my.saveAndChooseText.bind(my)}
+          , {text:'Perdre les changements', onclick:my.proceedChooseText.bind(my)}
+        ]
+      })
+    } else {
+      this.proceedChooseText()
+    }
+  }
+  static async saveAndChooseText() {
+    await this.current.save()
+    this.proceedChooseText()
+  }
+  static proceedChooseText() {
     let choix = IO.choose({
       message:'Choisir le texte à analyser ou voir…',
       file:true, extensions:['odt','txt','text','rtf','doc','docx','md','scriv']
@@ -124,7 +142,7 @@ class PTexte {
     texte est ouvert normalement, c'est la méthode d'instance 'init' qui
     s'occupe de tout charger.
   **/
-  static loadCurrent(){ this.current.load() }
+  static loadCurrent(){ this.current.init() }
 
   static reloadCurrent(){
     if ( this.current ) {

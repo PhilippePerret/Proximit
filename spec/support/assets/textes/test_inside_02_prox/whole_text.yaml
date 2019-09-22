@@ -1,0 +1,1531 @@
+---
+:class: TextAnalyzer::Analyse::WholeText
+:datas:
+  :path: "/Users/philippeperret/Programmation/Proximit/spec/support/assets/textes/test_inside_02_prox/texte_entier.txt"
+  :lemma_file_path: "/Users/philippeperret/Programmation/Proximit/spec/support/assets/textes/test_inside_02_prox/texte_entier_lemmatized.txt"
+  :length: 443
+  :pages_count: 1
+  :mots:
+    :class: TextAnalyzer::Analyse::WholeText::Mots
+    :datas:
+      :count: 75
+      :items:
+        1:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 1
+            :idP: 
+            :idN: 2
+            :tbw: " "
+            :real: Ce
+            :offset: 0
+            :rel_offset: 0
+            :real_init: Ce
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: ce
+            :lemma: ce
+            :canon: ce
+            :length: 2
+            :sortish: ce
+        2:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 2
+            :idP: 1
+            :idN: 3
+            :tbw: ", "
+            :real: texte
+            :offset: 3
+            :rel_offset: 3
+            :real_init: texte
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 1
+            :downcase: texte
+            :lemma: texte
+            :canon: texte
+            :length: 5
+            :sortish: texte
+        3:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 3
+            :idP: 2
+            :idN: 4
+            :tbw: " "
+            :real: qui
+            :offset: 10
+            :rel_offset: 10
+            :real_init: qui
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 2
+            :downcase: qui
+            :lemma: qui
+            :canon: qui
+            :length: 3
+            :sortish: qui
+        4:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 4
+            :idP: 3
+            :idN: 5
+            :tbw: " "
+            :real: ne
+            :offset: 14
+            :rel_offset: 14
+            :real_init: ne
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: ne
+            :lemma: ne
+            :canon: ne
+            :length: 2
+            :sortish: ne
+        5:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 5
+            :idP: 4
+            :idN: 6
+            :tbw: " "
+            :real: doit
+            :offset: 17
+            :rel_offset: 17
+            :real_init: doit
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 3
+            :downcase: doit
+            :lemma: doit
+            :canon: devoir
+            :length: 4
+            :sortish: doit
+        6:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 6
+            :idP: 5
+            :idN: 7
+            :tbw: " "
+            :real: être
+            :offset: 22
+            :rel_offset: 22
+            :real_init: être
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: être
+            :lemma: être
+            :canon: être
+            :length: 4
+            :sortish: etre
+        7:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 7
+            :idP: 6
+            :idN: 8
+            :tbw: " "
+            :real: modifié
+            :offset: 27
+            :rel_offset: 27
+            :real_init: modifié
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: modifié
+            :lemma: modifié
+            :canon: modifier
+            :length: 7
+            :sortish: modifie
+        8:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 8
+            :idP: 7
+            :idN: 9
+            :tbw: " "
+            :real: sous
+            :offset: 35
+            :rel_offset: 35
+            :real_init: sous
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: sous
+            :lemma: sous
+            :canon: sous
+            :length: 4
+            :sortish: sous
+        9:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 9
+            :idP: 8
+            :idN: 10
+            :tbw: " "
+            :real: aucun
+            :offset: 40
+            :rel_offset: 40
+            :real_init: aucun
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: aucun
+            :lemma: aucun
+            :canon: aucun
+            :length: 5
+            :sortish: aucun
+        10:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 10
+            :idP: 9
+            :idN: 11
+            :tbw: ", "
+            :real: prétexte
+            :offset: 46
+            :rel_offset: 46
+            :real_init: prétexte
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: prétexte
+            :lemma: prétexte
+            :canon: prétexte
+            :length: 8
+            :sortish: pretexte
+        11:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 11
+            :idP: 10
+            :idN: 12
+            :tbw: " "
+            :real: contient
+            :offset: 56
+            :rel_offset: 56
+            :real_init: contient
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: contient
+            :lemma: contient
+            :canon: contenir
+            :length: 8
+            :sortish: contient
+        12:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 12
+            :idP: 11
+            :idN: 13
+            :tbw: " "
+            :real: plusieurs
+            :offset: 65
+            :rel_offset: 65
+            :real_init: plusieurs
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 4
+            :downcase: plusieurs
+            :lemma: plusieurs
+            :canon: plusieurs
+            :length: 9
+            :sortish: plusieurs
+        13:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 13
+            :idP: 12
+            :idN: 14
+            :tbw: " "
+            :real: proximités
+            :offset: 75
+            :rel_offset: 75
+            :real_init: proximités
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 6
+            :downcase: proximités
+            :lemma: proximité
+            :canon: proximité
+            :length: 10
+            :sortish: proximites
+        14:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 14
+            :idP: 13
+            :idN: 15
+            :tbw: " "
+            :real: qui
+            :offset: 86
+            :rel_offset: 86
+            :real_init: qui
+            :file_id: 0
+            :px_idP: 2
+            :px_idN: 
+            :downcase: qui
+            :lemma: qui
+            :canon: qui
+            :length: 3
+            :sortish: qui
+        15:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 15
+            :idP: 14
+            :idN: 16
+            :tbw: " "
+            :real: doivent
+            :offset: 90
+            :rel_offset: 90
+            :real_init: doivent
+            :file_id: 0
+            :px_idP: 3
+            :px_idN: 
+            :downcase: doivent
+            :lemma: doivent
+            :canon: devoir
+            :length: 7
+            :sortish: doivent
+        16:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 16
+            :idP: 15
+            :idN: 17
+            :tbw: " "
+            :real: permettre
+            :offset: 98
+            :rel_offset: 98
+            :real_init: permettre
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 7
+            :downcase: permettre
+            :lemma: permettre
+            :canon: permettre
+            :length: 9
+            :sortish: permettre
+        17:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 17
+            :idP: 16
+            :idN: 18
+            :tbw: " "
+            :real: de
+            :offset: 108
+            :rel_offset: 108
+            :real_init: de
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 9
+            :downcase: de
+            :lemma: de
+            :canon: de
+            :length: 2
+            :sortish: de
+        18:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 18
+            :idP: 17
+            :idN: 19
+            :tbw: " "
+            :real: checker
+            :offset: 111
+            :rel_offset: 111
+            :real_init: checker
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: checker
+            :lemma: checker
+            :canon: checker
+            :length: 7
+            :sortish: checker
+        19:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 19
+            :idP: 18
+            :idN: 20
+            :tbw: " "
+            :real: le
+            :offset: 119
+            :rel_offset: 119
+            :real_init: le
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 11
+            :downcase: le
+            :lemma: le
+            :canon: le
+            :length: 2
+            :sortish: le
+        20:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 20
+            :idP: 19
+            :idN: 21
+            :tbw: " "
+            :real: passage
+            :offset: 122
+            :rel_offset: 122
+            :real_init: passage
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: passage
+            :lemma: passage
+            :canon: passage
+            :length: 7
+            :sortish: passage
+        21:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 21
+            :idP: 20
+            :idN: 22
+            :tbw: "'"
+            :real: d
+            :offset: 130
+            :rel_offset: 130
+            :real_init: d
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 14
+            :downcase: d
+            :lemma: d
+            :canon: d
+            :length: 1
+            :sortish: d
+        22:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 22
+            :idP: 21
+            :idN: 23
+            :tbw: " "
+            :real: une
+            :offset: 132
+            :rel_offset: 132
+            :real_init: une
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: une
+            :lemma: un
+            :canon: un
+            :length: 3
+            :sortish: une
+        23:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 23
+            :idP: 22
+            :idN: 24
+            :tbw: " "
+            :real: proximité
+            :offset: 136
+            :rel_offset: 136
+            :real_init: proximité
+            :file_id: 0
+            :px_idP: 6
+            :px_idN: 
+            :downcase: proximité
+            :lemma: proximité
+            :canon: proximité
+            :length: 9
+            :sortish: proximite
+        24:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 24
+            :idP: 23
+            :idN: 25
+            :tbw: " "
+            :real: à
+            :offset: 146
+            :rel_offset: 146
+            :real_init: à
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: à
+            :lemma: à
+            :canon: à
+            :length: 1
+            :sortish: a
+        25:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 25
+            :idP: 24
+            :idN: 26
+            :tbw: "'"
+            :real: l
+            :offset: 148
+            :rel_offset: 148
+            :real_init: l
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: l
+            :lemma: l
+            :canon: l
+            :length: 1
+            :sortish: l
+        26:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 26
+            :idP: 25
+            :idN: 27
+            :tbw: " "
+            :real: autre
+            :offset: 150
+            :rel_offset: 150
+            :real_init: autre
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: autre
+            :lemma: autre
+            :canon: autre
+            :length: 5
+            :sortish: autre
+        27:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 27
+            :idP: 26
+            :idN: 28
+            :tbw: " "
+            :real: dans
+            :offset: 156
+            :rel_offset: 156
+            :real_init: dans
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: dans
+            :lemma: dans
+            :canon: dans
+            :length: 4
+            :sortish: dans
+        28:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 28
+            :idP: 27
+            :idN: 29
+            :tbw: " "
+            :real: tout
+            :offset: 161
+            :rel_offset: 161
+            :real_init: tout
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: tout
+            :lemma: tout
+            :canon: tout
+            :length: 4
+            :sortish: tout
+        29:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 29
+            :idP: 28
+            :idN: 30
+            :tbw: " "
+            :real: le
+            :offset: 166
+            :rel_offset: 166
+            :real_init: le
+            :file_id: 0
+            :px_idP: 11
+            :px_idN: 12
+            :downcase: le
+            :lemma: le
+            :canon: le
+            :length: 2
+            :sortish: le
+        30:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 30
+            :idP: 29
+            :idN: 31
+            :tbw: ", "
+            :real: texte
+            :offset: 169
+            :rel_offset: 169
+            :real_init: texte
+            :file_id: 0
+            :px_idP: 1
+            :px_idN: 
+            :downcase: texte
+            :lemma: texte
+            :canon: texte
+            :length: 5
+            :sortish: texte
+        31:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 31
+            :idP: 30
+            :idN: 32
+            :tbw: " "
+            :real: en
+            :offset: 176
+            :rel_offset: 176
+            :real_init: en
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 17
+            :downcase: en
+            :lemma: en
+            :canon: en
+            :length: 2
+            :sortish: en
+        32:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 32
+            :idP: 31
+            :idN: 33
+            :tbw: " "
+            :real: avant
+            :offset: 179
+            :rel_offset: 179
+            :real_init: avant
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: avant
+            :lemma: avant
+            :canon: avant
+            :length: 5
+            :sortish: avant
+        33:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 33
+            :idP: 32
+            :idN: 34
+            :tbw: " "
+            :real: comme
+            :offset: 185
+            :rel_offset: 185
+            :real_init: comme
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: comme
+            :lemma: comme
+            :canon: comme
+            :length: 5
+            :sortish: comme
+        34:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 34
+            :idP: 33
+            :idN: 35
+            :tbw: " "
+            :real: en
+            :offset: 191
+            :rel_offset: 191
+            :real_init: en
+            :file_id: 0
+            :px_idP: 17
+            :px_idN: 18
+            :downcase: en
+            :lemma: en
+            :canon: en
+            :length: 2
+            :sortish: en
+        35:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 35
+            :idP: 34
+            :idN: 36
+            :tbw: ".\n\n"
+            :real: arrière
+            :offset: 194
+            :rel_offset: 194
+            :real_init: arrière
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: arrière
+            :lemma: arrière
+            :canon: arrière
+            :length: 7
+            :sortish: arriere
+        36:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 36
+            :idP: 35
+            :idN: 37
+            :tbw: " "
+            :real: Il
+            :offset: 204
+            :rel_offset: 204
+            :real_init: Il
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: il
+            :lemma: il
+            :canon: il
+            :length: 2
+            :sortish: il
+        37:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 37
+            :idP: 36
+            :idN: 38
+            :tbw: " "
+            :real: est
+            :offset: 207
+            :rel_offset: 207
+            :real_init: est
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: est
+            :lemma: est
+            :canon: être
+            :length: 3
+            :sortish: est
+        38:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 38
+            :idP: 37
+            :idN: 39
+            :tbw: " "
+            :real: permis
+            :offset: 211
+            :rel_offset: 211
+            :real_init: permis
+            :file_id: 0
+            :px_idP: 7
+            :px_idN: 8
+            :downcase: permis
+            :lemma: permis
+            :canon: permettre
+            :length: 6
+            :sortish: permis
+        39:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 39
+            :idP: 38
+            :idN: 40
+            :tbw: "'"
+            :real: d
+            :offset: 218
+            :rel_offset: 218
+            :real_init: d
+            :file_id: 0
+            :px_idP: 14
+            :px_idN: 15
+            :downcase: d
+            :lemma: d
+            :canon: d
+            :length: 1
+            :sortish: d
+        40:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 40
+            :idP: 39
+            :idN: 41
+            :tbw: " "
+            :real: avoir
+            :offset: 220
+            :rel_offset: 220
+            :real_init: avoir
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: avoir
+            :lemma: avoir
+            :canon: avoir
+            :length: 5
+            :sortish: avoir
+        41:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 41
+            :idP: 40
+            :idN: 42
+            :tbw: " "
+            :real: des
+            :offset: 226
+            :rel_offset: 226
+            :real_init: des
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: des
+            :lemma: du
+            :canon: du
+            :length: 3
+            :sortish: des
+        42:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 42
+            :idP: 41
+            :idN: 43
+            :tbw: " "
+            :real: formes
+            :offset: 230
+            :rel_offset: 230
+            :real_init: formes
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 19
+            :downcase: formes
+            :lemma: forme
+            :canon: forme
+            :length: 6
+            :sortish: formes
+        43:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 43
+            :idP: 42
+            :idN: 44
+            :tbw: " "
+            :real: lémmatisées
+            :offset: 237
+            :rel_offset: 237
+            :real_init: lémmatisées
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: lémmatisées
+            :lemma: lémmatisées
+            :canon: lémmatisées
+            :length: 11
+            :sortish: lemmatisees
+        44:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 44
+            :idP: 43
+            :idN: 45
+            :tbw: " "
+            :real: et
+            :offset: 249
+            :rel_offset: 249
+            :real_init: et
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 20
+            :downcase: et
+            :lemma: et
+            :canon: et
+            :length: 2
+            :sortish: et
+        45:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 45
+            :idP: 44
+            :idN: 46
+            :tbw: " "
+            :real: plusieurs
+            :offset: 252
+            :rel_offset: 252
+            :real_init: plusieurs
+            :file_id: 0
+            :px_idP: 4
+            :px_idN: 5
+            :downcase: plusieurs
+            :lemma: plusieurs
+            :canon: plusieurs
+            :length: 9
+            :sortish: plusieurs
+        46:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 46
+            :idP: 45
+            :idN: 47
+            :tbw: "'"
+            :real: d
+            :offset: 262
+            :rel_offset: 262
+            :real_init: d
+            :file_id: 0
+            :px_idP: 15
+            :px_idN: 16
+            :downcase: d
+            :lemma: d
+            :canon: d
+            :length: 1
+            :sortish: d
+        47:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 47
+            :idP: 46
+            :idN: 48
+            :tbw: " "
+            :real: entre
+            :offset: 264
+            :rel_offset: 264
+            :real_init: entre
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: entre
+            :lemma: entre
+            :canon: entre
+            :length: 5
+            :sortish: entre
+        48:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 48
+            :idP: 47
+            :idN: 49
+            :tbw: " "
+            :real: elles
+            :offset: 270
+            :rel_offset: 270
+            :real_init: elles
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: elles
+            :lemma: elle
+            :canon: elle
+            :length: 5
+            :sortish: elles
+        49:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 49
+            :idP: 48
+            :idN: 50
+            :tbw: " "
+            :real: sont
+            :offset: 276
+            :rel_offset: 276
+            :real_init: sont
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: sont
+            :lemma: sont
+            :canon: être
+            :length: 4
+            :sortish: sont
+        50:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 50
+            :idP: 49
+            :idN: 51
+            :tbw: "'"
+            :real: d
+            :offset: 281
+            :rel_offset: 281
+            :real_init: d
+            :file_id: 0
+            :px_idP: 16
+            :px_idN: 
+            :downcase: d
+            :lemma: d
+            :canon: d
+            :length: 1
+            :sortish: d
+        51:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 51
+            :idP: 50
+            :idN: 52
+            :tbw: " "
+            :real: ailleurs
+            :offset: 283
+            :rel_offset: 283
+            :real_init: ailleurs
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: ailleurs
+            :lemma: ailleurs
+            :canon: ailleurs
+            :length: 8
+            :sortish: ailleurs
+        52:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 52
+            :idP: 51
+            :idN: 53
+            :tbw: " "
+            :real: utilisées
+            :offset: 292
+            :rel_offset: 292
+            :real_init: utilisées
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: utilisées
+            :lemma: utilisées
+            :canon: utiliser
+            :length: 9
+            :sortish: utilisees
+        53:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 53
+            :idP: 52
+            :idN: 54
+            :tbw: ". "
+            :real: ici
+            :offset: 302
+            :rel_offset: 302
+            :real_init: ici
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: ici
+            :lemma: ici
+            :canon: ici
+            :length: 3
+            :sortish: ici
+        54:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 54
+            :idP: 53
+            :idN: 55
+            :tbw: " "
+            :real: La
+            :offset: 307
+            :rel_offset: 307
+            :real_init: La
+            :file_id: 0
+            :px_idP: 12
+            :px_idN: 13
+            :downcase: la
+            :lemma: le
+            :canon: le
+            :length: 2
+            :sortish: la
+        55:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 55
+            :idP: 54
+            :idN: 56
+            :tbw: " "
+            :real: lémmatisation
+            :offset: 310
+            :rel_offset: 310
+            :real_init: lémmatisation
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: lémmatisation
+            :lemma: lémmatisation
+            :canon: lémmatisation
+            :length: 13
+            :sortish: lemmatisation
+        56:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 56
+            :idP: 55
+            :idN: 57
+            :tbw: " "
+            :real: permet
+            :offset: 324
+            :rel_offset: 324
+            :real_init: permet
+            :file_id: 0
+            :px_idP: 8
+            :px_idN: 
+            :downcase: permet
+            :lemma: permet
+            :canon: permettre
+            :length: 6
+            :sortish: permet
+        57:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 57
+            :idP: 56
+            :idN: 58
+            :tbw: " "
+            :real: de
+            :offset: 331
+            :rel_offset: 331
+            :real_init: de
+            :file_id: 0
+            :px_idP: 9
+            :px_idN: 10
+            :downcase: de
+            :lemma: de
+            :canon: de
+            :length: 2
+            :sortish: de
+        58:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 58
+            :idP: 57
+            :idN: 59
+            :tbw: " "
+            :real: rassembler
+            :offset: 334
+            :rel_offset: 334
+            :real_init: rassembler
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: rassembler
+            :lemma: rassembler
+            :canon: rassembler
+            :length: 10
+            :sortish: rassembler
+        59:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 59
+            :idP: 58
+            :idN: 60
+            :tbw: " "
+            :real: plusieurs
+            :offset: 345
+            :rel_offset: 345
+            :real_init: plusieurs
+            :file_id: 0
+            :px_idP: 5
+            :px_idN: 
+            :downcase: plusieurs
+            :lemma: plusieurs
+            :canon: plusieurs
+            :length: 9
+            :sortish: plusieurs
+        60:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 60
+            :idP: 59
+            :idN: 61
+            :tbw: " "
+            :real: mots
+            :offset: 355
+            :rel_offset: 355
+            :real_init: mots
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: mots
+            :lemma: mot
+            :canon: mot
+            :length: 4
+            :sortish: mots
+        61:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 61
+            :idP: 60
+            :idN: 62
+            :tbw: " "
+            :real: en
+            :offset: 360
+            :rel_offset: 360
+            :real_init: en
+            :file_id: 0
+            :px_idP: 18
+            :px_idN: 
+            :downcase: en
+            :lemma: en
+            :canon: en
+            :length: 2
+            :sortish: en
+        62:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 62
+            :idP: 61
+            :idN: 63
+            :tbw: " "
+            :real: un
+            :offset: 363
+            :rel_offset: 363
+            :real_init: un
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: un
+            :lemma: un
+            :canon: un
+            :length: 2
+            :sortish: un
+        63:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 63
+            :idP: 62
+            :idN: 64
+            :tbw: " "
+            :real: même
+            :offset: 366
+            :rel_offset: 366
+            :real_init: même
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: même
+            :lemma: même
+            :canon: même
+            :length: 4
+            :sortish: meme
+        64:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 64
+            :idP: 63
+            :idN: 65
+            :tbw: ", "
+            :real: canon
+            :offset: 371
+            :rel_offset: 371
+            :real_init: canon
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: canon
+            :lemma: canon
+            :canon: canon
+            :length: 5
+            :sortish: canon
+        65:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 65
+            :idP: 64
+            :idN: 66
+            :tbw: " "
+            :real: une
+            :offset: 378
+            :rel_offset: 378
+            :real_init: une
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: une
+            :lemma: un
+            :canon: un
+            :length: 3
+            :sortish: une
+        66:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 66
+            :idP: 65
+            :idN: 67
+            :tbw: " "
+            :real: forme
+            :offset: 382
+            :rel_offset: 382
+            :real_init: forme
+            :file_id: 0
+            :px_idP: 19
+            :px_idN: 
+            :downcase: forme
+            :lemma: forme
+            :canon: forme
+            :length: 5
+            :sortish: forme
+        67:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 67
+            :idP: 66
+            :idN: 68
+            :tbw: ".\n\n"
+            :real: canonique
+            :offset: 388
+            :rel_offset: 388
+            :real_init: canonique
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: canonique
+            :lemma: canonique
+            :canon: canonique
+            :length: 9
+            :sortish: canonique
+        68:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 68
+            :idP: 67
+            :idN: 69
+            :tbw: " "
+            :real: Il
+            :offset: 400
+            :rel_offset: 400
+            :real_init: Il
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: il
+            :lemma: il
+            :canon: il
+            :length: 2
+            :sortish: il
+        69:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 69
+            :idP: 68
+            :idN: 70
+            :tbw: " "
+            :real: est
+            :offset: 403
+            :rel_offset: 403
+            :real_init: est
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: est
+            :lemma: est
+            :canon: être
+            :length: 3
+            :sortish: est
+        70:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 70
+            :idP: 69
+            :idN: 71
+            :tbw: " "
+            :real: utile
+            :offset: 407
+            :rel_offset: 407
+            :real_init: utile
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: utile
+            :lemma: utile
+            :canon: utile
+            :length: 5
+            :sortish: utile
+        71:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 71
+            :idP: 70
+            :idN: 72
+            :tbw: " "
+            :real: et
+            :offset: 413
+            :rel_offset: 413
+            :real_init: et
+            :file_id: 0
+            :px_idP: 20
+            :px_idN: 
+            :downcase: et
+            :lemma: et
+            :canon: et
+            :length: 2
+            :sortish: et
+        72:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 72
+            :idP: 71
+            :idN: 73
+            :tbw: " "
+            :real: nécessaire
+            :offset: 416
+            :rel_offset: 416
+            :real_init: nécessaire
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: nécessaire
+            :lemma: nécessaire
+            :canon: nécessaire
+            :length: 10
+            :sortish: necessaire
+        73:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 73
+            :idP: 72
+            :idN: 74
+            :tbw: " "
+            :real: de
+            :offset: 427
+            :rel_offset: 427
+            :real_init: de
+            :file_id: 0
+            :px_idP: 10
+            :px_idN: 
+            :downcase: de
+            :lemma: de
+            :canon: de
+            :length: 2
+            :sortish: de
+        74:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 74
+            :idP: 73
+            :idN: 75
+            :tbw: " "
+            :real: le
+            :offset: 430
+            :rel_offset: 430
+            :real_init: le
+            :file_id: 0
+            :px_idP: 13
+            :px_idN: 
+            :downcase: le
+            :lemma: le
+            :canon: le
+            :length: 2
+            :sortish: le
+        75:
+          :class: TextAnalyzer::Analyse::WholeText::Mot
+          :datas:
+            :id: 75
+            :idP: 74
+            :idN: 
+            :tbw: |+
+              .
+
+
+            :real: savoir
+            :offset: 433
+            :rel_offset: 433
+            :real_init: savoir
+            :file_id: 0
+            :px_idP: 
+            :px_idN: 
+            :downcase: savoir
+            :lemma: savoir
+            :canon: savoir
+            :length: 6
+            :sortish: savoir
+      :en_proximites:
+        :class: LCP
+        :datas:
+          :nombre: 32
+          :pourcentage: 42.7 %
+          :list:
+          - 2
+          - 3
+          - 5
+          - 12
+          - 13
+          - 14
+          - 15
+          - 16
+          - 17
+          - 19
+          - 21
+          - 23
+          - 29
+          - 30
+          - 31
+          - 34
+          - 38
+          - 39
+          - 42
+          - 44
+          - 45
+          - 46
+          - 50
+          - 54
+          - 56
+          - 57
+          - 59
+          - 61
+          - 66
+          - 71
+          - 73
+          - 74
+      :hors_proximites:
+        :class: LCP
+        :datas:
+          :nombre: 43
+          :pourcentage: 57.3 %
+          :list:
+          - 1
+          - 4
+          - 6
+          - 7
+          - 8
+          - 9
+          - 10
+          - 11
+          - 18
+          - 20
+          - 22
+          - 24
+          - 25
+          - 26
+          - 27
+          - 28
+          - 32
+          - 33
+          - 35
+          - 36
+          - 37
+          - 40
+          - 41
+          - 43
+          - 47
+          - 48
+          - 49
+          - 51
+          - 52
+          - 53
+          - 55
+          - 58
+          - 60
+          - 62
+          - 63
+          - 64
+          - 65
+          - 67
+          - 68
+          - 69
+          - 70
+          - 72
+          - 75
+      :created_at: 2019-09-22 16:07:51.934496000 +03:00
+      :updated_at: 2019-09-22 16:07:51.934498000 +03:00
+  :created_at: 2019-09-22 16:07:51.934502000 +03:00
+  :updated_at: 2019-09-22 16:07:51.934503000 +03:00

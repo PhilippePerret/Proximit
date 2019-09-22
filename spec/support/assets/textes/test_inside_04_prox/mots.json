@@ -1,5 +1,5 @@
 [
-{"id":1,"iN":2,"f":0,"c":"ce","pn":1,"ri":"Cette","r":"Cette","d":"cette","l":"ce","s":"cette","t":" ","o":0,"ro":0}
+{"id":1,"iN":2,"c":"être","pn":4,"ri":"Sera","r":4,"d":"sera","t":" ","o":0,"ro":0}
 ,
 {"id":2,"iN":3,"iP":1,"f":0,"c":"premier","ri":"première","r":"première","d":"première","l":"premier","s":"premiere","t":" ","o":6,"ro":6}
 ,
@@ -15,7 +15,7 @@
 ,
 {"id":8,"iN":9,"iP":7,"f":0,"c":"avec","ri":"avec","r":"avec","d":"avec","l":"avec","s":"avec","t":"\n\n","o":50,"ro":50}
 ,
-{"id":9,"iN":10,"iP":8,"f":0,"c":"ce","pp":1,"ri":"cette","r":"cette","d":"cette","l":"ce","s":"cette","t":" ","o":56,"ro":56}
+{"id":9,"iN":10,"iP":8,"f":0,"c":"ce","ri":"cette","r":"cette","d":"cette","l":"ce","s":"cette","t":" ","o":56,"ro":56}
 ,
 {"id":10,"iN":11,"iP":9,"f":0,"c":"troisième","ri":"troisième","r":"troisième","d":"troisième","l":"troisième","s":"troisieme","t":" ","o":62,"ro":62}
 ,
@@ -33,7 +33,7 @@
 ,
 {"id":17,"iN":18,"iP":16,"f":0,"c":"terme","ri":"terme","r":"terme","d":"terme","l":"terme","s":"terme","t":" ","o":108,"ro":108}
 ,
-{"id":18,"iN":19,"iP":17,"f":0,"c":"être","ri":"est","r":"est","d":"est","l":"est","s":"est","t":" ","o":114,"ro":114}
+{"id":18,"iN":19,"iP":17,"f":0,"c":"être","pp":4,"ri":"est","r":"est","d":"est","l":"est","s":"est","t":" ","o":114,"ro":114}
 ,
 {"id":19,"iP":18,"f":0,"c":"supprimer","ri":"supprimé","r":"supprimé","d":"supprimé","l":"supprimé","s":"supprime","t":".\n\n\n","o":118,"ro":118}
 ]
