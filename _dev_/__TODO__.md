@@ -1,7 +1,7 @@
+* Mettre en place l'édition pour copier/coller etc.
+
 * Poursuivre le test sur la destruction d'un mot
   - prochain : un mot avant mais trop loin pour créé une proximité (donc : le mot à supprimer doit être assez près de ce mot avant pour créer la proximité, mais ce mot avant doit être trop loin du mot suivant du mot supprimé).
-
-* Mettre en place une procédure d'avertissement si l'on ferme ou recharge l'application et que le texte est modifié.
 
 * [BUG] Quand on demande à ignorer une proximité, il faut vérifier que cela ne provoque pas une nouvelle proximité par "saut". Par exemple, si on supprime la deuxième proximité de "un texte dans le texte pour un texte", est-ce qu'il ne faut pas que le premier et le troisième "texte" soit mis en proximité ? Ce serait en tout cas important de prévenir l'auteur.
   -> faire un test pour tester ce cas précis.

@@ -51,6 +51,18 @@ const ObjMenus = {
         ]
       }
     , {
+        label: 'Édition'
+      , enabled: true
+      , submenu: [
+            {role:'cancel', label:'Annuler'}
+          , {rold:'redo', label:'Refaire'}
+          , {type: 'separator'}
+          , {role:'copy', label:'Copier'}
+          , {role:'cut', label:'Couper'}
+          , {role:'paste', label:'Coller'}
+        ]
+      }
+    , {
         label: 'Texte'
       , enabled: true
       , id: 'menu-analyse'
