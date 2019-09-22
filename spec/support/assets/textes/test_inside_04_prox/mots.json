@@ -1,0 +1,39 @@
+[
+{"id":1,"iN":2,"f":0,"c":"ce","pn":1,"ri":"Cette","r":"Cette","d":"cette","l":"ce","s":"cette","t":" ","o":0,"ro":0}
+,
+{"id":2,"iN":3,"iP":1,"f":0,"c":"premier","ri":"première","r":"première","d":"première","l":"premier","s":"premiere","t":" ","o":6,"ro":6}
+,
+{"id":3,"iN":4,"iP":2,"f":0,"c":"proximité","pn":2,"ri":"proximité","r":"proximité","d":"proximité","l":"proximité","s":"proximite","t":" ","o":15,"ro":15}
+,
+{"id":4,"iN":5,"iP":3,"f":0,"c":"devoir","ri":"doit","r":"doit","d":"doit","l":"doit","s":"doit","t":" ","o":25,"ro":25}
+,
+{"id":5,"iN":6,"iP":4,"f":0,"c":"entrer","ri":"entrer","r":"entrer","d":"entrer","l":"entrer","s":"entrer","t":" ","o":30,"ro":30}
+,
+{"id":6,"iN":7,"iP":5,"f":0,"c":"en","ri":"en","r":"en","d":"en","l":"en","s":"en","t":" ","o":37,"ro":37}
+,
+{"id":7,"iN":8,"iP":6,"f":0,"c":"proximité","pn":3,"pp":2,"ri":"proximité","r":"proximité","d":"proximité","l":"proximité","s":"proximite","t":" ","o":40,"ro":40}
+,
+{"id":8,"iN":9,"iP":7,"f":0,"c":"avec","ri":"avec","r":"avec","d":"avec","l":"avec","s":"avec","t":"\n\n","o":50,"ro":50}
+,
+{"id":9,"iN":10,"iP":8,"f":0,"c":"ce","pp":1,"ri":"cette","r":"cette","d":"cette","l":"ce","s":"cette","t":" ","o":56,"ro":56}
+,
+{"id":10,"iN":11,"iP":9,"f":0,"c":"troisième","ri":"troisième","r":"troisième","d":"troisième","l":"troisième","s":"troisieme","t":" ","o":62,"ro":62}
+,
+{"id":11,"iN":12,"iP":10,"f":0,"c":"proximité","pp":3,"ri":"proximité","r":"proximité","d":"proximité","l":"proximité","s":"proximite","t":" ","o":72,"ro":72}
+,
+{"id":12,"iN":13,"iP":11,"f":0,"c":"un","ri":"une","r":"une","d":"une","l":"un","s":"une","t":" ","o":82,"ro":82}
+,
+{"id":13,"iN":14,"iP":12,"f":0,"c":"fois","ri":"fois","r":"fois","d":"fois","l":"fois","s":"fois","t":" ","o":86,"ro":86}
+,
+{"id":14,"iN":15,"iP":13,"f":0,"c":"que","ri":"que","r":"que","d":"que","l":"que","s":"que","t":" ","o":91,"ro":91}
+,
+{"id":15,"iN":16,"iP":14,"f":0,"c":"le","ri":"le","r":"le","d":"le","l":"le","s":"le","t":" ","o":95,"ro":95}
+,
+{"id":16,"iN":17,"iP":15,"f":0,"c":"deuxième","ri":"deuxième","r":"deuxième","d":"deuxième","l":"deuxième","s":"deuxieme","t":"\n\n","o":98,"ro":98}
+,
+{"id":17,"iN":18,"iP":16,"f":0,"c":"terme","ri":"terme","r":"terme","d":"terme","l":"terme","s":"terme","t":" ","o":108,"ro":108}
+,
+{"id":18,"iN":19,"iP":17,"f":0,"c":"être","ri":"est","r":"est","d":"est","l":"est","s":"est","t":" ","o":114,"ro":114}
+,
+{"id":19,"iP":18,"f":0,"c":"supprimer","ri":"supprimé","r":"supprimé","d":"supprimé","l":"supprimé","s":"supprime","t":".\n\n\n","o":118,"ro":118}
+]

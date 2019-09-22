@@ -27,11 +27,26 @@ class PTexte {
     Pour le moment, elle demande à choisir le texte s'il n'y a pas de texte
     courant mais plus tard, le menu sera désactivé
   **/
-  static analyseCurrent(callback){
+  static async analyseCurrent(callback){
     const my = this
     if ( undefined === my.current ) my.chooseText()
     if ( undefined === my.current ) return ; // annulation
     my.current.analyzed = null
+    // Si ce texte a déjà été enregistré, il faut confirmer deux fois
+    // la destruction des corrections
+    if ( Proximity.correctedCount > 0 ) {
+      ask("Ce texte a déjà été corrigé à l'aide de Proximit.\nSi vous relancez son analyse, TOUTES LES MODIFICATIONS SERONT DÉFINITIVEMENT PERDUES.\n\nVoulez-vous vraiment perdre toutes les modifications ?",{
+        buttons:[
+            {text:'Renoncer',onclick:function(){UI.message('Analyse abandonnée.')}}
+          , {text:'Détruire les modifications', onclick:this.proceedAnalyseCurrent.bind(this,callback)}
+        ]
+      })
+    } else {
+      this.proceedAnalyseCurrent(callback)
+    }
+  }
+  static proceedAnalyseCurrent(callback){
+    const my = this
     UI.clean()
     UI.waiter("Analyse du texte.\nMerci de patienter…", UI.texte.domObj)
     execFile(`./bin/analyse_texte.rb`, [PTexte.current.path], (err, stdout, stderr) => {
@@ -45,8 +60,9 @@ class PTexte {
         // par puts dans le script.
         // On réaffiche tout de suite les infos, pour savoir ce qu'a
         // pu faire l'analyse. On prépare aussi les boutons, etc.
-        my.current.analyzed = true
-        PTexte.current.init()
+        // Le mieux, c'est d'ouvrir le texte comme si c'était un nouveau
+        // texte.
+        my.open(my.current.path)
         if ('function' === typeof callback) callback.call()
       }
     })
@@ -292,7 +308,7 @@ class PTexte {
   set version(vers) {
     this._version = vers
     fs.writeFileSync(this.pathVersion, vers)
-    $('.texte-version').html(vers) // TODO AJOUTER AU TITRE DU TEXTE EN SPAN
+    $('.texte-version').html(vers)
   }
   get pathVersion(){return this.in_prox('VERSION')}
   getVersion(){
@@ -442,6 +458,11 @@ class PTexte {
     fs.writeFileSync(this.dataPath, JSON.stringify(datas))
     return true
   }
+
+  // Retourne true si ce texte a déjà été enregistré depuis Proximit
+  get hasBeenModified() {
+    return fs.existsSync(this.in_prox('mots.json'))
+  }
   /**
     Vérifie la conformité des données chargées
   **/
@@ -450,7 +471,7 @@ class PTexte {
 
     // On doit vérifier que les nombres enregistrés dedans (if any) correspondent aux
     // nombre chargés
-    if ( !fs.existsSync(this.correctedTextPath) ) return ; // pas encore enregistré
+    if ( !this.hasBeenModified ) return;
 
     this.comparedValuesError = false
 

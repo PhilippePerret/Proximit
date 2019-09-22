@@ -34,7 +34,12 @@ class Analyse
     data.started_at = Time.now
 
     # Faire le dossier d'analyse
-    File.exists?(prox_folder) || FileUtils.mkdir_p(prox_folder)
+    # S'il existe, il faut détruire les fichiers d'analyse précédents
+    if File.exists?(prox_folder)
+      erase_old_analyse_files
+    else
+      FileUtils.mkdir_p(prox_folder)
+    end
 
     # Pour initialiser les "listes rectifiées" et les listes
     # de proximités propres au projet.
@@ -51,6 +56,27 @@ class Analyse
     return false
   else
     return true
+  end
+
+  # Quand le dossier d'analyse existe on doit effacer tous les
+  # fichiers d'anciennes analyses ou les fichiers produits par javascript
+  # sinon ils seraient prioritaires.
+  # On ne détruit pas le dossier lui-même car il pourrait comprendre des
+  # fichiers de définition de l'analyse du texte courant, par exemple des
+  # mots à ne pas analyser.
+  def erase_old_analyse_files
+    [
+      'mots.json',
+      'proximites.json',
+      'canons.json',
+      'analyse.json',
+      'data.json',
+      'table_resultats.json',
+      'corrected_text.txt'
+    ].each do |fname|
+      fpath = File.join(prox_folder,fname)
+      File.unlink(fpath) if File.exists?(fpath)
+    end
   end
 
   # RETURN true si les données connues sont valides, pour pouvoir passer
