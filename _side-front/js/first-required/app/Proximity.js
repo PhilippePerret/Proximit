@@ -88,6 +88,13 @@ class Proximity {
     Object.assign(this.items, {[iprox.id]: iprox})
     if (iprox.id > this.lastId) this.lastId = parseInt(iprox.id,10)
     if ( iprox.ignored ) ++ this.ignoredCount
+
+    // Compatibilité avec les anciennes versions
+    if ( ! iprox.motA._px_idN ) {
+      iprox.motA._px_idN = iprox.id
+      iprox.motB._px_idP = iprox.id
+    }
+
     // console.log("Création de la proximité :", iprox)
   }
 
@@ -255,7 +262,51 @@ class Proximity {
     |
   **/
   static showAllAround(){
-    UI.getMotsVisibles()
+    if ( this.allAreVisible ) {
+      $('.mot.dblprox, .mot.prox-left, .mot.prox-right').each((i,o)=>{
+        Mot.getFromDom(o).proxed = false
+        o.style = ''
+      })
+      $('.mot.dblprox, .mot.prox-left, .mot.prox-right')
+        .removeClass('dblprox')
+        .removeClass('prox-left')
+        .removeClass('prox-right')
+      $('button#btn-show-all-prox').removeClass('pressed')
+      this.allAreVisible = false
+    } else {
+      let motVisibles = UI.getMotsVisibles()
+      let colorProps = ['border-color', 'color', 'background-color']
+        , iprop = -1
+
+      motVisibles.forEach( mot => {
+        console.log("Traitement du mot '%s' (px_idN = %d)", mot.real, mot.px_idN, mot)
+        if ( ! mot.proxN || mot.proxed ){
+          console.log("Il n'a pas de proximité suivante")
+          return
+        }
+        console.log("Il a une proximité suivante (#%d)", mot.proxN.id)
+        // On ne traite que les mots qui possèdent une proximité suivante
+        var color = Colors.next({onlyDark:true})
+        console.log("Couleur à appliquer : '%s'", color)
+
+        mot.domObj.classList.add('prox-right')
+        mot.domObj.style = `border-color:${color};`
+        var nextMot = mot.proxN.motB
+        while ( nextMot ) {
+          if ( nextMot.proxN ) {
+            nextMot.domObj.classList.add('dblprox')
+          } else {
+            // Pas de mots suivant
+            nextMot.domObj.classList.add('prox-left')
+          }
+          nextMot.proxed = true
+          nextMot.domObj.style = `border-color:${color};`
+          nextMot = nextMot.proxN && nextMot.proxN.motB
+        }
+      })
+      $('button#btn-show-all-prox').addClass('pressed')
+      this.allAreVisible = true
+    }
   }
 
   // Pour ignorer (et donc passer) la proximité courante

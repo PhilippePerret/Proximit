@@ -84,6 +84,12 @@ class Mot {
   }
 
   /**
+    Retourne l'instance Mot du mot d'après son objet DOM
+  **/
+  static getFromDom(o){
+    return this.get(parseInt($(o).data('id'),10))
+  }
+  /**
     Ajoute le mot de données +dmot+ en le transformant en instance de mot
     @return {Mot} l'instance créée.
   **/

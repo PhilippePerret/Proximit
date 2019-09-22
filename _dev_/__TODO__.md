@@ -1,45 +1,19 @@
-* Poursuivre l'affichage de toutes les proximités "around"
-
 * Poursuivre le test sur la destruction d'un mot
   - prochain : un mot avant mais trop loin pour créé une proximité (donc : le mot à supprimer doit être assez près de ce mot avant pour créer la proximité, mais ce mot avant doit être trop loin du mot suivant du mot supprimé).
 
 * Quand on ré-analyse le texte, il faut détruire l'intégralité des fichiers d'analyse (en particulier ceux produits avec ruby)
   - avant de le faire, il faut cependant demander confirmation lorsqu'il y a déjà eu un travail conséquent sur le texte, au niveau des corrections de proximités.
 
-* Il faudra traiter la répétition de "cette" (canon "ce") dans 'inside_tests_04.txt'. En fait, il faut prendre la longueur du mot réel, pour voir s'il faut le traiter, il ne faut pas prendre la longueur de son canon.
-* Bouton pour voir toutes les proximités visibles dans la fenêtre
-  - Il est installé, il faut le rendre efficace.
-
-* Maintenant que le versionning est géré, mémoriser la date de la dernière version et faire une
-  alerte lorsque la dernière version est lointaine.
-
 * Mettre en place une procédure d'avertissement si l'on ferme ou recharge l'application et que le texte est modifié.
 
 * [BUG] Quand on demande à ignorer une proximité, il faut vérifier que cela ne provoque pas une nouvelle proximité par "saut". Par exemple, si on supprime la deuxième proximité de "un texte dans le texte pour un texte", est-ce qu'il ne faut pas que le premier et le troisième "texte" soit mis en proximité ? Ce serait en tout cas important de prévenir l'auteur.
   -> faire un test pour tester ce cas précis.
 
-* [BUG] Quand on charge un nouveau texte il faut nettoyer l'inferface
-  - vider UI.texte
-  - vider UI.infos_current_proximity
-  - Autre ?
-
-* Pouvoir voir toutes les proximités "à proximité" (l'espace de texte affiché)
-  => Trouver un moyen de déterminer le premier mot et le dernier mot affichés
-
 * Pouvoir lire le texte (commande 'say')
-
-* Maintenant qu'on a tout le texte :
-  - Rendre visible (dans la fenêtre) la proximité choisie
-  - corriger le bug qui fait que tout le texte n'est pas affiché (en fait, quand un mot ne peut pas être analysé, il est quand même mis en mot suivant du précédent et ça coupe complètement la chaine — c'est arrivé avec un mot qui était un chiffre (les chiffres sont maintenant pris en compte et c'et arrivé avec un mot vide à cause de deux apostrophes qui se suivaient))
-
-* Peut-être qu'à l'avenir, avec les grands textes, on pourra fonctionner en n'en affichant qu'une partie. Mais garder beaucoup autour, afin de toujours donner l'impression qu'on a la totalité
 
 * Poursuivre les tests de l'enregistrement des données modifiées
   - corriger le test qui ne passe pas
   - vérifier la validité des fichiers de données
-
-
-* Poursuivre la procédure de correction d'une proximité (en la testant au fur et à mesure)
 
 * Étudier les cas de modification dans le document "Reflexions.md" > « Principe lors de la modification d'une proximité »
 

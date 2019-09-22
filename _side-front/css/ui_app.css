@@ -59,6 +59,21 @@ div.buttons button:hover {
   border-color:green;
 }
 
+div.buttons button.pressable {
+  border-width:3px;
+  border-style:solid;
+  border-color:#BBBBBB #333333 #333333 #BBBBBB;
+  border-radius:8px;
+  font-size:23px;
+  padding:0 7px;
+  text-align:center;
+  margin-left:6px;
+}
+div.buttons button.pressed {
+  background-color:#D4AA43;
+  border-color:#333333 #BBBBBB #BBBBBB #333333;
+}
+
 section#middle-column div#prox_message {
   padding:1em;
   font-size:1.1em;
