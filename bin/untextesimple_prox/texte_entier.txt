@@ -1,0 +1,5 @@
+Ceci est un texte pour étudier un texte.
+
+Il doit permettre de tester l'analyse de texte en ligne de commande.
+
+

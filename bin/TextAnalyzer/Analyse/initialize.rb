@@ -125,7 +125,14 @@ class Analyse
         self.first_path = self.paths.first
         File.expand_path(File.dirname(self.first_path))
       else
-        raise("Impossible de déterminer le dossier des fichiers de l'analyse…")
+        msg = "Impossible de déterminer le dossier des fichiers de l'analyse…"
+        if STANDALONE
+          msg << "\n\nUtiliser la syntaxe suivante pour lancer l'analyse par ligne de commande :"
+          msg << "   ruby ./analyse_texte.rb </absolute/path/to/file>"
+          # TODO Plus tard, on pourra passer des options pour déterminer ce
+          # que l'on veut voir.
+        end
+        raise(msg)
       end
 
     dbg("analyse.folder", folder)

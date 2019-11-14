@@ -1,0 +1,11 @@
+---
+:class: TextAnalyzer::Analyse::Data
+:analyse_path: "/Users/philippeperret/Programmation/Proximit/bin/untextesimple_prox/analyse.yaml"
+:datas:
+  :text_analyzer_version: 
+  :paths:
+  - "./bin/untextesimple.txt"
+  :started_at: 2019-11-14 09:32:30.286259000 +01:00
+  :ended_at: 2019-11-14 09:32:31.823039000 +01:00
+  :created_at: 2019-11-14 09:32:31.823239000 +01:00
+  :updated_at: 2019-11-14 09:32:31.823240000 +01:00

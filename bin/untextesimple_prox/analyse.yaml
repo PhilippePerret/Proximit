@@ -1,0 +1,11 @@
+---
+:class: TextAnalyzer::Analyse
+:datas:
+  :title: bin
+  :folder: "/Users/philippeperret/Programmation/Proximit/bin"
+  :paths:
+  - "./bin/untextesimple.txt"
+  :original_doc_modified_at: 
+  :text_analyzer_version: 
+  :created_at: 2019-11-14 09:32:31.824575000 +01:00
+  :updated_at: 2019-11-14 09:32:31.824577000 +01:00

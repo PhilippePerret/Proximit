@@ -11,7 +11,11 @@ class << self
 
   def data
     @data ||= begin
-      JSON.parse(File.read(package_path).force_encoding('utf-8')).to_sym
+      if STANDALONE || !File.exists?(package_path)
+        {'version' => File.read(File.join(THISFOLDER,'VERSION')).strip}
+      else
+        JSON.parse(File.read(package_path).force_encoding('utf-8')).to_sym
+      end
     end
   end
 
