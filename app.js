@@ -49,8 +49,8 @@ function initialize () {
   // Création de la fenêtre
   function createWindow () {
     const windowOptions = {
-        width: 1520
-      , minWidth: 680
+        width: 1800
+      , minWidth: 1600
       , height: 840
       , icon: __dirname+'/Imagerie/Icone/Icone-1024x1024.icns'
       , title: app.getName()

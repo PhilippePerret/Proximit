@@ -418,8 +418,10 @@ class PTexte {
       Proximity.addedCount      = this.datas.nombre_added || 0
       Proximity.ignoredCount    = this.datas.nombre_ignored || 0
 
-      // On écrit le texte dans la page
-      this.writeTexte()
+      // On écrit le texte dans la page (texte taggé)
+      this.writeTaggingTexte()
+      // On met le texte dans le champ de saisie
+      this.editWorkingTexte()
 
       // On vérifie la conformité des élément
       this.checkData()
@@ -546,13 +548,30 @@ class PTexte {
   /**
     Écrit tout le texte à l'écran
   **/
-  writeTexte(){
+  writeTaggingTexte(){
     const my = this
     var curmot = this.firstMot
     while ( curmot ) {
       curmot.asDom.forEach(span => UI.taggingField.append(span))
       curmot = curmot.motN
     }
+  }
+  /**
+    Met le texte tel quel dans le champ d'édition
+  **/
+  editWorkingTexte(){
+    const my = this
+    UI.workingField.value = this.fullTextInFile
+  }
+
+  /**
+    Retourne le texte du fichier contenant le texte entier (texte_entier.txt)
+    TODO Il faut vérifier si on tient compte ici des versions de corrections.
+  **/
+  get fullTextInFile(){
+    var t = String(fs.readFileSync(this.fulltext_path))
+    // console.log("Texte dans le fichier = ", t)
+    return t
   }
 
   /**

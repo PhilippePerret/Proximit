@@ -14,7 +14,7 @@
 
   # version 1.0.0.
     * première version utilisable
-    
+
 **/
 class UIObject {
   constructor(selector){
@@ -53,4 +53,7 @@ class UIObject {
 
   get jqObj(){return this._jqObj||(this._jqObj = $(this.selector))}
   get domObj(){return this._domObj||(this._domObj = document.querySelector(this.selector))}
+
+  set value(v){this.jqObj.val(v)}
+  get value(){return this.jqObj.val()}
 }
