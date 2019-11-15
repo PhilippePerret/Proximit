@@ -154,6 +154,7 @@ const UI = {
   }
 
 , observe(){
+    if ( this.observeApp ) this.observeApp.call(this)
   }
 
   /**

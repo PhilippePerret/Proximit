@@ -20,12 +20,24 @@ const App = {
   }
 
 , watchTexte(){
-    this.timerWatchTexte = setInterval(this.checkText.bind(this), 15*1000)
+    this.lastCheckTime = -1
+    this.timerWatchTexte = setInterval(this.checkText.bind(this), 5*1000)
   }
+
 , async checkText(callback){
-    await TexteAnalyse.analyze(UI.workingField.value)
-    await TexteAnalyse.tag()
-    if(callback)callback.call()
+    // Si on est en train d'écrire, on ne fait rien
+    if ( new Date().getTime() < WritingField.blockUntilTime ) {
+      console.log("J'attends…")
+      return
+    } else if ( this.lastCheckTime > WritingField.lastKeyPressedTime) {
+      console.log("Pas de modification depuis le dernier check")
+      return
+    } else {
+      this.lastCheckTime = new Date().getTime()
+      await TexteAnalyse.analyze(WritingField.getTextToCheck())
+      await TexteAnalyse.tag()
+      if(callback){callback.call()}
+    }
   }
 , stopWatchingTexte(){
     clearInterval(this.timerWatchTexte)

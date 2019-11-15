@@ -124,7 +124,6 @@ class PTexte {
     Proximity.reset()
     Canon.reset()
     Mot.reset()
-    ProxModif.reset()
     log.debug("<- PTexte::reset")
   }
 
@@ -233,11 +232,11 @@ class PTexte {
     // UI.flash("Affichage du texte, merci de patienter…",{style:'neutre', keep:true, waiter:true})
     UI.waiter("Affichage du texte, merci de patienter…")
 
-    console.log("Je patiente…")
-    await new Promise((ok,ko)=>{
-      setTimeout(ok,5*1000)
-    })
-    console.log("Je passe après le timeout")
+    // console.log("Je patiente…")
+    // await new Promise((ok,ko)=>{
+    //   setTimeout(ok,5*1000)
+    // })
+    // console.log("Je passe après le timeout")
 
     $('.texte_title').html(`${this.title} (<span class="texte-version">${this.version}</span>)`)
     this.setTexteHeight()

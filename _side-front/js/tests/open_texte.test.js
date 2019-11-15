@@ -16,7 +16,6 @@ TESTS.add("Test de l'ouverture d'un texte non analysé", ()=>{
   assert(Mot.lastId == -1, "Mot.lastId a été remis à -1")
   assert(Object.keys(Proximity.items).length == 0, "Il n'y a plus de proximité (Proximity.items)")
   assert(Proximity.current_index == - 1, "La proximité courante a été réinitialisée (-1)")
-  assert(ProxModif.current == null, "Il n'y a plus de ProxModif courante.")
 
 })
 
