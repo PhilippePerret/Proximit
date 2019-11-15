@@ -12,7 +12,27 @@ const App = {
       await PTexte.open(Prefs.get('path_texte'))
     }
     this.loading = false
+
+    // // Code à essayer
+    // await TexteAnalyse.analyze("Un texte à analyser dans le texte.")
+    // TexteAnalyse.tag()
+
+    // J'essaie de lancer la boucle sur le texte
+    this.watchTexte()
+
     log.info("<- App.init")
+  }
+
+, watchTexte(){
+    this.timerWatchTexte = setInterval(this.checkText.bind(this), 5*1000)
+  }
+, async checkText(){
+    await TexteAnalyse.analyze(UI.workingField.value)
+    TexteAnalyse.tag()
+  }
+, stopWatchingTexte(){
+    clearInterval(this.timerWatchTexte)
+    delete this.timerWatchTexte
   }
 
 , unBouton(){

@@ -4,6 +4,8 @@
 
 Je pars de tout à fait autre chose pour la version 0.3. Avec deux
 procédures qu'il faudra évaluer pour choisir la meilleure :
+NOTE : la seconde est obsolète puisqu'elle ne traite pas les caractères
+spéciaux… (on en est encore à la préhistoire…)
 
 On ouvre un texte quelconque dans le workingField. On l'analyse aussitôt
 en utilisant la procédure ruby :
@@ -27,9 +29,22 @@ class TexteAnalyse {
   /**
     Procède à l'analyze du texte +str+ (qui fait un maximum de 4500 signes)
   **/
-  static analyze(str){
+  static async analyze(str){
     this.current = new this(str)
-    this.current.analyze({method:'ruby'})
+    // Pour benchmarker les deux
+    // this.current.analyze({method:'ruby', callback:this.analyzeWithJS.bind(this)})
+    await this.current.analyze({method:'ruby'})
+  }
+
+  /**
+    Demande la construction du code HTML du texte, avec les mots marqués
+    Retourne le texte taggé
+  **/
+  static tag(){
+    return this.current.tag()
+  }
+
+  static analyzeWithJS(){
     this.current.analyze({method:'js'})
   }
 
@@ -77,16 +92,73 @@ class TexteAnalyse {
                                         Autre valeur possible : 'js'
   **/
   analyze(options){
-    options = options || {}
-    options.method = options.method || 'ruby'
-    this[`analyze_with_${options.method}`].call(this)
+    console.log("-> TexteAnalyse#analyze")
+    return new Promise((ok,ko)=>{
+      options = options || {}
+      options.method = options.method || 'ruby'
+      this[`analyze_with_${options.method}`].call(this, ok)
+    })
   }
 
   /**
+    Taggue le texte, c'est-à-dire en retourne une version HTML avec
+    la marque des proximités
+  **/
+  tag(){
+    console.log("-> TexteAnalyse#tag")
+    const Res   = this.rubyTableResultats
+    const Data  = this.rubyData
+    Res || raise("Il faut appeler l'analyse, avant de demander à tagguer le texte.")
+
+    // Produit this.tableMots (qui contient les instances Mot des mots) et
+    // this.firstMot (le premier mot du texte)
+    this.defineTableMots()
+
+    // On écrit le texte dans la taggingField
+    UI.taggingField.clean()
+    
+    var mot = this.firstMot
+    while(mot){
+      UI.taggingField.append(mot.asDom)
+      mot = mot.motN
+    }
+
+  }
+
+  defineTableMots(){
+    const WholeTexte = this.wholeTexteData
+    // Pour débug, données du texte complet, la donnée où on trouve
+    // tous les mots, avec toutes leurs données.
+    console.log("WholeTexte =", WholeTexte)
+
+    // On transforme tous les mots en instance et on en profite pour
+    // récupérer le premier, qui n'a pas de idP
+    this.tableMots = {}
+    var firstMotId = null
+    Object.values(WholeTexte.datas.mots.datas.items).forEach( item => {
+      var ditem = item.datas
+      Object.assign(this.tableMots,{[ditem.id]: new Mot(ditem)})
+      if (ditem.idP === null){
+        console.log("Premier mot trouvé : ", ditem.id)
+        firstMotId = ditem.id
+      }
+    })
+    this.firstMot = this.tableMots[firstMotId]
+    Mot.items = this.tableMots
+    console.log("Premier mot : ", this.firstMot)
+  }
+
+  get wholeTexteData(){
+    if (undefined === this._wholetextedata){
+      this._wholetextedata = JSON.parse(fs.readFileSync(this.whole_text_path,'utf-8'))
+    } return this._wholetextedata
+  }
+  /**
     Les méthodes d'analyse
   **/
-  analyze_with_ruby(){
-    Bench.start('analyse avec ruby')
+  analyze_with_ruby(callback){
+    this.callbackAfterAnalyzeWithRuby = callback
+    Bench.start('analyse avec ruby',{verbose:true})
     fs.writeFile(this.path, this.original, this.afterWrittenText.bind(this))
   }
   afterWrittenText(err){
@@ -98,20 +170,22 @@ class TexteAnalyse {
     // Maintenant que le texte est écrit, on peut lancer l'analyse
     // execFile(`./bin/analyse_texte.rb`, [my.path], this.afterAnalyzeWithRuby.bind(this))
     let cmd = `./bin/analyse_texte.rb "${my.path}"`
-    console.log("Commande : ", cmd)
+    // console.log("Commande : ", cmd)
     exec(cmd) // synchrone
     this.afterAnalyzeWithRuby.call(this)
   }
-
   afterAnalyzeWithRuby(err, stdout, stderr){
     Bench.stop('analyse avec ruby')
     if ( err ){ return this.onError(err) }
     console.log("Texte correctement écrit.")
     // ON charge le résultat de la recherche
-    var tableRes = JSON.parse(fs.readFileSync(this.resultats_path,'utf-8'))
-    console.log("Table de résultat : ", tableRes)
+    this.rubyTableResultats = JSON.parse(fs.readFileSync(this.resultats_path,'utf-8'))
+    console.log("Table de résultat par ruby : ", this.rubyTableResultats)
+    this.rubyData = JSON.parse(fs.readFileSync(this.datas_path,'utf-8'))
+    console.log("Data retournées par ruby : ", this.rubyData)
     // On peut détruire entièrement le texte
     this.destroy()
+    if (this.callbackAfterAnalyzeWithRuby){this.callbackAfterAnalyzeWithRuby()}
   }
 
   onError(err){
@@ -133,12 +207,25 @@ class TexteAnalyse {
     javascript. Le but de cette analyze est de produire la même table que
     la table remontée en ruby
   **/
-  analyze_with_js(){
-    Bench.start('analyse avec javascript')
-    
-    Bench.stop('analyse avec javascript')
+  analyze_with_js(callback){
+    console.log("-> analyze_with_js")
+    this.callbackAfterAnalyzeWithJS = callback
+    Bench.start('analyse avec javascript',{verbose:true})
+    TreeTagger.analyze(this.original, this.afterAnalyzeWithJS.bind(this))
+    console.log("<- analyze_with_js (@asynchrone)")
   }
-
+  // Retour après l'analyze avec js
+  // +tableLemma contient la liste des mots lémmatisés
+  afterAnalyzeWithJS(tableLemma){
+    console.log("-> afterAnalyzeWithJS")
+    // ON peut récupérer le benchmark :
+    let bench = Bench.get('TreeTagger')
+    console.log("bench:", bench)
+    // console.log("Durée de la lémmatisation : %d", bench.lapsSeconds)
+    console.log("Table de lemma par JS : ", tableLemma)
+    Bench.stop('analyse avec javascript')
+    if (this.callbackAfterAnalyzeWithJS){this.callbackAfterAnalyzeWithJS()}
+  }
   /**
     Retourne un path unique pour le fichier, qui sera détruit
   **/
@@ -153,8 +240,13 @@ class TexteAnalyse {
 
   get resultats_path(){
     return this._resultats_path || (
-      this._resultats_path = this.in_prox('table_resultats.json')
-    )
+      this._resultats_path = this.in_prox('table_resultats.json'))
+  }
+  get datas_path(){
+    return this._datas_path || (this._datas_path = this.in_prox('data.json'))
+  }
+  get whole_text_path(){
+    return this._whole_text_path || (this._whole_text_path = this.in_prox('whole_text.json'))
   }
   // Retourne une path dans le dossier proximit du texte
   in_prox(relpath){ return path.join(this.prox_folder, relpath) }

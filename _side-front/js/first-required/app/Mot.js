@@ -89,11 +89,14 @@ class Mot {
   static getFromDom(o){
     return this.get(parseInt($(o).data('id'),10))
   }
+
+
   /**
     Ajoute le mot de données +dmot+ en le transformant en instance de mot
     @return {Mot} l'instance créée.
   **/
   static add(dmot) {
+    console.warn("La méthode Mot.add doit devenir obsolète.")
     if ( undefined !== dmot.datas) dmot = dmot.datas // depuis table résultats
     const mot = new Mot(dmot)
     if ( mot.id > this.lastId ) this.lastId = parseInt(mot.id,10)
@@ -123,81 +126,6 @@ class Mot {
     for ( var motid in this.items ) {
       if ( false === fun(this.items[motid]) ) break ; // pour pouvoir interrompre
     }
-  }
-  /**
-    Supprime le mot qui a pour instance {Mot} +imot+
-
-    La destruction est complète, elle touche aussi les données qui contiennent
-    ce mot, à commencer par les canons et les proximités.
-
-  **/
-  static remove(imot) {
-
-    let motA = imot.proxP && imot.proxP.motA
-      , motB = imot.proxN && imot.proxN.motB
-      , proxAvantEtApresExiste = !!(motA && motB)
-
-    // S'il est en proximité avec d'autres mots avant ou après, il faut
-    // détruire cette proximité.
-    imot.proxP && Proximity.remove.call(Proximity, imot.proxP)
-    imot.proxN && Proximity.remove.call(Proximity, imot.proxN)
-
-    if ( proxAvantEtApresExiste ) {
-      // Si le mot à supprimer est en proximité avec un frère ou un jumeau
-      // précédent, sa suppression va peut-être créer une nouvelle proximité
-      // entre un éventuel frère ou jumeau suivant. Dans les deux cas, pour
-      // que ce cas soit considéré, il faut que le mot possède une proximité
-      // avant et après
-      Proximity.createIfMotsProches(motA,motB)
-    }
-
-    // On détruit le mot dans l'affichage
-    imot.domObj.remove()
-
-    // On retire le mot de son canon
-    imot.icanon.removeMot(imot)
-
-    delete this.items[imot.id]
-    // On détruit l'instance
-    imot = undefined
-    // À l'avenir, il faudra certainement réinitialiser des listes, comme
-    // les listes de mots par classement alphabétique ou par nombre de proximi-
-    // tés
-    delete this._alphaSorted
-    delete this._nbProxSorted
-
-    // On actualise l'affichage
-    Proximity.updateInfos()
-  }
-
-  /**
-    Pour créer un nouveau mot à partir de +datamot+
-  **/
-  static createNew(datamot){
-    if(undefined === datamot) datamot = {}
-      // Note : ne devrait pas arriver, car datamot devrait toujours contenir
-      // au moins la version string du mot et l'offset
-
-    // console.log("Création du mot avec datamot = ", datamot)
-
-    undefined !== datamot.id || Object.assign(datamot, {id: this.newId()})
-    datamot.real_init || Object.assign(datamot, {real_init: datamot.mot})
-    datamot.real      || Object.assign(datamot, {real: datamot.real_init})
-    datamot.length    || Object.assign(datamot, {real: datamot.real_init.length})
-    datamot.downcase  || Object.assign(datamot, {downcase: datamot.mot.toLowerCase()})
-
-    // console.log("datamot pour la création du mot : ", datamot)
-    let imot = new Mot(datamot)
-    Object.assign(this.items, {[imot.id]: imot})
-    // On doit l'ajouter à son canon
-    imot.icanon.addMot(imot)
-    return imot
-  }
-
-  // Retourne un nouvel identifiant
-  static newId(){
-    if (undefined === this.lastId) this.lastId = -1
-    return (this.lastId += 1)
   }
 
   static showNombre(){
@@ -271,9 +199,20 @@ class Mot {
 
   get asDom(){
     return [
-        Dom.create('SPAN',{text:this.mot, 'data-id':this.id, class:'mot'})
+        Dom.create('SPAN',{text:this.mot, 'data-id':this.id, class:this.class})
       , Dom.create('SPAN',{text:this.tbw.replace(/\r?\n/g,'<br>')})
     ]
+  }
+
+  get class(){
+    if (undefined === this._class){
+      var c = ['mot']
+      // Si le mot est en proximité, il faut le signaler
+      if (this.px_idP || this.px_idN){c.push('proxdanger')}
+      this._class = c.join(' ')
+      c = null
+    }
+    return this._class
   }
 
   // Retourne l'objet DOM (pour le détruire ou le rendre éditable, par exemple)

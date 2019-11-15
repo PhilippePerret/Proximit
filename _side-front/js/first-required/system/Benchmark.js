@@ -5,9 +5,14 @@
 *** --------------------------------------------------------------------- */
 
 class Bench {
-  static start(id){
+  static get(id){
+    return this.items[id]
+  }
+  static start(id, options){
+    options = options || {}
     if(undefined === this.items) this.items = {}
-    Object.assign(this.items, {[id]: new Bench(id)})
+    Object.assign(this.items, {[id]: new Bench(id,options)})
+    console.log("Bench.items =", Bench.items)
   }
   static stop(id){
     this.items[id].stop()
@@ -17,19 +22,20 @@ class Bench {
     *   INSTANCE
     *
   *** --------------------------------------------------------------------- */
-  constructor(id){
+  constructor(id, options){
     this.id = id
     this.start()
+    this.verbose = !!(options && options.verbose)
   }
 
   start(){
     this.startTime = Number(new Date().getTime())
-    console.log("Départ de '%s' : %dms", this.id, this.startTime)
+    if (this.verbose) console.log("Départ de '%s' : %dms", this.id, this.startTime)
   }
   stop(){
     this.endTime = Number(new Date().getTime())
-    console.log("Fin de '%s' : %dms", this.id, this.endTime)
-    this.report()
+    if (this.verbose) console.log("Fin de '%s' : %dms", this.id, this.endTime)
+    if (this.verbose) this.report()
   }
   report(){
     console.log("Durée de la procédure '%s' : %dms (%ss)", this.id, this.laps, this.lapsSeconds)

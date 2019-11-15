@@ -1,4 +1,13 @@
 /* Le bloc contenant la proximité courante */
+span.mot.proxacceptable {
+  color:green;
+}
+span.mot.proxwarning {
+  color:orange;
+}
+span.mot.proxdanger {
+  color:red;
+}
 
 div#full_texte .mot {
   border:1px solid transparent;

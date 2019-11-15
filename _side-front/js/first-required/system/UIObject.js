@@ -32,7 +32,8 @@ class UIObject {
       if ( options.css ) contenu = `<span class="${options.css}">${contenu}</span>`
       this.domObj.insertAdjacentHTML('beforeend', contenu)
     } else {
-      this.domObj.append(contenu)
+      if (!isArray(contenu)){ contenu = [contenu] }
+      contenu.forEach(el => this.domObj.appendChild(el))
     }
     return this
   }
