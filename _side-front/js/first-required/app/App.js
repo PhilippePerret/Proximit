@@ -19,3 +19,11 @@ const App = {
     alert("Vous pouvez utiliser ce bouton pour lancer une opération.")
   }
 }
+
+Object.defineProperties(App,{
+  ApplicationSupportFolder:{get(){
+    if (undefined === this._appsupportfolder){
+      this._appsupportfolder = app.getPath('userData')
+    } return this._appsupportfolder
+  }}
+})

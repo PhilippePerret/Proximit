@@ -34,7 +34,7 @@ class TextAnalyzed
 
   # Le dossier des proximités
   def prox_folder
-    @prox_folder ||= File.join(folder_textes,"#{affixe}_prox")
+    @prox_folder ||= File.join(folder_textes,"#{affixe}_prox").gsub!(/ /,'\\ ')
   end
 
   # Souvent, le texte est placé dans un dossier qui porte le nom

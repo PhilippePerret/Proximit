@@ -34,13 +34,13 @@ class WholeText
   # au peuplement de la table volatile TABLE_LEMMATISATION qui contient
   # tous les mots et leur canon correspondant
   def lemmatize
-
     # On lemmatize tout le texte
-    `tree-tagger-french < #{path} > #{lemma_file_path} 2>/dev/null`
+    cmd = "cd '#{analyse.prox_folder}';/usr/local/bin/tree-tagger-french < ./texte_entier.txt > ./texte_entier_lemmatized.txt"
+    # puts "cmd = #{cmd}"
+    res = `#{cmd}`
 
     # On définit la table de lemmatisation
     peuple_table_lemma
-
   end
 
     # Méthode qui prépare la table TABLE_LEMMATISATION à partir du fichier
