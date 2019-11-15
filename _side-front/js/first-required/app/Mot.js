@@ -7,68 +7,6 @@
 **/
 class Mot {
 
-  static get properties(){
-    return {
-        'id':         'id'
-      , 'idN':        'iN'
-      , 'idP':        'iP'
-      , 'file_id':    'f'
-      , 'canon':      'c'
-      , 'px_idN':     'pn'
-      , 'px_idP':     'pp'
-      , 'real_init':  'ri'
-      , 'real':       'r'
-      , 'downcase':   'd'
-      , 'lemma':      'l'
-      , 'sortish':    's'
-      , 'tbw':        't'
-      , 'offset':     'o'
-      , 'rel_offset': 'ro'
-    }
-  }
-
-  /**
-    Méthode principale de chargement des données des canons, prises soit dans
-    la table des résultats produite par ruby soit dans le fichier canons.json
-    produite par le travail sur les proximités.
-  **/
-  static async loadData(){
-    this.reset()
-    if ( fs.existsSync(this.jsonDataPath) ) {
-      log.debug("* Chargement des données Mot depuis le fichier mots.json…")
-      await IO.loadLargeJSONData(this,this.jsonDataPath)
-      log.debug("= Données Mots chargées.")
-    } else {
-      log.debug("* Chargement des données Mots depuis la table de résultats… (donc par les canons)")
-    }
-  }
-
-  /**
-    Pour ajouter une donnée depuis le fichier mots.json
-  **/
-  static addFromJSON(data) {
-    let realData = {}
-    for (var prop in this.properties ) {
-      var propInFile = this.properties[prop]
-      Object.assign(realData, {[prop]: data[propInFile]})
-    }
-    this.add(realData)
-    // console.log("Création du mot :", imot)
-  }
-
-  /**
-    Sauvegarde de tous les Mots du texte courant (instances Mot), sous une forme
-     que pourra recharger Proximit
-    @async
-  **/
-  static saveData(){
-    return IO.saveLargeJSONData(this, this.jsonDataPath)
-  }
-
-  // Chemin d'accès au fichier JSON contenant les données mots lorsqu'elles
-  // ont été enregistrées.
-  static get jsonDataPath(){return PTexte.current.in_prox('mots.json')}
-
   static reset(){
     delete this.items
     delete this.lastId
@@ -82,42 +20,6 @@ class Mot {
   static get(mot_id){
     return this.items[mot_id]
   }
-
-  /**
-    Retourne l'instance Mot du mot d'après son objet DOM
-  **/
-  static getFromDom(o){
-    return this.get(parseInt($(o).data('id'),10))
-  }
-
-
-  /**
-    Ajoute le mot de données +dmot+ en le transformant en instance de mot
-    @return {Mot} l'instance créée.
-  **/
-  static add(dmot) {
-    console.warn("La méthode Mot.add doit devenir obsolète.")
-    if ( undefined !== dmot.datas) dmot = dmot.datas // depuis table résultats
-    const mot = new Mot(dmot)
-    if ( mot.id > this.lastId ) this.lastId = parseInt(mot.id,10)
-    if ( null === mot._idP || undefined === mot._idP ) {
-      if ( undefined === PTexte.current.firstMot ) {
-        PTexte.current.firstMot = mot
-      } else {
-        if ( PTexte.current.firstMot.id == mot.id ) {
-          // c'est le même, c'est un ajout du même mot
-          log.error("Bizarrement, le mot '%s' (#%d) est ajouté deux fois…", mot.mot, mot.id)
-        } else {
-          // Là c'est vraiment une erreur avec deux mots qui n'ont pas d'idP
-          throw new Error(`"Le texte comporte déjà un premier mot, il ne devrait pas en avoir deux (premier mot : "${PTexte.current.firstMot.mot}" (#${PTexte.current.firstMot.id}), autre mot sans idP : "${mot.mot}" (#${mot.id}))…`)
-        }
-      }
-    }
-    // console.log("Ajout du mot %d :", mot.id, mot)
-    Object.assign(this.items, {[mot.id]: mot})
-    return mot
-  }
-
 
   /**
     Boucle la fonction +fun+ sur chaque mot
@@ -150,50 +52,6 @@ class Mot {
     // console.log("Instanciation du mot avec les données : ", data, this)
   }
 
-  /**
-    Méthode appelée quand on focusse dans le champ éditable du mot
-    On enclenche la surveillance des touches pressées (à moins qu'on la mette
-    déjà avant)
-  **/
-  onFocus(iprox, ev){
-    // console.log("-> onFocus, iprox = ", iprox)
-    try {
-      UI.select(ev.currentTarget)
-      UI.select(ev.currentTarget)
-      Proximity.currentMot = this
-    } catch (e) {
-      console.error(e)
-    }
-
-  }
-
-  onKeyPressed(iprox, ev){
-    if ( ev.key === 'Enter' ){
-      ev.currentTarget.blur()
-      return stopEvent(ev)
-    }
-  }
-  /**
-    Méthode appelée quand on blure du champ éditable contenant le mot.
-    On vérifie s'il a été modifié et, si c'est le cas, on prend la modification
-    et on regarde si elle crée d'autre problème (en les affichant sur le côté)
-  **/
-  onBlur(iprox, ev){
-    // delete Proximity.currentMot //non, sinon on ne pourrait jamais rien faire dessus
-    // On désélectionne le texte s'il l'était
-    document.getSelection().removeAllRanges();
-    const new_mot = ev.currentTarget.innerText.trim()
-    // console.log("Je blure du mot %s qui contient maintenant '%s'", this.mot, new_mot)
-    if ( new_mot != this.mot ) {
-      // <= Le mot a été modifié
-      // => Il faut vérifier s'il crée un problème de proximité
-      //    Il faut invoquer le module de modification PModif
-      //    Si ça n'est pas le cas, on demande à l'utilisateur s'il veut
-      //    l'enregistrer et considérer la proximité comme résolue.
-      (new ProxModif(this, iprox, new_mot)).treate()
-    }
-  }
-
   // ---------------------------------------------------------------------
   //  HELPERS
 
@@ -204,6 +62,7 @@ class Mot {
     ]
   }
 
+  // Retourne le className de l'élément contenant le mot
   get class(){
     if (undefined === this._class){
       var c = ['mot']
@@ -237,13 +96,6 @@ class Mot {
     return this._icanon || (this._icanon = Canon.get(this.canon))
   }
 
-  // Retourne la longueur "complète" du mot, c'est-à-dire sa longueur propre
-  // à laquelle on ajoute la longueur des signes entre lui et le prochain
-  // mot (tbw)
-  get full_length(){
-    return this._fulllen || (this._fulllen = this.length + (this.btw||'').length)
-  }
-
   // La proximité avec un mot avant (if any)
   get proxP(){
     if (undefined === this._proxP){
@@ -261,28 +113,6 @@ class Mot {
   }
 
   get mot(){return this._real_init}
-
-  /**
-    Les propriétés qui doivent être sauvées dans les fichiers propres à
-    proximit, c'est-à-dire ceux enregistrés en javascript lorsque des
-    corrections (ou non, d'ailleurs) ont été exécutée.
-    On en profite pour réduire la longueur des noms de propriétés afin
-    d'obtenir des fichiers json beaucoup moins volumineux en cas de texte
-    long, comme des romans.
-  **/
-  get properties(){ return this.constructor.properties }
-
-  // Retourne les propriétés à sauver sous la forme d'une table json
-  get forJSON(){
-    let djson = {}
-    for (var prop in this.properties ) {
-      var val = this[prop]
-      if ( val === null || val === undefined ) continue ;
-      var propInFile = this.properties[prop]
-      Object.assign(djson, {[propInFile]: val})
-    }
-    return djson
-  }
 
   // ---------------------------------------------------------------------
   //  PROPERTIES SAVED

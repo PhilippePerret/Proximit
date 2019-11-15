@@ -104,55 +104,71 @@ class TexteAnalyse {
     Taggue le texte, c'est-à-dire en retourne une version HTML avec
     la marque des proximités
   **/
-  tag(){
-    console.log("-> TexteAnalyse#tag")
-    const Res   = this.rubyTableResultats
-    const Data  = this.rubyData
-    Res || raise("Il faut appeler l'analyse, avant de demander à tagguer le texte.")
+  async tag(){
+    return new Promise(async (ok,ko)=>{
+      console.log("-> TexteAnalyse#tag")
+      const Res   = this.rubyTableResultats
+      const Data  = this.rubyData
+      Res || raise("Il faut appeler l'analyse, avant de demander à tagguer le texte.")
 
-    // Produit this.tableMots (qui contient les instances Mot des mots) et
-    // this.firstMot (le premier mot du texte)
-    this.defineTableMots()
+      // Produit this.tableMots (qui contient les instances Mot des mots) et
+      // this.firstMot (le premier mot du texte)
+      console.log("--> Définition de la table de mots")
+      await this.defineTableMots()
+      console.log("<-- Retour de la Définition de la table de mots")
 
-    // On écrit le texte dans la taggingField
-    UI.taggingField.clean()
-    
-    var mot = this.firstMot
-    while(mot){
-      UI.taggingField.append(mot.asDom)
-      mot = mot.motN
-    }
+      // On écrit le texte dans la taggingField
+      UI.taggingField.clean()
 
+      var mot = this.firstMot
+      while(mot){
+        UI.taggingField.append(mot.asDom)
+        mot = mot.motN
+      }
+      ok()
+    })
   }
 
+  // @asynchrone
   defineTableMots(){
-    const WholeTexte = this.wholeTexteData
+    const my = this
+    return new Promise((ok,ko)=>{
+      fs.readFile(this.whole_text_path,'utf-8', (err, str) => {
+        if(err){
+          return this.onError(err)
+          ko()
+        }
+        my.wholeTexteData = JSON.parse(str)
+        my.buildTableMots()
+        ok()
+      })
+    })
+
+
     // Pour débug, données du texte complet, la donnée où on trouve
     // tous les mots, avec toutes leurs données.
     console.log("WholeTexte =", WholeTexte)
 
     // On transforme tous les mots en instance et on en profite pour
     // récupérer le premier, qui n'a pas de idP
+  }
+
+  buildTableMots(){
+    const WholeTexte = this.wholeTexteData
     this.tableMots = {}
     var firstMotId = null
     Object.values(WholeTexte.datas.mots.datas.items).forEach( item => {
       var ditem = item.datas
       Object.assign(this.tableMots,{[ditem.id]: new Mot(ditem)})
-      if (ditem.idP === null){
-        console.log("Premier mot trouvé : ", ditem.id)
-        firstMotId = ditem.id
-      }
+      if (ditem.idP === null) { firstMotId = ditem.id }
     })
     this.firstMot = this.tableMots[firstMotId]
     Mot.items = this.tableMots
     console.log("Premier mot : ", this.firstMot)
   }
 
-  get wholeTexteData(){
-    if (undefined === this._wholetextedata){
-      this._wholetextedata = JSON.parse(fs.readFileSync(this.whole_text_path,'utf-8'))
-    } return this._wholetextedata
-  }
+  get wholeTexteData(){ return this._wholetextedata }
+  set wholeTexteData(v){ this._wholetextedata = v}
   /**
     Les méthodes d'analyse
   **/
@@ -174,18 +190,45 @@ class TexteAnalyse {
     exec(cmd) // synchrone
     this.afterAnalyzeWithRuby.call(this)
   }
-  afterAnalyzeWithRuby(err, stdout, stderr){
+  async afterAnalyzeWithRuby(err, stdout, stderr){
     Bench.stop('analyse avec ruby')
     if ( err ){ return this.onError(err) }
     console.log("Texte correctement écrit.")
     // ON charge le résultat de la recherche
-    this.rubyTableResultats = JSON.parse(fs.readFileSync(this.resultats_path,'utf-8'))
-    console.log("Table de résultat par ruby : ", this.rubyTableResultats)
-    this.rubyData = JSON.parse(fs.readFileSync(this.datas_path,'utf-8'))
-    console.log("Data retournées par ruby : ", this.rubyData)
+    await this.loadTableResultats()
+    await this.loadTableDatas()
+    // this.rubyData = JSON.parse(fs.readFileSync(this.datas_path,'utf-8'))
+    // console.log("Data retournées par ruby : ", this.rubyData)
     // On peut détruire entièrement le texte
     this.destroy()
     if (this.callbackAfterAnalyzeWithRuby){this.callbackAfterAnalyzeWithRuby()}
+  }
+
+  // Chargement asynchrone des résultas de l'analyse
+  loadTableResultats(){
+    const my = this
+    return new Promise((ok,ko)=>{
+      fs.readFile(this.resultats_path,'utf-8', (err, str) => {
+        if(err) return this.onError(err)
+        my.rubyTableResultats = JSON.parse(str)
+        // console.log("Table de résultat par ruby : ", my.rubyTableResultats)
+        ok()
+      })
+    })
+  }
+
+  // Chargement asynchrone des datas de l'analyse
+  // Note : pour le moment, cette table ne sert pas
+  loadTableDatas(){
+    const my = this
+    return new Promise((ok,ko)=>{
+      fs.readFile(this.datas_path,'utf-8', (err, str) => {
+        if(err) return this.onError(err)
+        my.rubyData = JSON.parse(str)
+        // console.log("Table des datas par ruby : ", my.rubyData)
+        ok()
+      })
+    })
   }
 
   onError(err){

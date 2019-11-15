@@ -224,25 +224,41 @@ class PTexte {
 
   /**
     Initialisation du texte courant
-    On charge ses résultats s'il est déjà analysé et on affiche ses informations
+    Depuis la version 0.3, on se contente de charger son texte dans le
+    "working field"
   **/
   async init(){
     this.loading = true
     delete this.firstMot
-    UI.flash("Affichage du texte, merci de patienter…",{style:'neutre', keep:true, waiter:true})
+    // UI.flash("Affichage du texte, merci de patienter…",{style:'neutre', keep:true, waiter:true})
+    UI.waiter("Affichage du texte, merci de patienter…")
+
+    console.log("Je patiente…")
+    await new Promise((ok,ko)=>{
+      setTimeout(ok,5*1000)
+    })
+    console.log("Je passe après le timeout")
 
     $('.texte_title').html(`${this.title} (<span class="texte-version">${this.version}</span>)`)
     this.setTexteHeight()
-    if ( this.isAnalyzed ) {
-      await this.initWhenAnalyzed()
-    }
+
+    // On met le texte dans le champ de saisie
+    this.editWorkingTexte()
+
     // Écriture de l'état de l'analyse des proximités du texte
     this.writeState()
 
+    // On lance tout de suite un check
+    App.checkText(UI.stopWaiter.bind(UI))
+
+    // On lance la boucle de surveillance du texte qui va permettre de suivre
+    // les proximités
+    App.watchTexte()
+
     this.inited = true
-    if ( ! this.comparedValuesError ) {
-      UI.flash("Texte prêt à être travaillé.", {style:'neutre',replace:true})
-    }
+
+    UI.flash("Texte prêt à être travaillé.", {style:'neutre',replace:true})
+
     this.loading = false
   }
 
@@ -380,182 +396,8 @@ class PTexte {
     return fulltext
   }
 
-  /**
-    | Initialisation à faire lorsque le texte a été analysé
-    |
-    | On doit :
-    |   - afficher l'état des proximités
-    |   - proposer les boutons pour voir les proximités
-  **/
-  async initWhenAnalyzed(){
-    await UI.waiter("Affichage du texte. Merci de patienter…", UI.rightColumn.domObj)
-
-    // Pour chaque objet Mot, Canon et Proximity, on charge les données soit
-    // de la table des résultats produite par ruby, soit des fichiers propres
-    // enregistrés après les premières modifications.
-
-    console.time('Fin du chargement')
-
-    try {
-      // Les mots
-      await Mot.loadData()
-
-      // On peuple les canons
-      // + peuplement des mots s'ils ne sont pas définis dans un fichier
-      await Canon.loadData()
-
-      // On peuple les proximités (soit de la table des résultats)
-      await Proximity.loadData()
-
-      // Les mots et les proximités sont enregistrés seulement par leur
-      // identifiant. Il faut les transformer en instance
-      Canon.dispatchMotsEtProximites.call(Canon)
-
-      // Pour afficher les informations concernant les proximités et régler
-      // les boutons qui permettent de les afficher.
-      Proximity.init(this)
-      Proximity.correctedCount  = this.datas.nombre_corrections || 0
-      Proximity.addedCount      = this.datas.nombre_added || 0
-      Proximity.ignoredCount    = this.datas.nombre_ignored || 0
-
-      // On écrit le texte dans la page (texte taggé)
-      this.writeTaggingTexte()
-      // On met le texte dans le champ de saisie
-      this.editWorkingTexte()
-
-      // On vérifie la conformité des élément
-      this.checkData()
-
-      // On regarde s'il ne faudrait pas faire une nouvelle version
-      this.checkLastVersionDate()
-      console.timeEnd('Fin du chargement')
-
-    } catch (e) {
-        console.error(e)
-        UI.error("Une erreur est malheureusement survenue.")
-    } finally {
-      // Dans tous les cas, on stoppe le waiter
-      UI.stopWaiter()
-    }
-
-
-  }
-
-  /**
-    Retourne les données du fichier data.json (qui permet notamment de
-    vérifier que le chargement s'est bien passé en controlant le nombre
-    d'instances de chaque type et quelques autres valeurs — cf. ci-dessous la
-    méthode `checkData`)
-  **/
-  getDatas(){
-    // note : ne pas utiliser 'require', pour les tests
-    var d = JSON.parse(fs.readFileSync(this.dataPath,'utf-8'))
-    if ( undefined !== d.datas ) d = d.datas
-    return d
-  }
-  /**
-    Enregistre les données courantes pour vérifier le bon chargement des
-    données plus tard.
-  **/
-  saveData(){
-    const my = this
-    let datas = this.getDatas()
-    Object.assign(datas,{
-        nombre_proximites:  Object.keys(Proximity.items).length
-      , nombre_corrections: Proximity.correctedCount // pas pour vérification, mais vraiment pour le compte
-      , nombre_ignored:     Proximity.ignoredCount
-      , nombre_added:       Proximity.addedCount
-      , nombre_canons:      Object.keys(Canon.items).length
-      , nombre_mots:        Object.keys(Mot.items).length
-      , firstMot_id:        my.firstMot.id
-      , lastId_mot:         Mot.lastId
-      , lastId_proximity:   Proximity.lastId
-      , updated_at:         String(new Date())
-      , version:            this.version
-      , dateVersion:        String(new Date())
-    })
-    // console.log("datas:", datas)
-    fs.writeFileSync(this.dataPath, JSON.stringify(datas))
-    return true
-  }
-
-  // Retourne true si ce texte a déjà été enregistré depuis Proximit
-  get hasBeenModified() {
-    return fs.existsSync(this.in_prox('mots.json'))
-  }
-  /**
-    Vérifie la conformité des données chargées
-  **/
-  checkData(){
-    let datas = this.getDatas()
-
-    // On doit vérifier que les nombres enregistrés dedans (if any) correspondent aux
-    // nombre chargés
-    if ( !this.hasBeenModified ) return;
-
-    this.comparedValuesError = false
-
-    this.checkValue('nombre mots')
-    this.checkValue('nombre canons')
-    this.checkValue('nombre proximités')
-    this.checkValue('nombre ignorées')
-    this.checkValue('id first mot')
-    this.checkValue('last id mot')
-    this.checkValue('last id proximity')
-
-    if ( this.comparedValuesError ) {
-      return UI.error("Des erreurs ont été trouvées au niveau des nombres d'éléments.\nConsultez la console pour de plus amples détails.",{replace:true})
-    } else {
-      return true
-    }
-  }
-
-  get datas() { return this._datas || (this._datas = this.getDatas() )}
-
-  checkValue(value_id) {
-    const my = this
-    var [msg, expected, actual ] = (function(vid){
-      switch (vid) {
-        case 'nombre mots':
-          return ['nombre de mots', my.datas.nombre_mots, Object.keys(Mot.items).length]
-        case 'nombre canons':
-          return ['nombre de canons', my.datas.nombre_canons, Object.keys(Canon.items).length]
-        case 'nombre proximités':
-          return ['nombre de proximités', my.datas.nombre_proximites, Object.keys(Proximity.items).length]
-        case 'nombre ignorées':
-          return ['nombre de proximités ignorées', my.datas.nombre_ignored, Proximity.ignoredCount]
-        case 'id first mot':
-          return ['ID du premier mot', my.datas.firstMot_id, my.firstMot.id]
-        case 'last id mot':
-          return ['dernier ID pour un mot', my.datas.lastId_mot, Mot.lastId]
-        case 'last id proximity':
-          return ['dernier ID pour une proximité', my.datas.lastId_proximity, Proximity.lastId]
-
-        default:
-          return ['rien', 0, 0]
-      }
-    })(value_id)
-    if ( expected != actual ) {
-      this.comparedValuesError = true
-      log.warn("Problème avec le %s ! Nombre attendu : %d, nombre réel : %d", msg, expected, actual)
-    } else {
-      log.debug("Après chargement, le %s est conforme (%d)", msg, expected)
-    }
-  }
-
   get dataPath(){ return this.in_prox('data.json') }
 
-  /**
-    Écrit tout le texte à l'écran
-  **/
-  writeTaggingTexte(){
-    const my = this
-    var curmot = this.firstMot
-    while ( curmot ) {
-      curmot.asDom.forEach(span => UI.taggingField.append(span))
-      curmot = curmot.motN
-    }
-  }
   /**
     Met le texte tel quel dans le champ d'édition
   **/
@@ -567,6 +409,7 @@ class PTexte {
   /**
     Retourne le texte du fichier contenant le texte entier (texte_entier.txt)
     TODO Il faut vérifier si on tient compte ici des versions de corrections.
+    (dans le cas où on enregistre le texte avec des numéros de version différent à chaque fois)
   **/
   get fullTextInFile(){
     var t = String(fs.readFileSync(this.fulltext_path))

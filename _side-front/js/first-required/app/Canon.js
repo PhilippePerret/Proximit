@@ -244,10 +244,7 @@ class Canon {
     mots et proximites par des listes d'instances
   **/
   dispatchMotsEtProximites(){
-    let firstMot = this.mots[0]
-      , method   = 'number'==typeof(firstMot) ? Mot.get.bind(Mot) : Mot.add.bind(Mot)
-    this._mots        = this.mots.map(method)
-    this._proximites  = this.proximites.map(px_id => Proximity.get(px_id))
+    console.warn("La méthode Canon.dispatchMotsEtProximites doit devenir obsolète")
   }
 
   /**

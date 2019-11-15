@@ -14,21 +14,18 @@ const App = {
     this.loading = false
 
     // // Code à essayer
-    // await TexteAnalyse.analyze("Un texte à analyser dans le texte.")
-    // TexteAnalyse.tag()
 
-    // J'essaie de lancer la boucle sur le texte
-    this.watchTexte()
 
     log.info("<- App.init")
   }
 
 , watchTexte(){
-    this.timerWatchTexte = setInterval(this.checkText.bind(this), 5*1000)
+    this.timerWatchTexte = setInterval(this.checkText.bind(this), 15*1000)
   }
-, async checkText(){
+, async checkText(callback){
     await TexteAnalyse.analyze(UI.workingField.value)
-    TexteAnalyse.tag()
+    await TexteAnalyse.tag()
+    if(callback)callback.call()
   }
 , stopWatchingTexte(){
     clearInterval(this.timerWatchTexte)
