@@ -1,5 +1,7 @@
 /* Le bloc contenant tout le texte */
-body > section#left-column #full_texte {
+div#tagging-text,
+textarea#working-text
+ {
   position:fixed;
   top:80px;
   border:1px dashed green;
@@ -12,13 +14,13 @@ body > section#left-column #full_texte {
   font-family:Georgia;
 }
 
-body > section#left-column #infos_current_proximity {
+body #infos_current_proximity {
   text-align:center;
   font-family:Arial;
   font-size:9pt;
 }
 
-body > section#left-column #infos_danger_proximity {
+body #infos_danger_proximity {
   text-align:center;
   font-family:Arial;
   font-size:9pt;
@@ -30,25 +32,21 @@ body > section#right-column #infos_texte {
   width:90%;
 }
 
-section#middle-column div.buttons {
+section#footer div.buttons {
   display:inline-block;
-  border-radius:1em;
-  padding:0.5em 0.4em 0.3em;
   clear:both;
 }
 div#buttons_proximites {
-  background-color:#4C0707;
   color:white;
 }
 div#buttons_proximites button {
-  display:block;
 }
 div.buttons button
 {
   all:unset;
   font-family: unset;
-  font-size:30pt;
-  padding: 0 4px;
+  font-size:15pt;
+  padding:0;
   border:2px solid transparent;
 }
 
@@ -56,7 +54,7 @@ div.buttons button:active {
   background-color:green;
 }
 div.buttons button:hover {
-  border-color:green;
+  cursor: pointer;
 }
 
 div.buttons button.pressable {
@@ -64,14 +62,17 @@ div.buttons button.pressable {
   border-style:solid;
   border-color:#BBBBBB #333333 #333333 #BBBBBB;
   border-radius:8px;
-  font-size:23px;
+  font-size:15px;
   padding:0 7px;
   text-align:center;
   margin-left:6px;
+  color:black;
 }
 div.buttons button.pressed {
-  background-color:#D4AA43;
+  background-color:#21ab00;
   border-color:#333333 #BBBBBB #BBBBBB #333333;
+  color:lime;
+  font-weight:bold;
 }
 
 section#middle-column div#prox_message {

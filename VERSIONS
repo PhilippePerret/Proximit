@@ -1,5 +1,9 @@
 # Versions
 
+## 0.3.0
+
+Nouvelle version complète de l'approche : une colonne avec le texte montrant les proximités et une colonne avec le même texte, mais en mode édition (Textarea). Dès qu'un nouveau mot est tapé (ou de façon régulière), le programme prend la portion affiché, l'étudie, et retourne le résultat.
+
 ## 0.2.0
 
 * Possibilité de voir les proximités dans l'ordre des mots (des offsets) ou dans l'ordre des canons (c'est-à-dire que tous les mots d'un même canon sont affichés les uns après les autres, en dépit de l'ordre des autres mots).

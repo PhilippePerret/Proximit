@@ -248,6 +248,5 @@ Object.defineProperties(UI,{
 , footer:{get(){return document.querySelector('section#footer')}}
 , footerMessage:{get(){return this.footer.querySelector('span#message')}}
 , rightColumn:  {get(){return document.querySelector('section#right-column')}}
-, middleColumn: {get(){return document.querySelector('section#middle-column')}}
 , leftColumn:   {get(){return document.querySelector('section#left-column')}}
 })

@@ -48,7 +48,7 @@ class PTexte {
   static proceedAnalyseCurrent(callback){
     const my = this
     UI.clean()
-    UI.waiter("Analyse du texte.\nMerci de patienter…", UI.texte.domObj)
+    UI.waiter("Analyse du texte.\nMerci de patienter…", UI.taggingField.domObj)
     execFile(`./bin/analyse_texte.rb`, [PTexte.current.path], (err, stdout, stderr) => {
       UI.stopWaiter()
       if (err) {
@@ -252,7 +252,7 @@ class PTexte {
   setTexteHeight(){
     let wHeight = window.innerHeight
       , hTexte  = wHeight - (80 /*header et info prox*/ + 25 /* footer */ + 88 /* padding */ + 5 )
-    $(UI.texte.domObj).css('height',`${hTexte}px`)
+    $(UI.taggingField.domObj).css('height',`${hTexte}px`)
   }
 
   /**
@@ -550,7 +550,7 @@ class PTexte {
     const my = this
     var curmot = this.firstMot
     while ( curmot ) {
-      curmot.asDom.forEach(span => UI.texte.append(span))
+      curmot.asDom.forEach(span => UI.taggingField.append(span))
       curmot = curmot.motN
     }
   }

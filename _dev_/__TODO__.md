@@ -1,12 +1,5 @@
-* Mettre en place l'édition pour copier/coller etc.
-
-* Poursuivre le test sur la destruction d'un mot
-  - prochain : un mot avant mais trop loin pour créé une proximité (donc : le mot à supprimer doit être assez près de ce mot avant pour créer la proximité, mais ce mot avant doit être trop loin du mot suivant du mot supprimé).
-
 * [BUG] Quand on demande à ignorer une proximité, il faut vérifier que cela ne provoque pas une nouvelle proximité par "saut". Par exemple, si on supprime la deuxième proximité de "un texte dans le texte pour un texte", est-ce qu'il ne faut pas que le premier et le troisième "texte" soit mis en proximité ? Ce serait en tout cas important de prévenir l'auteur.
   -> faire un test pour tester ce cas précis.
-
-* Pouvoir lire le texte (commande 'say')
 
 * Poursuivre les tests de l'enregistrement des données modifiées
   - corriger le test qui ne passe pas

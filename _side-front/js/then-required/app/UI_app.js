@@ -17,7 +17,7 @@ Object.assign(UI,{
   **/
 , getMotsVisibles(){
     this.waiter("Recherche des mots visibles…")
-    let parent = UI.texte.domObj
+    let parent = UI.taggingField.domObj
       , pBounds = parent.getBoundingClientRect()
       , pStyle  = window.getComputedStyle(parent)
       , h = {
@@ -85,7 +85,7 @@ Object.assign(UI,{
     ;(args.all || args.messageProx)  && this.cleanMessageProx()
     ;(args.all || args.infosTexte)   && this.cleanInfosTexte()
   }
-, cleanTexte(){UI.texte.clean()}
+, cleanTexte(){UI.taggingField.clean()}
 , cleanInfosProximity(){UI.infos_current_proximity.clean()}
 , cleanDangerProx(){UI.infos_danger_proximity.clean()}
 , cleanMessageProx(){UI.proxMessage.clean()}
@@ -130,24 +130,24 @@ Object.assign(UI,{
     $('input#cb-sort-by-canon').on('click', Proximity.onCheckSortByCanon.bind(Proximity))
   }
 
-, build(){
-    // Pour les infos sur le texte
-    UI.rightColumn.append(Dom.createDiv({id:'infos_texte', class:'container-data'}))
-    UI.rightColumn.append(Dom.createDiv({id:'infos_proximites', class:'container-data'}))
-    UI.middleColumn.append(Dom.createDiv({id:'buttons_proximites',class:'buttons'}))
-    UI.middleColumn.append(Dom.createDiv({id:'outils_proximites', class:'buttons'}))
-    UI.middleColumn.append(Dom.createDiv({id:'options_proximites', class:'buttons'}))
-    UI.middleColumn.append(Dom.createDiv({id:'prox_message'}))
-    UI.leftColumn.append(Dom.createDiv({id:'full_texte'}))
-    UI.leftColumn.append(Dom.createDiv({id:'infos_current_proximity'}))
-    UI.leftColumn.append(Dom.createDiv({id:'infos_danger_proximity'}))
-  }
+  /**
+    Construction de l'interface
+    ----------------------------
+    Mais en fait, maintenant, on la construit vraiment dans le fichier HTML
+  **/
+, build(){}
 })
 
 Object.defineProperties(UI,{
 
   // Le bloc où écrire l'intégralité du texte
   texte:{get(){return this._texte || (this._texte = new UIObject('#full_texte'))}}
+
+  // Le textarea qui contient le texte en chantier
+, workingField:{get(){return this._workingfield ||(this._workingfield = new UIObject('textarea#working-text'))}}
+  // L'espace à côté qui affiche le texte avec les proximités
+, taggingField:{get(){return this._taggingfield ||(this._taggingfield = new UIObject('div#tagging-text'))}}
+
 
 , proxMessage:{get(){
     return this._proxmsg || (this._proxmsg = new UIObject('#prox_message'))
@@ -159,30 +159,18 @@ Object.defineProperties(UI,{
     return this._infcurprox || ( this._infcurprox = new UIObject('#infos_current_proximity'))
   }}
 , buttons_proximites:{get(){
-    if (undefined === this._btnsprox){
-      this._btnsprox = new UIObject('#buttons_proximites')
-    }; return this._btnsprox
-  }}
+    return this._btnsprox || (this._btnsprox = new UIObject('#buttons_proximites'))}
+  }
 , outils_proximites:{get(){
-    if (undefined === this._proxtools){
-      this._proxtools = new UIObject('#outils_proximites')
-    }; return this._proxtools
-  }}
+    return this._proxtools || (this._proxtools = new UIObject('#outils_proximites'))}
+  }
 , options_proximites:{get(){
-    if (undefined === this._optsproxs){
-      this._optsproxs = new UIObject('#options_proximites')
-    }; return this._optsproxs
-  }}
+    return this._optsproxs || (this._optsproxs = new UIObject('#options_proximites'))}
+  }
 , infos_texte:{get(){
-    if ( undefined === this._infos_texte ) {
-      this._infos_texte = new UIObject('#infos_texte')
-    }
-    return this._infos_texte
-  }}
+    return this._infos_texte || (this._infos_texte = new UIObject('#infos_texte'))}
+  }
 , infos_proximites:{get(){
-    if(undefined===this._infos_proximites){
-      this._infos_proximites = new UIObject('#infos_proximites')
-    }
-    return this._infos_proximites
-  }}
+    return this._infos_proximites || (this._infos_proximites = new UIObject('#infos_proximites'))}
+  }
 })

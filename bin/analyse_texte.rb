@@ -20,7 +20,16 @@ begin
   if STANDALONE
     # <= Ce module est appelé directement (en CLI)
     # => Il faut afficher les résultats où les moyens de les obtenir
-    puts "Je vais afficher les résultats."
+    table = analyse.table_resultats
+    msg = ""
+    msg << "\n\n=== MOTS ===\n\n\n"
+    msg << table.mots.to_s
+    msg << "\n\n\n=== CANONS ===\n\n\n"
+    msg << table.canons.to_s
+    msg << "\n\n\n=== PROXIMITÉS ===\n\n\n"
+    msg << table.proximites.to_s
+    # puts msg
+    `more <<EOT\n#{msg}\nEOT`
   end
 rescue Exception => e
   puts "\033[0;31mERREUR : #{e.message}"

@@ -9,7 +9,9 @@
 /*
  */
 
-.hidden { display: none;}
+.hidden { visibility: hidden;}
+.visible {visibility:visible;}
+.noDisplay {display:none;}
 /*
   Styles
  */

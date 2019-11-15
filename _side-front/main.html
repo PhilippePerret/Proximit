@@ -26,13 +26,38 @@
     </section>
 
     <section id="left-column">
+      <div id="infos_current_proximity">
+        <!-- Pour mettre les informations de la proximité courante -->
+      </div>
+      <div id="infos_danger_proximity">
+        <!-- Pour mettre les dangers de proximité courante
+          TODO Note : peut-être que ce div n'est plus nécessaire avec la
+          nouvelle formule de la version 0.3
+        -->
+      </div>
+      <!--
+        L'AFFICHAGE "PARALLÈLE" DU TEXTE (avec proximité)
+      -->
+      <div id="tagging-text">
+        <!-- On marque ici le même texte, avec les proximités -->
+      </div>
 
-    </section>
-
-    <section id="middle-column">
     </section>
 
     <section id="right-column">
+
+      <!--
+        LE CHAMP D'ÉDITION DU TEXTE
+      -->
+      <textarea id="working-text"></textarea>
+    </section>
+
+    <!-- Un panneau caché pour les infos -->
+    <section id="section-infos_texte" class="panel noDisplay">
+      <div id="infos_texte" class="container-data"></div>
+    </section>
+    <section id="section-infos_proximites" class="panel noDisplay">
+      <div id="infos_proximites" class="container-data"></div>
     </section>
 
 
@@ -41,8 +66,16 @@
         <span id="message">---</span>
         <button id="btn-search" type="button" onclick="Search.toggleForm.call(Search)">RECHERCHE</button>
       </div>
+
       <button type="button" onclick="PTexte.loadCurrent.call(PTexte)">Load</button>
       <button type="button" onclick="PTexte.saveCurrent.call(PTexte)">Save</button>
+
+      <div id="buttons_proximites" class="buttons"></div>
+      <div id="outils_proximites" class="buttons"></div>
+      <div id="options_proximites" class="buttons"></div>
+      <div id="prox_message">
+
+      </div>
     </section>
 
     <script type="text/javascript" src="js/main.js"></script>

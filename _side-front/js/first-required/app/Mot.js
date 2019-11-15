@@ -278,7 +278,7 @@ class Mot {
 
   // Retourne l'objet DOM (pour le détruire ou le rendre éditable, par exemple)
   get domObj(){
-    return UI.texte.find(`.mot[data-id="${this.id}"]`)
+    return UI.taggingField.find(`.mot[data-id="${this.id}"]`)
   }
 
   // ---------------------------------------------------------------------

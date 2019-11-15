@@ -540,8 +540,8 @@
             :nombre_occurences: 1
             :nombre_proximites: 0
             :distance_minimale: 1500.0
-      :created_at: 2019-11-14 09:32:31.788706000 +01:00
-      :updated_at: 2019-11-14 09:32:31.788708000 +01:00
+      :created_at: 2019-11-14 09:52:06.856628000 +01:00
+      :updated_at: 2019-11-14 09:52:06.856630000 +01:00
   :mots:
     :class: TextAnalyzer::Analyse::TableResultats::Mots
     :datas:
@@ -598,8 +598,8 @@
         - 19
         commande:
         - 21
-      :created_at: 2019-11-14 09:32:31.788803000 +01:00
-      :updated_at: 2019-11-14 09:32:31.788804000 +01:00
+      :created_at: 2019-11-14 09:52:06.856696000 +01:00
+      :updated_at: 2019-11-14 09:52:06.856699000 +01:00
   :proximites:
     :class: TextAnalyzer::Analyse::TableResultats::Proximites
     :datas:
@@ -616,8 +616,8 @@
             :motB_id: 8
             :distance: 17
             :distance_minimale: 1500.0
-            :created_at: 2019-11-14 09:32:31.788913000 +01:00
-            :updated_at: 2019-11-14 09:32:31.788915000 +01:00
+            :created_at: 2019-11-14 09:52:06.856768000 +01:00
+            :updated_at: 2019-11-14 09:52:06.856769000 +01:00
         2:
           :class: TextAnalyzer::Analyse::TableResultats::Proximite
           :datas:
@@ -628,8 +628,8 @@
             :motB_id: 17
             :distance: 44
             :distance_minimale: 1500.0
-            :created_at: 2019-11-14 09:32:31.788950000 +01:00
-            :updated_at: 2019-11-14 09:32:31.788951000 +01:00
+            :created_at: 2019-11-14 09:52:06.856792000 +01:00
+            :updated_at: 2019-11-14 09:52:06.856793000 +01:00
         3:
           :class: TextAnalyzer::Analyse::TableResultats::Proximite
           :datas:
@@ -640,8 +640,8 @@
             :motB_id: 16
             :distance: 18
             :distance_minimale: 1500.0
-            :created_at: 2019-11-14 09:32:31.788985000 +01:00
-            :updated_at: 2019-11-14 09:32:31.788992000 +01:00
+            :created_at: 2019-11-14 09:52:06.856813000 +01:00
+            :updated_at: 2019-11-14 09:52:06.856814000 +01:00
         4:
           :class: TextAnalyzer::Analyse::TableResultats::Proximite
           :datas:
@@ -652,9 +652,9 @@
             :motB_id: 20
             :distance: 16
             :distance_minimale: 1500.0
-            :created_at: 2019-11-14 09:32:31.789029000 +01:00
-            :updated_at: 2019-11-14 09:32:31.789030000 +01:00
-      :created_at: 2019-11-14 09:32:31.789041000 +01:00
-      :updated_at: 2019-11-14 09:32:31.789042000 +01:00
-  :created_at: 2019-11-14 09:32:31.789045000 +01:00
-  :updated_at: 2019-11-14 09:32:31.789049000 +01:00
+            :created_at: 2019-11-14 09:52:06.856832000 +01:00
+            :updated_at: 2019-11-14 09:52:06.856833000 +01:00
+      :created_at: 2019-11-14 09:52:06.856836000 +01:00
+      :updated_at: 2019-11-14 09:52:06.856837000 +01:00
+  :created_at: 2019-11-14 09:52:06.856839000 +01:00
+  :updated_at: 2019-11-14 09:52:06.856842000 +01:00
