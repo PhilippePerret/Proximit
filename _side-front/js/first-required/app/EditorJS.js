@@ -3,7 +3,10 @@
   *   Mes méthodes pour l'éditeur
   *
 *** --------------------------------------------------------------------- */
-const NMEditorJS = require('@editorjs/editorjs')
+const NMEditorJS  = require('@editorjs/editorjs')
+// const Paragraph   = require('@editorjs/paragraph')
+
+
 
 // console.log("EditorJS = ", EditorJS)
 
@@ -27,18 +30,43 @@ class EditorJS {
     this.id = id
     this.init()
   }
-  init(){
-    this.editor = new NMEditorJS({holder:this.id})
+
+  get editor(){
+    return this._editor || (this._editor = new NMEditorJS({holder:this.id}))
   }
 
-  feedWithMDText(str){
+  init(){
+
+  }
+
+  async feedWithMDText(str){
+    await this.editor.isReady;
+
+    return console.error("Rien faire pour le moment.")
+    const my = this
     // Il faut commencer par découper le texte en paragraphes
     // NON : en fait, on essaie simplement de copier le texte dans l'éditeur
 
     // Il faut transformer les mises en forme Markdown
 
+    console.log("Class de this.editor:", this.editor.constructor.name)
+    // Pour tester
+    this.editor.save((data)=>{
+      console.log("Data : ", data)
+    })
 
-    this.feedWithHTMLText(this.MDConverter.makeHtml(str))
+    // // this.feedWithHTMLText(this.MDConverter.makeHtml(str))
+    // var parags = str.split(CR)
+    // parags.forEach(parag => {
+    //   my.editor.blocks.render([
+    //     {
+    //         type:'paragraph'
+    //       , data:{
+    //           text: parag
+    //         }
+    //     }
+    //   ])
+    // })
 
   }
 

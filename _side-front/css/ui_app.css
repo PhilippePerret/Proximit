@@ -1,4 +1,10 @@
-/* Le bloc contenant tout le texte */
+/*
+  Pour supprimer tous les styles sur les paragraphes editorjs
+ */
+.ce-paragraph{line-height:unset!important;}
+.cdx-block{padding:unset!important;}
+
+/* Les blocs contenant tout le texte */
 div#tagging-text,
 textarea#working-text,
 div#working-editor

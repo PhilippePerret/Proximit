@@ -17,10 +17,6 @@ const App = {
     }
     this.loading = false
 
-
-    // // Code à essayer
-
-
     log.info("<- App.init")
   }
 

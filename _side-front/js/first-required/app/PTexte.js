@@ -56,12 +56,6 @@ class PTexte {
         log.error(err)
         throw(err)
       } else {
-        // Rappel : se trouve dans le stdout tout ce qui a été envoyé
-        // par puts dans le script.
-        // On réaffiche tout de suite les infos, pour savoir ce qu'a
-        // pu faire l'analyse. On prépare aussi les boutons, etc.
-        // Le mieux, c'est d'ouvrir le texte comme si c'était un nouveau
-        // texte.
         my.open(my.current.path)
         if ('function' === typeof callback) callback.call()
       }
@@ -252,7 +246,9 @@ class PTexte {
 
     // On lance la boucle de surveillance du texte qui va permettre de suivre
     // les proximités
-    App.watchTexte()
+    if (false /* préférence = lancer la boucle de surveillance au démarrage */){
+      App.watchTexte()
+    }
 
     this.inited = true
 
@@ -273,19 +269,25 @@ class PTexte {
   /**
     Met le texte tel quel dans le champ d'édition
   **/
-  editWorkingTexte(){
+  async editWorkingTexte(){
     console.log("-> PTexte#editWorkingTexte")
     const my = this
     UI.workingField.value = this.fullTextInFile
-    // Pour editorjs
-    if (App.editor){
-      App.editor.feedWithMDText(this.fullTextInFile)
-      this.textLoaded = false
-    } else {
-      this.textLoaded = true
-    }
-  }
+    console.log("Path :", this.path)
+    PPage.split(this.fullTextInFile)
+    this.currentPage = PPage.items[0]
+    this.currentPage.edit()
+    return
 
+
+  }
+  /**
+    Appelée lorsque le texte de l'éditeur a changé (mais après un
+    laps de temps, ce qui permet de ne pas interrompre la frappe)
+  **/
+  onChange(ev){
+    this.editor.save(data => console.log("nouvelles data:", data))
+  }
 
   /**
     Sauvegarde de toutes les données courantes

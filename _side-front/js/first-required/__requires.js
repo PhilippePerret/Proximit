@@ -7,7 +7,6 @@ const {app}     = require('electron').remote
 const exec      = require('child_process').execSync
 const execFileS = require('child_process').execFileSync
 const execFile  = require('child_process').execFile
-const Showdown  = require('showdown') // converter markdown => html
 
 const {clipboard} = require('electron')
 const remote    = require('electron').remote

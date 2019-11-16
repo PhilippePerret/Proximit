@@ -8,6 +8,6 @@ Donc, on procèderait de cette manière :
 * on affiche une page des deux côtés. Pour le check du texte, on rassemble les 2 ou 3 pages autour — ou en tout cas le nombre de signes voulus pour les proximités (on les sépare par des quadruples retours chariot)
 * On fait le check de ce texte
 * On l'affiche en affichant seulement la page courante
-  - si un mot est en relation avec une page précédente (non affichée), on le signale et on peut passer à la page précédent (du tagging-field) pour la voir. Si on veut corriger, on doit repasser à la page précédente dans le working-field, ce qui actualisera aussi 
+  - si un mot est en relation avec une page précédente (non affichée), on le signale et on peut passer à la page précédent (du tagging-field) pour la voir. Si on veut corriger, on doit repasser à la page précédente dans le working-field, ce qui actualisera aussi
 
 => Pouvoir définir dans les préférences le nombre de mots par page

@@ -1,5 +1,8 @@
 'use strict'
 
+const CR = `
+`
+
 const MOIS = {
   0: {
       long: 'janvier'
