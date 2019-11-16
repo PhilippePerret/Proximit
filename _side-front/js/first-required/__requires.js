@@ -16,7 +16,6 @@ const log       = require('electron-log')
 // 'warn' (console.warn("<gros problème>"))
 log.transports.console.level = 'warn'
 
-
 window.onerror = function(err, url, line){
   alert("Une erreur est survenue : " + err + "\n\nConsulter la console (ALT+CMD+i) pour le détail.")
   console.log("# ERREUR :", err, url, line)

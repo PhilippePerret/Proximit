@@ -1,6 +1,7 @@
 /* Le bloc contenant tout le texte */
 div#tagging-text,
-textarea#working-text
+textarea#working-text,
+div#working-editor
  {
   position:fixed;
   top:80px;

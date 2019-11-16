@@ -13,6 +13,9 @@ const App = {
     }
     this.loading = false
 
+    // On instancie l'éditeur
+    EditorJS.init()
+
     // // Code à essayer
 
 

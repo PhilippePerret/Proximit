@@ -1,0 +1,13 @@
+La difficulté, avec la version 0.3, est de connaitre la portion exacte de texte qui est affichée à l'écran. Même si l'on part du principe que le tagging-field (un div) puisse suivre exactement le writing-field (un textarea), trouver le début affiché et difficile.
+
+L'idée serait de fonctionner par page, en sachant qu'une page serait la quantité de texte qu'on peut afficher dans l'interface (ou alors on fait vraiment des vraies pages, en essayant de se rapprocher de la longueur des pages du livre — ce qui en plus, offrirait l'avantage de savoir où on en est)
+
+Donc, on procèderait de cette manière :
+
+* on s'assure qu'il n'y a aucun quadruple retour chariot dans les textes. On les remplace par des doubles
+* on affiche une page des deux côtés. Pour le check du texte, on rassemble les 2 ou 3 pages autour — ou en tout cas le nombre de signes voulus pour les proximités (on les sépare par des quadruples retours chariot)
+* On fait le check de ce texte
+* On l'affiche en affichant seulement la page courante
+  - si un mot est en relation avec une page précédente (non affichée), on le signale et on peut passer à la page précédent (du tagging-field) pour la voir. Si on veut corriger, on doit repasser à la page précédente dans le working-field, ce qui actualisera aussi 
+
+=> Pouvoir définir dans les préférences le nombre de mots par page
