@@ -242,7 +242,7 @@ class PTexte {
     this.writeState()
 
     // On lance tout de suite un check
-    App.checkText(UI.stopWaiter.bind(UI))
+    // App.checkText(UI.stopWaiter.bind(UI))
 
     // On lance la boucle de surveillance du texte qui va permettre de suivre
     // les proximités
@@ -277,8 +277,6 @@ class PTexte {
     PPage.split(this.fullTextInFile)
     this.currentPage = PPage.items[0]
     this.currentPage.edit()
-    return
-
 
   }
   /**

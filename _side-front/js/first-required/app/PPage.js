@@ -36,13 +36,13 @@ class PPage {
         str = str.substring(lastIndex, str.length)
       }
       ++pageNumber
-      this.items.push(new PPage(str, pageNumber))
+      this.items.push(new PPage(portion, pageNumber))
     }//Fin de boucle pour découper le texte
 
     console.log('Pages instanciées : ', this.items)
   }
 
-  static edit(str){
+  static async edit(ppage){
     // Pour le moment, on réinitialise chaque fois un éditeur
     delete this.editor
     // Pour editorjs
@@ -50,7 +50,7 @@ class PPage {
     // construire d'abord la donnée pour l'instanciation puis instancier
     // l'éditeur pour ce texte.
     var blocks = []
-    str.split(CR).forEach(parag => {
+    ppage.originalText.split(CR).forEach(parag => {
       parag = md2html(parag)
       blocks.push({type:'paragraph',data:{text:parag}})
     })
@@ -60,10 +60,10 @@ class PPage {
         // holderId:'working-editor'
         holder:'working-editor'
       , data:{time:(new Date().getTime()), blocks:blocks}
-      , onChange:my.onChange.bind(my)
+      , onChange: ppage.onChange.bind(ppage)
     })
     await this.editor.isReady;
-    this.editor.save(data=>console.log("Donnée du texte : ", data))
+    this.editor.save(ppage.forSave.bind(ppage, true))
 
   }
 
@@ -79,10 +79,27 @@ class PPage {
   edit(){
     console.log("Je dois éditer la page numéro", this.number)
     // Mettre le texte dans l'éditeur
-    PPage.editor.edit(this.originalText)
+    PPage.edit(this)
     // Mettre le numéro de page
     DGet('#page-number').innerHTML = this.number
     // Mettre la longueur du texte
     DGet('#text-length').innerHTML = this.originalText.length
+  }
+
+  forSave(initial, data){
+    console.log("Data du texte renvoyées par le save de editorjs", data)
+    if ( initial ){
+      console.log("C'est le premier appel")
+      this.initialData = data
+    } else {
+      // C'est une modification
+    }
+  }
+
+  /**
+    Appelé lorsqu'un paragraphe a été modifié
+  **/
+  onChange(){
+
   }
 }
