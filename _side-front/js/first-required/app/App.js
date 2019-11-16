@@ -6,6 +6,10 @@ const App = {
     log.info("-> App.init")
     this.loading = true
     UI.init()
+
+    // On instancie l'éditeur (this.editor/App.editor)
+    EditorJS.init()
+
     Prefs.load()
     // $.datepicker.setDefaults( $.datepicker.regional[ "fr" ] );
     if ( Prefs.get('load_last_on_start') ) {
@@ -13,8 +17,6 @@ const App = {
     }
     this.loading = false
 
-    // On instancie l'éditeur
-    EditorJS.init()
 
     // // Code à essayer
 

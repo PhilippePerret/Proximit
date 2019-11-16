@@ -271,6 +271,23 @@ class PTexte {
   }
 
   /**
+    Met le texte tel quel dans le champ d'édition
+  **/
+  editWorkingTexte(){
+    console.log("-> PTexte#editWorkingTexte")
+    const my = this
+    UI.workingField.value = this.fullTextInFile
+    // Pour editorjs
+    if (App.editor){
+      App.editor.feedWithMDText(this.fullTextInFile)
+      this.textLoaded = false
+    } else {
+      this.textLoaded = true
+    }
+  }
+
+
+  /**
     Sauvegarde de toutes les données courantes
 
     Note : cette méthode ne sauvent pas dans les mêmes fichiers que
@@ -396,14 +413,6 @@ class PTexte {
   }
 
   get dataPath(){ return this.in_prox('data.json') }
-
-  /**
-    Met le texte tel quel dans le champ d'édition
-  **/
-  editWorkingTexte(){
-    const my = this
-    UI.workingField.value = this.fullTextInFile
-  }
 
   /**
     Retourne le texte du fichier contenant le texte entier (texte_entier.txt)

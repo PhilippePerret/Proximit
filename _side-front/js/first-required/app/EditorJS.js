@@ -13,8 +13,10 @@ class EditorJS {
     Initialisation de l'application
   **/
   static init(){
-    this.current = new this('working-editor')
-
+    App.editor = new this('working-editor')
+    if (PTexte.current && PTexte.current.textLoaded === false){
+      PTexte.current.editWorkingTexte()
+    }
   }
 
   /** ---------------------------------------------------------------------
@@ -26,7 +28,7 @@ class EditorJS {
     this.init()
   }
   init(){
-    this.editor = NMEditorJS.new({holder:this.id})
+    this.editor = new NMEditorJS({holder:this.id})
   }
 
   feedWithMDText(str){
@@ -35,7 +37,8 @@ class EditorJS {
 
     // Il faut transformer les mises en forme Markdown
 
-    this.feedWithHTMLText(str)
+
+    this.feedWithHTMLText(this.MDConverter.makeHtml(str))
 
   }
 
@@ -45,6 +48,10 @@ class EditorJS {
 
   feedWithData(data){
     this.editor.data = data
+  }
+
+  get MDConverter(){
+    return this._mdconverter || (this._mdconverter = new Showdown.Converter())
   }
 
 }
