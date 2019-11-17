@@ -12,6 +12,9 @@ function md2html(str, options){
 function html2md(str, options){
   return Converter.html2md(str, options)
 }
+function html2raw(str, options){
+  return Converter.html2raw(str,options)
+}
 
 function editorjs2text(blocks, options){
   return Converter.editorjs2text(blocks, options)
@@ -22,13 +25,12 @@ class Converter {
     return this.mdconverter.makeHtml(str)
   }
   static html2md(str, options){
-    if ('function'==typeof this.mdconverter.makeMarkdown){
-      return this.mdconverter.makeMarkdown(str)
-    } else {
-      console.error("Pas de méthode makeMarkdown")
-      return str
-    }
+    return this.mdconverter.makeMarkdown(str)
   }
+  static html2raw(html, options){
+    return html.replace(/<([^>]*)>/g,'')
+  }
+  
   static editorjs2text(blocks, options){
     var tf = []
     blocks.forEach(block => {tf.push(html2md(block.data.text))})

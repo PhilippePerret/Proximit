@@ -7,12 +7,29 @@
 Object.assign(UI,{
   name:'Extension de UI propre à l’application'
 
+, initApp(){
+    console.log("-> initApp")
+
+    console.log("<- initApp")
+  }
+  // Appelé par l'UI système
+, observeApp(){
+    if ( this.observedApp ) return
+    console.log("-> observeApp")
+    // On observe les boutons page précédente et suivante
+    $('.btn-prev-page').on('click', PPage.prev.bind(PPage))
+    $('.btn-next-page').on('click', PPage.next.bind(PPage))
+    WritingField.init()
+    this.observedApp = true
+  }
+
 , reset(){
     this.clean()
     this.taggingField
       .clean()
       .append('<div class="explication">Cliquez sur le bouton “Surveiller” (en bas d’écran) pour checker les proximités en boucle.</div>');
   }
+
 
 , forEachMotVisible(fun){
     for ( var mot of this.getMotsVisibles() ) {
@@ -140,9 +157,6 @@ Object.assign(UI,{
     Mais en fait, maintenant, on la construit vraiment dans le fichier HTML
   **/
 , build(){}
-, observeApp(){
-    WritingField.init()
-  }
 })
 
 Object.defineProperties(UI,{

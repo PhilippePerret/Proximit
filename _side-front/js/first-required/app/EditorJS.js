@@ -4,9 +4,75 @@
   *
 *** --------------------------------------------------------------------- */
 const NMEditorJS  = require('@editorjs/editorjs')
-// const Paragraph   = require('@editorjs/paragraph')
+const Paragraph  = require('@editorjs/paragraph')
 
 
+class MyParagraph extends Paragraph {
+  /** ---------------------------------------------------------------------
+    *   CLASSE
+    *
+    * Pour la classe Paragraph, cf. :
+    * https://github.com/editor-js/paragraph/blob/master/src/index.js
+  *** --------------------------------------------------------------------- */
+  static newId(){
+    if (undefined === this.lastId) this.lastId = 0
+    return ++this.lastId
+  }
+  static get current(){return this._current}
+  static set current(v){this._current = v}
+  /** ---------------------------------------------------------------------
+    *   INSTANCE
+    *
+  *** --------------------------------------------------------------------- */
+  constructor(args){
+    super(args)
+    // var {data,api,config} = args
+    this.id     = this.constructor.newId()
+    this.data   = args.data
+    this.api    = args.api
+    this.config = args.config
+    // console.log("Données du paragraphe : ", data)
+  }
+  // render(){
+  //   this.div = document.createElement('DIV')
+  //   this.div.innerHTML = this.html
+  //   this.div.className = 'ce-paragraph cdx-block'
+  //   console.log("div : ", this.div)
+  //   // TODO Surveiller le div en cas de modification
+  //   return this.div
+  // }
+  render(){
+    const my = this
+    this._element.addEventListener('focus', (ev) => {
+      // console.log("Focus dans le paragraphe #%d", this.id)
+      MyParagraph.current = my
+    })
+    this._element.addEventListener('blur', (ev) => {
+      // console.log("Blur du paragraphe #%d", this.id)
+      MyParagraph.current = null
+    })
+    return this._element
+  }
+  save(toolsContent){
+    if(undefined === toolsContent) toolsContent = this._element
+    this.html = toolsContent.innerHTML
+    return {
+          html: this.html
+        , raw:  this.raw
+        , md:   this.md
+        , text: this.md
+      }
+  }
+  // get default(){return this.html}
+  get html(){return this._html || (this._html = md2html(this.md))}
+  set html(v){
+    this._html = v
+    this._raw = html2raw(v)
+    this._md  = html2md(v)
+  }
+  get raw(){return this._raw || (this._raw = html2raw(this.html))}
+  get md(){return this._md || (this._md = this.data.md_original||this.data.text)}
+}
 
 // console.log("EditorJS = ", EditorJS)
 

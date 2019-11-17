@@ -56,14 +56,17 @@
         <button id="btn-search" type="button" onclick="Search.toggleForm.call(Search)">RECHERCHE</button>
       </div>
 
+      <button type="button" onclick="PTexte.loadCurrent.call(PTexte)">Charge</button>
+      <button type="button" onclick="PTexte.saveCurrent.call(PTexte)">Sauve</button>
+
       <!-- Infos de pied de page sur le texte -->
       <span id="infos-page">
+        <button type="button" class="btn-prev-page hidden">◁</button>
         <label>Page </label><span id="page-number">---</span>
+        <button type="button" class="btn-next-page visible">▷</button>
         <label>longueur : </label><span id="text-length">---</span>
       </span>
 
-      <button type="button" onclick="PTexte.loadCurrent.call(PTexte)">Charge</button>
-      <button type="button" onclick="PTexte.saveCurrent.call(PTexte)">Sauve</button>
       <button type="button" onclick="PTexte.watchCurrent.call(PTexte)" class="poussoir main">Surveiller</button>
 
       <div id="buttons_proximites" class="buttons"></div>

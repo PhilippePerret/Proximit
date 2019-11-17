@@ -241,7 +241,7 @@ class PTexte {
   **/
   async editWorkingTexte(){
     const my = this
-    this.currentPage.edit()
+    PPage.current = this.currentPage
   }
 
   /**
@@ -255,6 +255,7 @@ class PTexte {
       this._currentpage = this.pages[this.indexCurrentPage]
     } return this._currentpage
   }
+  set currentPage(v){this._currentpage = v}
 
   /**
     Appelée lorsque le texte de l'éditeur a changé (mais après un

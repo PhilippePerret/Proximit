@@ -1,4 +1,13 @@
 * Concernant la version 0.3 du programme
+  - découper en page :
+    - mettre dans l'instance l'index du premier caractère (ou la longueur ?)
+      (penser à les actualiser à chaque modification - dès qu'une page est
+       modifiée, il faut actualiser les index des pages suivantes)
+  - création des instances MyParagraph
+    - mettre dans l'instance l'index du premier caractère (relatif) des paragraphes
+      (index paragraphe = index relatif + index page)
+      (penser à les actualiser à chaque modification)
+  - bouton pour passer aux pages suivantes
   - un bouton pour interrompre la boucle ou plutôt basculer de l'analyse en boucle ou sur commande
   - Ne prendre que la section de texte visible +- le nombre de caractères définis par l'indice de proximité choisi (1500 par défaut)
 
