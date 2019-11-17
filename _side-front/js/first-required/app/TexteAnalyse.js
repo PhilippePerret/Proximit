@@ -7,7 +7,7 @@ procédures qu'il faudra évaluer pour choisir la meilleure :
 NOTE : la seconde est obsolète puisqu'elle ne traite pas les caractères
 spéciaux… (on en est encore à la préhistoire…)
 
-On ouvre un texte quelconque dans le workingField. On l'analyse aussitôt
+On ouvre un texte quelconque. On l'analyse aussitôt
 en utilisant la procédure ruby :
   - on enregistre le texte (*) dans un dossier provisoire
   - on demande à `analyse_texte.rb` de procéder à l'analyse du texte

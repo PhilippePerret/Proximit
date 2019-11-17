@@ -1,0 +1,9 @@
+---
+  fullColored:
+    hname: 'Full colorisé'
+    description: "Texte intégral en RTF ou HTML avec indication des proximités par couleurs"
+    formats: ['rtf', 'html']
+  splited:
+    hname: 'Splité'
+    description: "Texte découpé par section avec proximité, une section par proximité"
+    formats: ['html','text']

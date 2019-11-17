@@ -21,49 +21,8 @@ class PTexte {
   }
 
   /**
-
-    Méthode principale, appelée par le menu "Analyse > Analyser" qui
-    lance la procédure d'analyse du texte courant.
-    Pour le moment, elle demande à choisir le texte s'il n'y a pas de texte
-    courant mais plus tard, le menu sera désactivé
-  **/
-  static async analyseCurrent(callback){
-    const my = this
-    if ( undefined === my.current ) my.chooseText()
-    if ( undefined === my.current ) return ; // annulation
-    my.current.analyzed = null
-    // Si ce texte a déjà été enregistré, il faut confirmer deux fois
-    // la destruction des corrections
-    if ( my.current.hasBeenModified ) {
-      ask("Ce texte a déjà été corrigé à l'aide de Proximit.\nSi vous relancez son analyse, TOUTES LES MODIFICATIONS SERONT DÉFINITIVEMENT PERDUES.\n\nVoulez-vous vraiment perdre toutes les modifications ?",{
-        buttons:[
-            {text:'Renoncer',onclick:function(){UI.message('Analyse abandonnée.')}}
-          , {text:'Recommencer l’analyse', onclick:this.proceedAnalyseCurrent.bind(this,callback)}
-        ]
-      })
-    } else {
-      this.proceedAnalyseCurrent(callback)
-    }
-  }
-  static proceedAnalyseCurrent(callback){
-    const my = this
-    UI.clean()
-    UI.waiter("Analyse du texte.\nMerci de patienter…", UI.taggingField.domObj)
-    execFile(`./bin/analyse_texte.rb`, [PTexte.current.path], (err, stdout, stderr) => {
-      UI.stopWaiter()
-      if (err) {
-        my.current.analyzed = false
-        log.error(err)
-        throw(err)
-      } else {
-        my.open(my.current.path)
-        if ('function' === typeof callback) callback.call()
-      }
-    })
-  }
-
-  /**
-    Méthode appelée quand on joue le menu "Fichier > Choisir le texte…"
+    Appelée quand on joue le menu "Fichier > Choisir le texte…", cette méthode
+    permet de choisir un texte.
   **/
   static chooseText(){
     const my = this
@@ -106,7 +65,7 @@ class PTexte {
     // Il faut tout réinitialiser
     this.reset()
     this.current = new PTexte({path: pth})
-    this.current.init()
+    this.current.open()
     log.debug("<- PTexte::open(%s)",pth)
   }
 
@@ -135,7 +94,7 @@ class PTexte {
     texte est ouvert normalement, c'est la méthode d'instance 'init' qui
     s'occupe de tout charger.
   **/
-  static loadCurrent(){ this.current.init() }
+  static loadCurrent(){ this.current.open() }
 
   static reloadCurrent(){
     if ( this.current ) {
@@ -183,29 +142,13 @@ class PTexte {
     | Ce sont les différents états par lesquels passent le texte lorsqu'il
     | est étudié. Note : c'est surtout en back-side que ça sert.
   **/
-  static get STATES(){return {
-      complet:    {hname:'Non traité', description: "Le texte est dans son état original, avec ponctuations, etc."}
-    , epured:     {hname:'Épuré', description:"Le texte a été épuré de ses ponctations et autres signes, ne reste que les mots et les nombre."}
-    , splited:    {hname:'Splité', description:"Le texte a été découpé en mots, il existe sous forme de liste de mots bruts."}
-    , lemmatised: {hname:'Lemmatisé', description:"Le texte existe sous forme de mots lemmatisés (ou chaque mot est une instance PMot)"}
-    , analyzed:   {hname:'Analysé', description:"Le texte existe sous forme d'un document complètement analysés, avec statistique"}
-    , formated:   {hname:'Formated', description:"Le texte existe sous forme de document formaté indiquant les proximités. Cette forme peut connaitre plusieurs format (cf. OUTPUT_FORMATS)"}
-  }}
+  static get STATES(){
+    return this._states || (this.states = App.getYAMLData('texte_states'))
+  }
 
-  static get OUTPUT_FORMATS(){return{
-      fullColored:
-      {
-          hname:        'Full colorisé'
-        , description:  "Texte intégral en RTF ou HTML avec indication des proximités par couleurs"
-        , formats:      ['rtf', 'html']
-      }
-    , splited:
-      {
-          hname:        'Splité'
-        , description:  "Texte découpé par section avec proximité, une section par proximité"
-        , formats:      ['html','txt']
-      }
-  }}
+  static get OUTPUT_FORMATS(){
+    return this._outputformats || (this._outputformats = App.getYAMLData('output_formats'))
+  }
 
   /** ---------------------------------------------------------------------
     | INSTANCE
@@ -216,24 +159,19 @@ class PTexte {
   }
 
   /**
-    Initialisation du texte courant
+    Ouverture du texte courant
+    --------------------------
     Depuis la version 0.3, on se contente de charger son texte dans le
     "working field"
   **/
-  async init(){
+  async open(){
     this.loading = true
     delete this.firstMot
     // UI.flash("Affichage du texte, merci de patienter…",{style:'neutre', keep:true, waiter:true})
     UI.waiter("Affichage du texte, merci de patienter…")
 
-    // console.log("Je patiente…")
-    // await new Promise((ok,ko)=>{
-    //   setTimeout(ok,5*1000)
-    // })
-    // console.log("Je passe après le timeout")
-
-    $('.texte_title').html(`${this.title} (<span class="texte-version">${this.version}</span>)`)
-    this.setTexteHeight()
+    this.setUI()
+    $('.texte_title').html()
 
     // On met le texte dans le champ de saisie
     this.editWorkingTexte()
@@ -241,22 +179,22 @@ class PTexte {
     // Écriture de l'état de l'analyse des proximités du texte
     this.writeState()
 
-    // On lance tout de suite un check
-    // App.checkText(UI.stopWaiter.bind(UI))
-
-    // On lance la boucle de surveillance du texte qui va permettre de suivre
-    // les proximités
-    if (false /* préférence = lancer la boucle de surveillance au démarrage */){
-      App.watchTexte()
-    }
-
     this.inited = true
 
+    UI.stopWaiter()
     UI.flash("Texte prêt à être travaillé.", {style:'neutre',replace:true})
 
     this.loading = false
   }
 
+  /**
+    Réglage de l'interface
+  **/
+  setUI(){
+    // Titre dans la barre de fenêtre
+    DGet('head title').innerHTML = `${this.title} (<span class="texte-version">${this.version}</span>)`
+    this.setTexteHeight()
+  }
   /**
     Fixe la hauteur du texte pour qu'il prenne toute la hauteur de l'interface
   **/
@@ -272,7 +210,6 @@ class PTexte {
   async editWorkingTexte(){
     console.log("-> PTexte#editWorkingTexte")
     const my = this
-    UI.workingField.value = this.fullTextInFile
     console.log("Path :", this.path)
     PPage.split(this.fullTextInFile)
     this.currentPage = PPage.items[0]

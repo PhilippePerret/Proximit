@@ -7,6 +7,7 @@ const {app}     = require('electron').remote
 const exec      = require('child_process').execSync
 const execFileS = require('child_process').execFileSync
 const execFile  = require('child_process').execFile
+const YAML      = require('yaml')
 
 const {clipboard} = require('electron')
 const remote    = require('electron').remote

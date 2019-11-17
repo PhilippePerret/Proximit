@@ -6,11 +6,10 @@
 
 /* Les blocs contenant tout le texte */
 div#tagging-text,
-textarea#working-text,
 div#working-editor
  {
   position:fixed;
-  top:80px;
+  top:0;
   border:1px dashed green;
   width:44%;
   min-height:500px;

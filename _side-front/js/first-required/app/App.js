@@ -20,6 +20,16 @@ const App = {
     log.info("<- App.init")
   }
 
+  /**
+    Permet de charger des données YAML se trouvant dans le dossier `./data`
+
+    Les fichiers doivent obligatoirement se terminer par `.yaml` (pas `.yml`)
+  **/
+, getYAMLData(relaffixe){
+    var pth = path.join(this.folder,'data',`${relaffixe}.yaml`)
+    return YAML.parse(fs.readFileSync(pth,'utf8'))
+  }
+
 , watchTexte(){
     this.lastCheckTime = -1
     this.timerWatchTexte = setInterval(this.checkText.bind(this), 5*1000)
@@ -51,7 +61,10 @@ const App = {
 }
 
 Object.defineProperties(App,{
-  ApplicationSupportFolder:{get(){
+  folder:{get(){
+    return this._apppath || (this._apppath = app.getAppPath())
+  }}
+, ApplicationSupportFolder:{get(){
     if (undefined === this._appsupportfolder){
       this._appsupportfolder = app.getPath('userData')
     } return this._appsupportfolder

@@ -33,6 +33,7 @@
     "nlp-js-tools-french": "^1.0.9",
     "rimraf": "^3.0.0",
     "showdown": "^1.9.1",
-    "treetagger": "^0.1.1"
+    "treetagger": "^0.1.1",
+    "yaml": "^1.7.2"
   }
 }

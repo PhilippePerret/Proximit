@@ -24,6 +24,7 @@ const WritingField = {
     après en fonction de l'indice de proximité choisi.
   **/
 , getTextToCheck(){
-    return UI.workingField.value
+    console.error("La méthode getTextToCheck est à réimplémenter")
+    return ''
   }
 }

@@ -1,11 +1,75 @@
 # Proximit
 # Manuel développeur
 
+* [Présentation générale du fonctionnement de l'application](#fonctionnementgeneral)
+  * [Concrètement dans le programme](#fctgeneinprogramme)
 * [Principes généraux](#principes_generaux)
 * [Tests](#les_tests)
 * [Obtenir l'instance d'un mot quelconque](#get_mot)
 * [Modification d'une proximité](#modify_a_prox)
 * [Appendum (gestion des modifications)](#laddendum)
+
+## Présentation générale du fonctionnement de l'application {#fonctionnementgeneral}
+
+**Proximi** permet de travailler sur un texte en se concentrant sur les proximités, qui sont abordés de façon plus profonde et plus souple qu'un logiciel comme [Antidote](https://www.antidote.info/fr).
+
+* Un texte est choisi (soit le dernier ouvert, soit un texte choisi par le menu ou
+  `CMD+O`). Le meilleur format est le format [Markdown](https://fr.wikipedia.org/wiki/Markdown) qui permet une mise en forme qui sera conservée dans le traitement.
+* Ce texte est découpé en pages de 1500 caractères (par défaut) ou du nombre déterminé dans les préférences. Cela produit des instances `PPage` de la page.
+* La première page (par défaut) ou la dernière page travaillée est affichée dans une section DOM (un `div`) gérée par [`editorjs`](https://editorjs.io/). Pour être affichée, on initialise chaque fois un nouvel éditeur (tant qu'on ne sait pas utiliser le `render` de `editorjs`), en transformant le contenu de la page en `data` compréhensible par `editorjs`, c'est-à-dire un object `blocks` qui contient les différents paragraphes et qui ressemble à :
+```javascript
+
+        [
+          {
+              type:'paragraph'
+            , data:{text: "Texte du [paragraphe](https://fr.wikipedia.org/wiki/Paragraphe)."}
+          }
+        , {
+              type:'paragraph'
+            , data:{text: "Texte du <i>deuxième</i> paragraphe."}
+          }
+          // etc.
+        ]
+
+```
+Noter que cet objet est agrémenté d'une nouvelle propriété `raw` qui permet de conserver une version brut du texte, sans formatage et sans lien, pour être analysé par le programme au niveau des proximités. La donnée réelle ressemble donc à :
+```javascript
+
+        [
+          {
+              type:'paragraph'
+            , data:{
+                  text: "Texte du [paragraphe](https://fr.wikipedia.org/wiki/Paragraphe)."
+                , raw: "Texte du paragraph"
+              }
+          }
+        , {
+              type:'paragraph'
+            , data:{
+                  text: "Texte du <i>deuxième</i> paragraphe."
+                , raw: "Texte du deuxième paragraphe."
+              }
+          }
+          // etc.
+        ]
+
+
+```
+* Toutes les 5 secondes, le texte de la page éditée est vérifiée au niveau des proximités (si elle a été modifiée) et ces proximités sont affichées en regard du texte, dans un *texte mirroir* qui reprend le texte original, mais en présentant toutes les proximités trouvés (et les fréquences de certains mots lorsqu'elle est élevée).
+
+### Concrètement dans le programme {#fctgeneinprogramme}
+
+* Si aucun texte n'est choisi, rien ne se passe, l'application attend que l'auteur en choisisse un.
+* Pour choisir le texte (par menu ou raccourci), l'auteur passe par `PTexte::chooseText()`.
+* Si un texte était déjà en édition et non sauvegardé, on avertit l'auteur et il choisit soit de renoncer, soit d'enregistrer le texte courant (`PTexte::saveAndChooseText()`) soit d'ignorer les modifications et de choisir directement le texte (`PTexte::proceedChooseText()`)
+* `PTexte` se ressette (`PTexte::reset()`) (\*), ouvre le texte (`PTexte::open`) en le mettant en texte courant (dans `PTexte.current`). Il initie cette instance `PTexte` (`PTexte#open`). (\*) Cette initialisation consiste à nettoyer l'interface et à mettre toutes les valeurs connues à zéro, et notamment les comptes de proximités, de mots, de canon, etc.
+* La méthode `PTexte#open` ouvre le texte. Cela consiste à :
+  * régler l'interface (titre, hauteur pour prendre toute la place, résultat d'une précédente analyse le cas échéant, etc.) avec `PTexte#setUI()`
+  * découper le texte entier en page
+  *
+
+
+
 
 ## Principes généraux {#principes_generaux}
 

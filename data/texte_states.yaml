@@ -1,0 +1,27 @@
+# Les états que peut avoir un texte passé dans l'analyseur de texte
+# Ces états servent pour l'application NodeJS Proximit
+---
+  complet:
+    id:     complet
+    hname:  'Non traité'
+    description: "Le texte est dans son état original, avec ponctuations, etc."
+  epured:
+    id:     epured
+    hname: 'Épuré'
+    description: "Le texte a été épuré de ses ponctations et autres signes, ne reste que les mots et les nombre."
+  splited:
+    id:     'splited'
+    hname:  'Splité'
+    description: "Le texte a été découpé en mots, il existe sous forme de liste de mots bruts."
+  lemmatised:
+    id:     lemmatised
+    hname:  'Lemmatisé'
+    description: "Le texte existe sous forme de mots lemmatisés (ou chaque mot est une instance PMot)"
+  analyzed:
+    id:     analyzed
+    hname:  'Analysé'
+    description: "Le texte existe sous forme d'un document complètement analysés, avec statistique"
+  formated:
+    id:     formated
+    hname:  'Formaté'
+    description: "Le texte existe sous forme de document formaté indiquant les proximités. Cette forme peut connaitre plusieurs format (cf. OUTPUT_FORMATS)"

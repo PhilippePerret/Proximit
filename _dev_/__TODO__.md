@@ -1,7 +1,5 @@
 * Concernant la version 0.3 du programme
-  - empêcher le traitement actuel du texte au démarrage. Tout ce qu'il y a à faire, c'est le charger et le mettre dans le champ UI.workingField et de lancer la boucle de surveillance
   - un bouton pour interrompre la boucle ou plutôt basculer de l'analyse en boucle ou sur commande
-  - surveiller les touches pressées dans UI.workingField pour empêcher le check lorsque l'on est en train d'écrire
   - Ne prendre que la section de texte visible +- le nombre de caractères définis par l'indice de proximité choisi (1500 par défaut)
 
 * Pour un texte scrivener :

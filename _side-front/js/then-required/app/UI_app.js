@@ -135,7 +135,6 @@ Object.assign(UI,{
 , build(){}
 , observeApp(){
     WritingField.init()
-    UI.workingField.jqObj.on('keypress', WritingField.onKeyPressedInWorkingField.bind(WritingField))
   }
 })
 
@@ -144,9 +143,7 @@ Object.defineProperties(UI,{
   // Le bloc où écrire l'intégralité du texte
   texte:{get(){return this._texte || (this._texte = new UIObject('#full_texte'))}}
 
-  // Le textarea qui contient le texte en chantier
-, workingField:{get(){return this._workingfield ||(this._workingfield = new UIObject('textarea#working-text'))}}
-  // L'espace à côté qui affiche le texte avec les proximités
+  // Le texte en miroir
 , taggingField:{get(){return this._taggingfield ||(this._taggingfield = new UIObject('div#tagging-text'))}}
 
 
