@@ -10,24 +10,27 @@ se fait par page, pour accélérer tous les processus.
 *** --------------------------------------------------------------------- */
 
 class PPage {
-  static get PAGE_LENGTH(){return 1500}
+  static get PAGE_DEFAULT_LENGTH(){return 1500}
   /**
-    Découpe le texte +str+ en pages (instances PPage) et les conserve
-    dans this.items(/PPage.items) (array)
+    Découpe le texte +str+ en pages (instances PPage)
+    Si +owner+ est défini, c'est le PTexte concerné et on met les pages
+    dans sa propriétés `pages`. Sinon, on les conserve ici dans
+    this.items(/PPage.items) (array)
   **/
-  static split(str){
-    this.items = []
-    var pageNumber = 0
-    var portion
+  static split(str, owner){
+    var pages = []
+      , pageNumber = 0
+      , portion
+
     while(str.length){
-      if (str.length < this.PAGE_LENGTH){
+      if (str.length < PTexte.PAGE_LENGTH){
         // <= Il reste moins de caractères que pour une page
         // => On en fait la dernière page et on s'arrête
         portion = str
         str = ''
       } else {
         // On cherche le premier espace autour de 1500 pages
-        portion = str.substring(0, 1500)
+        portion = str.substring(0, PTexte.PAGE_LENGTH)
         var lastIndex = Math.max(
             portion.lastIndexOf(' ')
           , portion.lastIndexOf(CR)
@@ -36,30 +39,30 @@ class PPage {
         str = str.substring(lastIndex, str.length)
       }
       ++pageNumber
-      this.items.push(new PPage(portion, pageNumber))
+      pages.push(new PPage(portion, pageNumber))
     }//Fin de boucle pour découper le texte
 
-    console.log('Pages instanciées : ', this.items)
+    if ( owner ) {
+      owner.pages = pages
+    } else {
+      this.items = pages
+    }
+    console.log('Pages instanciées : ', pages)
+    pages = null
   }
 
   static async edit(ppage){
-    // Pour le moment, on réinitialise chaque fois un éditeur
+    // Pour le moment, on réinitialise chaque fois un éditeur (parce que je
+    // ne sait pas utiliser `render` de editorjs)
     delete this.editor
     // Pour editorjs
     // Note : comme je ne sais pas utiliser <editorjs>.blocks.render, je dois
-    // construire d'abord la donnée pour l'instanciation puis instancier
-    // l'éditeur pour ce texte.
-    var blocks = []
-    ppage.originalText.split(CR).forEach(parag => {
-      parag = md2html(parag)
-      blocks.push({type:'paragraph',data:{text:parag}})
-    })
 
     // On peut maintenant initier l'éditer
     this.editor = new NMEditorJS({
         // holderId:'working-editor'
         holder:'working-editor'
-      , data:{time:(new Date().getTime()), blocks:blocks}
+      , data:{time:(new Date().getTime()), blocks:ppage.blocks}
       , onChange: ppage.onChange.bind(ppage)
     })
     await this.editor.isReady;
@@ -100,6 +103,37 @@ class PPage {
     Appelé lorsqu'un paragraphe a été modifié
   **/
   onChange(){
+    console.log("Un paragraphe a été changé")
+    // TODO Passer en revue les paragraphes de la page pour le trouver
+  }
 
+  /**
+    Retourne le texte de la page sous la forme de blocks prêts pour editorjs
+  **/
+  get blocks(){
+    return this._blocks || ( this._blocks = this.text2blocks() )
+  }
+
+  /**
+    Transforme le texte original de la page en données Block pour editorjs
+  **/
+  text2blocks(){
+    var blocks = []
+    var index  = -1
+    this.originalText.split(CR).forEach(parag => {
+      var html = md2html(parag)
+      var raw  = html.replace(/<(.*?)>/g,'')
+      // var raw  = html.replace(/<([^>]*)>/g,'')
+      blocks.push({
+          type:'paragraph'
+        , index: ++index
+        , data:{
+              text:     html
+            , original: parag
+            , raw:      raw
+          }
+      })
+    })
+    return blocks
   }
 }

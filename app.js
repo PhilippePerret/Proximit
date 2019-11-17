@@ -5,6 +5,7 @@
 //   logger: require('electron-log')
 // })
 
+const electron = require('electron')
 const path = require('path')
 const glob = require('glob')
 const {app, BrowserWindow} = require('electron')
@@ -18,6 +19,9 @@ if (process.mas) app.setName('Electron APIs')
 // La fenêtre principale
 global.mainW = null
 global.ObjMenus = require('./_side-back/js/menus')
+global.screenWidth   = null
+global.screenHeight  = null
+
 
 // Fonction appelée en bas de ce module, pour initialiser l'application
 function initialize () {
@@ -48,10 +52,16 @@ function initialize () {
 
   // Création de la fenêtre
   function createWindow () {
+
+    const { width, height } = electron.screen.getPrimaryDisplay().workAreaSize
+    screenWidth   = width
+    screenHeight  = height
+
     const windowOptions = {
         width: 1800
       , minWidth: 1600
-      , height: 840
+      , y: 0
+      , height: screenHeight
       , icon: __dirname+'/Imagerie/Icone/Icone-1024x1024.icns'
       , title: app.getName()
       , webPreferences: {

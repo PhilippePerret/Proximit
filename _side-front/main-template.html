@@ -39,11 +39,6 @@
       -->
       <!-- L'éditeur -->
       <div id="working-editor"></div>
-      <!-- Infos de pied de page sur le texte -->
-      <div id="infos-page">
-        <div id="text-length">---</div>
-        <div id="page-number">---</div>
-      </div>
     </section>
 
     <!-- Un panneau caché pour les infos -->
@@ -61,8 +56,15 @@
         <button id="btn-search" type="button" onclick="Search.toggleForm.call(Search)">RECHERCHE</button>
       </div>
 
-      <button type="button" onclick="PTexte.loadCurrent.call(PTexte)">Load</button>
-      <button type="button" onclick="PTexte.saveCurrent.call(PTexte)">Save</button>
+      <!-- Infos de pied de page sur le texte -->
+      <span id="infos-page">
+        <label>Page </label><span id="page-number">---</span>
+        <label>longueur : </label><span id="text-length">---</span>
+      </span>
+
+      <button type="button" onclick="PTexte.loadCurrent.call(PTexte)">Charge</button>
+      <button type="button" onclick="PTexte.saveCurrent.call(PTexte)">Sauve</button>
+      <button type="button" onclick="PTexte.watchCurrent.call(PTexte)" class="poussoir main">Surveiller</button>
 
       <div id="buttons_proximites" class="buttons"></div>
       <div id="outils_proximites" class="buttons"></div>

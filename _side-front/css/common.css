@@ -27,3 +27,8 @@ select, select option {
   color:inherit;
   background-color:inherit;
 }
+
+.explication {
+  font-style:italic;
+  font-size:0.85em;
+}

@@ -7,6 +7,13 @@
 Object.assign(UI,{
   name:'Extension de UI propre à l’application'
 
+, reset(){
+    this.clean()
+    this.taggingField
+      .clean()
+      .append('<div class="explication">Cliquez sur le bouton “Surveiller” (en bas d’écran) pour checker les proximités en boucle.</div>');
+  }
+
 , forEachMotVisible(fun){
     for ( var mot of this.getMotsVisibles() ) {
       if ( false === fun.call(null,mot) ) break ; // pour interrompre

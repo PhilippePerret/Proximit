@@ -18,17 +18,15 @@
   </head>
   <body>
 
-    <section id="header">
+    <section id="header" class="noDisplay">
       <div id="header-buttons" class="fright">
-        <span class="texte_title">(titre du texte analysé)</span>
         <button type="button" onclick="Aide.toggle.call(Aide)">Aide</button>
       </div>
     </section>
 
     <section id="left-column">
-      <div id="infos_current_proximity">
-        <!-- Pour mettre les informations de la proximité courante -->
-      </div>
+      <!-- Pour mettre les informations de la proximité courante -->
+      <div id="infos_current_proximity"></div>
       <div id="infos_danger_proximity">
         <!-- Pour mettre les dangers de proximité courante
           TODO Note : peut-être que ce div n'est plus nécessaire avec la
@@ -36,7 +34,7 @@
         -->
       </div>
       <!--
-        L'AFFICHAGE "PARALLÈLE" DU TEXTE (avec proximité)
+        LE TEXTE MIROIR TAGGUÉ (avec proximité)
       -->
       <div id="tagging-text">
         <!-- On marque ici le même texte, avec les proximités -->
@@ -49,12 +47,8 @@
       <!--
         LE CHAMP D'ÉDITION DU TEXTE
       -->
+      <!-- L'éditeur -->
       <div id="working-editor"></div>
-      <!-- Infos sur le texte -->
-      <div id="infos-page">
-        <div id="text-length">---</div>
-        <div id="page-number">---</div>
-      </div>
     </section>
 
     <!-- Un panneau caché pour les infos -->
@@ -72,8 +66,15 @@
         <button id="btn-search" type="button" onclick="Search.toggleForm.call(Search)">RECHERCHE</button>
       </div>
 
-      <button type="button" onclick="PTexte.loadCurrent.call(PTexte)">Load</button>
-      <button type="button" onclick="PTexte.saveCurrent.call(PTexte)">Save</button>
+      <!-- Infos de pied de page sur le texte -->
+      <span id="infos-page">
+        <label>Page </label><span id="page-number">---</span>
+        <label>longueur : </label><span id="text-length">---</span>
+      </span>
+
+      <button type="button" onclick="PTexte.loadCurrent.call(PTexte)">Charge</button>
+      <button type="button" onclick="PTexte.saveCurrent.call(PTexte)">Sauve</button>
+      <button type="button" onclick="PTexte.watchCurrent.call(PTexte)" class="poussoir main">Surveiller</button>
 
       <div id="buttons_proximites" class="buttons"></div>
       <div id="outils_proximites" class="buttons"></div>

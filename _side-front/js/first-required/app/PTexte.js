@@ -9,6 +9,10 @@
 **/
 class PTexte {
 
+  static get PAGE_LENGTH(){
+    return this._page_length || Prefs.get('page_length') || PPage.PAGE_DEFAULT_LENGTH
+  }
+
   /**
     | Retourne le PTexte courant
     | Il est défini après ouverture ou par rechargement, par défaut, du
@@ -18,6 +22,15 @@ class PTexte {
   static set current(v){
     delete this._current
     this._current = v
+  }
+
+  /**
+    Appelée quand on veut surveiller ou arrêter de surveiller le texte
+    courant.
+  **/
+  static watchCurrent(){
+    this.current[this.watchingCurrent?'stopWatching':'watch'].call(this.current)
+    this.watchingCurrent = !this.watchingCurrent
   }
 
   /**
@@ -73,7 +86,7 @@ class PTexte {
     log.debug("-> PTexte::reset")
     delete this._current
     this.current = undefined
-    UI.clean() // on nettoie tout
+    UI.reset() // on nettoie tout
     Proximity.reset()
     Canon.reset()
     Mot.reset()
@@ -170,10 +183,14 @@ class PTexte {
     // UI.flash("Affichage du texte, merci de patienter…",{style:'neutre', keep:true, waiter:true})
     UI.waiter("Affichage du texte, merci de patienter…")
 
+    // Préparation de l'interface pour ce texte
     this.setUI()
-    $('.texte_title').html()
 
-    // On met le texte dans le champ de saisie
+    // Création des pages du texte (cela produit la donnée this.pages) qui
+    // liste toutes les pages du texte
+    this.splitPages()
+
+    // On met le texte de la page courante dans l'éditeur
     this.editWorkingTexte()
 
     // Écriture de l'état de l'analyse des proximités du texte
@@ -187,12 +204,20 @@ class PTexte {
     this.loading = false
   }
 
+  // Pour surveiller le texte
+  watch(){
+    console.log("Je surveille le texte…")
+  }
+  stopWatching(){
+    console.log("J'arrête de surveiller le texte.")
+  }
+
   /**
     Réglage de l'interface
   **/
   setUI(){
     // Titre dans la barre de fenêtre
-    DGet('head title').innerHTML = `${this.title} (<span class="texte-version">${this.version}</span>)`
+    DGet('head title').innerHTML = `${this.title} (version ${this.version})`
     this.setTexteHeight()
   }
   /**
@@ -200,22 +225,37 @@ class PTexte {
   **/
   setTexteHeight(){
     let wHeight = window.innerHeight
-      , hTexte  = wHeight - (80 /*header et info prox*/ + 25 /* footer */ + 88 /* padding */ + 5 )
+      , hTexte  = wHeight - (25 /* footer */ + 88 /* padding */ + 5 )
     $(UI.taggingField.domObj).css('height',`${hTexte}px`)
   }
 
   /**
+    Découpe le texte courant en page, suivant les préférences de longueur
+    de page.
+  **/
+  splitPages(){
+    PPage.split(this.fullTextInFile, this)
+  }
+  /**
     Met le texte tel quel dans le champ d'édition
   **/
   async editWorkingTexte(){
-    console.log("-> PTexte#editWorkingTexte")
     const my = this
-    console.log("Path :", this.path)
-    PPage.split(this.fullTextInFile)
-    this.currentPage = PPage.items[0]
     this.currentPage.edit()
-
   }
+
+  /**
+    Retourne la page courante (celle affichée)
+  **/
+  get currentPage(){
+    if (undefined === this._currentpage){
+      this.indexCurrentPage = 0
+      // TODO Plus tard, on pourra mettre la dernière page retenue dans les
+      // données du texte.
+      this._currentpage = this.pages[this.indexCurrentPage]
+    } return this._currentpage
+  }
+
   /**
     Appelée lorsque le texte de l'éditeur a changé (mais après un
     laps de temps, ce qui permet de ne pas interrompre la frappe)

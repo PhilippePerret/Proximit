@@ -65,8 +65,10 @@ Noter que cet objet est agrémenté d'une nouvelle propriété `raw` qui permet 
 * `PTexte` se ressette (`PTexte::reset()`) (\*), ouvre le texte (`PTexte::open`) en le mettant en texte courant (dans `PTexte.current`). Il initie cette instance `PTexte` (`PTexte#open`). (\*) Cette initialisation consiste à nettoyer l'interface et à mettre toutes les valeurs connues à zéro, et notamment les comptes de proximités, de mots, de canon, etc.
 * La méthode `PTexte#open` ouvre le texte. Cela consiste à :
   * régler l'interface (titre, hauteur pour prendre toute la place, résultat d'une précédente analyse le cas échéant, etc.) avec `PTexte#setUI()`
-  * découper le texte entier en page
+  * découper le texte entier en pages (instances `PPage`)
   *
+* L'auteur peut mettre en route la surveillance des proximités en cliquant sur le bouton "Surveiller" en pied de page (ou autre bouton équivalent, ou le menu "Surveiller le texte").
+
 
 
 
