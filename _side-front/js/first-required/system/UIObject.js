@@ -1,10 +1,13 @@
 'use strict'
 /**
   Class UIObject
-  verson 1.1.1
+  verson 1.2.1
   --------------
   Gestion des objets DOM
 
+  # version 1.2.1
+    * Ajout des méthodes `show` et `hide`
+    
   # version 1.1.1
     * amélioration de la méthode 'append' pour qu'elle puisse recevoir des
       paramètres, pour le moment le style (class CSS) du message.
@@ -47,6 +50,9 @@ class UIObject {
   findAll(selector){
     return this.domObj.querySelectorAll(selector)
   }
+
+  show(){this.jqObj.show()}
+  hide(){this.jqObj.hide()}
 
   // Vide
   // @return l'objet (pour chainage)

@@ -15,7 +15,7 @@ class PPage {
   static get current(){ return this._current }
   static set current(v){
     if ( this._current ) {
-      // this.current.destroyEditor()
+      this.current.hide()
       delete this._current
     }
     this._current = v
@@ -139,6 +139,7 @@ class PPage {
     }
 
     this.lastNumero = pageNumber
+    DGet('#page-number-total').innerHTML = this.lastNumero
 
     // console.log('Pages instanciées : ', pages)
     pages = null
@@ -157,13 +158,36 @@ class PPage {
 
   async edit(){
     console.log("Édition de la page #", this.number)
-    // Mettre le texte dans l'éditeur
-    this.setEditor()
+    // Si la page n'est pas encore construite, il faut la construire
+    if (!this.built) this.build()
+    else this.show()
     // Indiquer le numéro de page
     DGet('#page-number').innerHTML = this.number
     // Indiquer la longueur courant du texte
     DGet('#text-length').innerHTML = this.originalText.length
+  }
 
+  show(){this.page.show()}
+  hide(){this.page.hide()}
+
+  /**
+    Construction de la page, ça consiste à faire son div (de classe .page) et
+    à créer un éditeur dessus.
+  **/
+  build(){
+    if (this.built) return
+    this.div = DCreate('DIV',{id:this.domId, 'data-id':this.number, class:'page'})
+    UI.workingPagesSection.append(this.div)
+    // Mettre le texte dans l'éditeur
+    this.setEditor()
+    this.built = true
+  }
+
+  get id(){return this.number}
+
+  // ID du div dans le DOM
+  get domId(){
+    return this._domid || (this._domid = `page-${this.number}`)
   }
 
   onEditorReady(){
@@ -236,7 +260,7 @@ class PPage {
   setEditor(){
     var my = this
     my._editor = new NMEditorJS({
-        holder:'working-editor'
+        holder: this.domId
       , tools:{
           myparagraph: {
               class:MyParagraph
@@ -248,9 +272,12 @@ class PPage {
       , onReady:  my.onEditorReady.bind(my)
     })
   }
-
   destroyEditor(){this.editor.destroy()}
 
+  // Retourne l'instance UIObject de la page dans le DOM
+  get page(){
+    return this._page || (this._page = new UIObject(`#${this.domId}`))
+  }
   /**
     Alias de number
   **/

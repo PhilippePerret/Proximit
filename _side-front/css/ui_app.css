@@ -6,18 +6,23 @@
 
 /* Les blocs contenant tout le texte */
 div#tagging-text,
-div#working-editor
+section#working-pages
  {
   position:fixed;
   top:0;
   border:1px dashed green;
   width:44%;
   min-height:500px;
+  height:100%;
   overflow:auto;
   font-size:16.1pt;
   padding:44px;
   text-align:justify;
   font-family:Georgia;
+}
+section#working-pages div.page {
+  width:100%;
+  height:inherit;
 }
 
 body #infos_current_proximity {

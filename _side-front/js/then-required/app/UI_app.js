@@ -164,6 +164,10 @@ Object.defineProperties(UI,{
   // Le bloc où écrire l'intégralité du texte
   texte:{get(){return this._texte || (this._texte = new UIObject('#full_texte'))}}
 
+  // La section contenant les div-editor des pages
+, workingPagesSection:{get(){
+  return this._workingpagessection || (this._workingpagessection = new UIObject('section#working-pages'))
+}}
   // Le texte en miroir
 , taggingField:{get(){return this._taggingfield ||(this._taggingfield = new UIObject('div#tagging-text'))}}
 
