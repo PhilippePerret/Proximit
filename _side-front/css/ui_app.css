@@ -4,6 +4,16 @@
 .ce-paragraph{line-height:unset!important;}
 .cdx-block{padding:unset!important;}
 
+.ce-block__content{
+  /* Pour contrer le fait qu'ils forcent une largeur max */
+  max-width:unset!important;
+}
+@media (min-width: 651px){
+  .codex-editor--narrow .codex-editor__redactor {
+    margin-right:unset!important;
+  }
+}
+
 /* Les blocs contenant tout le texte */
 section#tagged-pages,
 section#working-pages
@@ -11,7 +21,7 @@ section#working-pages
   position:fixed;
   top:0;
   border:1px dashed green;
-  width:44%;
+  width:640px;
   min-height:500px;
   height:100%;
   overflow:auto;
@@ -19,7 +29,12 @@ section#working-pages
   padding:44px;
   text-align:justify;
   font-family:Georgia;
+  line-height:1.45em;
 }
+section#tagged-pages {
+  opacity:0.5;
+}
+
 section#working-pages div.page {
   width:100%;
   height:inherit;

@@ -1,5 +1,3 @@
-* Ajuster les styles pour que les deux pages miroir soient vraiment exactement les mêmes
-  (voir si ce n'est pas les styles — rouges — qui posent problèmes…)
 * Implémenter le hover pour montrer les deux mots en proximité quand on passe la souris dessus
   Étudier le cas spécial où un des mots serait sur une autre page. Dans ce cas, il faudrait afficher l'extrait contenant ce mot
   + Attention, cela implique de construire la page tagguée suivante (pour qu'elle soit prête)
