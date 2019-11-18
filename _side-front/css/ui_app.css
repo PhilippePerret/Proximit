@@ -5,7 +5,7 @@
 .cdx-block{padding:unset!important;}
 
 /* Les blocs contenant tout le texte */
-div#tagging-text,
+section#tagged-pages,
 section#working-pages
  {
   position:fixed;

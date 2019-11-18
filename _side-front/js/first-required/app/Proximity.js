@@ -334,7 +334,7 @@ class Proximity {
 
   // On enlève la classe 'danger' aux précédents mots mis en exergue
   static unshowDangers(){
-    $(UI.taggingField.findAll('.mot.danger')).removeClass('danger')
+    $(UI.taggedPagesSection.findAll('.mot.danger')).removeClass('danger')
   }
 
   /**
@@ -367,13 +367,13 @@ class Proximity {
     this.unshowDangers()
 
     // Il faut mettre en exergue le mot dataprox.motId (celui qui a été changé)
-    let refObj = UI.taggingField.find(`.mot[data-id="${dataprox.motId}"]`)
+    let refObj = UI.taggedPagesSection.find(`.mot[data-id="${dataprox.motId}"]`)
       , nearObj, nearDataId, nearSelector
     $(refObj).addClass('danger')
 
     nearDataId    = dataprox.prevMot ? dataprox.prevMot.id : dataprox.nextMot.id
     nearSelector  = `.mot[data-id="${nearDataId}"]`
-    nearObj       = UI.taggingField.find(nearSelector)
+    nearObj       = UI.taggedPagesSection.find(nearSelector)
     $(nearObj).addClass('danger')
 
     // Il faut la rendre visible (autant que possible)
@@ -783,8 +783,8 @@ class Proximity {
     Proximity.modified = true
   }
 
-  get spanA(){return UI.taggingField.find(`.mot[data-id="${this.motA.id}"]`)}
-  get spanB(){return UI.taggingField.find(`.mot[data-id="${this.motB.id}"]`)}
+  get spanA(){return UI.taggedPagesSection.find(`.mot[data-id="${this.motA.id}"]`)}
+  get spanB(){return UI.taggedPagesSection.find(`.mot[data-id="${this.motB.id}"]`)}
 
   /**
     Méthode de désaffichage de la proximité, après son édition ou sa

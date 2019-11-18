@@ -11,7 +11,7 @@ On ouvre un texte quelconque. On l'analyse aussitôt
 en utilisant la procédure ruby :
   - on enregistre le texte (*) dans un dossier provisoire
   - on demande à `analyse_texte.rb` de procéder à l'analyse du texte
-  - on "remonte" les résultats et on les affiche dans le taggingField
+  - on "remonte" les résultats et on les affiche dans le taggedPagesSection
   - on procède ainsi à intervalles réguliers ou à la demande.
 
 en utilisant tree-tagger en interne
@@ -49,7 +49,7 @@ class TexteAnalyse {
   }
 
   /**
-    Affiche les résultats de l'analyse dans le taggingField quand l'analyse
+    Affiche les résultats de l'analyse dans le taggedPagesSection quand l'analyse
     a été produite
   **/
   static showProximites(){
@@ -117,15 +117,14 @@ class TexteAnalyse {
       await this.defineTableMots()
       console.log("<-- Retour de la Définition de la table de mots")
 
-      // On écrit le texte dans la taggingField
-      UI.taggingField.clean()
-
+      var taggedText = DCreate('DIV')
       var mot = this.firstMot
       while(mot){
-        UI.taggingField.append(mot.asDom)
+        // console.log("Mot as dom : ", mot.asDom)
+        mot.asDom.forEach(domEl => taggedText.appendChild(domEl))
         mot = mot.motN
       }
-      ok()
+      ok(taggedText)
     })
   }
 

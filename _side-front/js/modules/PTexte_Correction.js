@@ -33,7 +33,7 @@ const ModPTexte = {
 , proceedAnalyseCurrent(callback){
     const my = this
     UI.clean()
-    UI.waiter("Analyse du texte.\nMerci de patienter…", UI.taggingField.domObj)
+    UI.waiter("Analyse du texte.\nMerci de patienter…", UI.taggedPagesSection.domObj)
     execFile(`./bin/analyse_texte.rb`, [PTexte.current.path], (err, stdout, stderr) => {
       UI.stopWaiter()
       if (err) {

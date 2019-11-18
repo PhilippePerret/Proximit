@@ -25,7 +25,7 @@ Object.assign(UI,{
 
 , reset(){
     this.clean()
-    this.taggingField
+    this.taggedPagesSection
       .clean()
       .append('<div class="explication">Cliquez sur le bouton “Surveiller” (en bas d’écran) pour checker les proximités en boucle.</div>');
   }
@@ -41,7 +41,7 @@ Object.assign(UI,{
   **/
 , getMotsVisibles(){
     this.waiter("Recherche des mots visibles…")
-    let parent = UI.taggingField.domObj
+    let parent = UI.taggedPagesSection.domObj
       , pBounds = parent.getBoundingClientRect()
       , pStyle  = window.getComputedStyle(parent)
       , h = {
@@ -109,7 +109,7 @@ Object.assign(UI,{
     ;(args.all || args.messageProx)  && this.cleanMessageProx()
     ;(args.all || args.infosTexte)   && this.cleanInfosTexte()
   }
-, cleanTexte(){UI.taggingField.clean()}
+, cleanTexte(){UI.taggedPagesSection.clean()}
 , cleanInfosProximity(){UI.infos_current_proximity.clean()}
 , cleanDangerProx(){UI.infos_danger_proximity.clean()}
 , cleanMessageProx(){UI.proxMessage.clean()}
@@ -168,8 +168,8 @@ Object.defineProperties(UI,{
 , workingPagesSection:{get(){
   return this._workingpagessection || (this._workingpagessection = new UIObject('section#working-pages'))
 }}
-  // Le texte en miroir
-, taggingField:{get(){return this._taggingfield ||(this._taggingfield = new UIObject('div#tagging-text'))}}
+  // La section contenant les textes taggués en miroir
+, taggedPagesSection:{get(){return this._taggingfield ||(this._taggingfield = new UIObject('section#tagged-pages'))}}
 
 
 , proxMessage:{get(){

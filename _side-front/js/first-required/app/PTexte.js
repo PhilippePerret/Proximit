@@ -226,7 +226,7 @@ class PTexte {
   setTexteHeight(){
     let wHeight = window.innerHeight
       , hTexte  = wHeight - (25 /* footer */ + 88 /* padding */ + 5 )
-    $(UI.taggingField.domObj).css('height',`${hTexte}px`)
+    $(UI.taggedPagesSection.domObj).css('height',`${hTexte}px`)
   }
 
   /**
