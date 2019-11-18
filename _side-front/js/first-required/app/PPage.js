@@ -267,7 +267,6 @@ class PPage {
     // Créer un div pour cette page
     if (!DGet(`#tagged-page-${this.id}`)){
       var d = DCreate('DIV',{class:'tagged-page',id:`tagged-page-${this.id}`, 'data-id':this.id, inner:htmlCode})
-      UI.taggedPagesSection.clean()
       UI.taggedPagesSection.append(d)
       this.taggedPage = new UIObject(`#tagged-page-${this.id}`)
       d = null

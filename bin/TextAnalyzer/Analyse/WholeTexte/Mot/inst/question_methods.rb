@@ -14,8 +14,11 @@ class Mot
   #   - que ce soit vraiment un mot
   # Note : maintenant on a vraiment besoin de prendre tous les mots pour
   # pouvoir reconstituer les textes.
+  # NOTE : pour le moment, j'ajoute la limite de longueur de mot, mais il
+  # faudra voir si ça ne perturbe pas la reconstruction maintenant que tous
+  # les mots sont considérés
   def treatable?
-    @is_treatable ||= real_mot?
+    @is_treatable ||= real_mot? && length > 3
   end
 
   # Retourne TRUE si le mot courant est trop proche du mot +imot+ {Mot} qui

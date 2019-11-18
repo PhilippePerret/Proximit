@@ -29,8 +29,10 @@ class TableResultats
       dcanon.mots.each_with_index do |motB, mot_idx|
         mot_idx > 0 || next
         motA = dcanon.mots[mot_idx - 1]
+        (motA.treatable? && motB.treatable?) || next
         motB.trop_proche_de?(motA) || next
-        # Si on passe ici, c'est que le mot imot est trop du mot précédent.
+        # Le mot doit être traitable
+        # Si on passe ici, c'est que le mot imot est trop près du mot précédent.
         # On doit donc créer une proximité
         iprox = Proximite.create(self, motA, motB)
         iprox.distance > 0 || begin

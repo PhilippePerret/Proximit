@@ -25,9 +25,7 @@ Object.assign(UI,{
 
 , reset(){
     this.clean()
-    this.taggedPagesSection
-      .clean()
-      .append('<div class="explication">Cliquez sur le bouton “Surveiller” (en bas d’écran) pour checker les proximités en boucle.</div>');
+    this.taggedPagesSection.clean()
   }
 
 

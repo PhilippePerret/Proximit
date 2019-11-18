@@ -1,15 +1,19 @@
+* Ajuster les styles pour que les deux pages miroir soient vraiment exactement les mêmes
+  (voir si ce n'est pas les styles — rouges — qui posent problèmes…)
+* Implémenter le hover pour montrer les deux mots en proximité quand on passe la souris dessus
+  Étudier le cas spécial où un des mots serait sur une autre page. Dans ce cas, il faudrait afficher l'extrait contenant ce mot
+  + Attention, cela implique de construire la page tagguée suivante (pour qu'elle soit prête)
+  + faut-il, dans les attributs du mots, indiquer sa page ? si oui, il faut transmettre le numéro
+    de page.
+* Implémenter la jauge qui doit permettre :
+  - de définir la distance maximale (empan)
+  - l'unité de distance (mots ou caractères)
+
 * Concernant la version 0.3 du programme
-  - découper en page :
-    - mettre dans l'instance l'index du premier caractère (ou la longueur ?)
-      (penser à les actualiser à chaque modification - dès qu'une page est
-       modifiée, il faut actualiser les index des pages suivantes)
   - création des instances MyParagraph
     - mettre dans l'instance l'index du premier caractère (relatif) des paragraphes
       (index paragraphe = index relatif + index page)
       (penser à les actualiser à chaque modification)
-  - bouton pour passer aux pages suivantes
-  - un bouton pour interrompre la boucle ou plutôt basculer de l'analyse en boucle ou sur commande
-  - Ne prendre que la section de texte visible +- le nombre de caractères définis par l'indice de proximité choisi (1500 par défaut)
 
 * Pour un texte scrivener :
   * Quand on se fiche de perdre les métadonnées et autres :
