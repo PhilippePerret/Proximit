@@ -249,10 +249,8 @@ class PTexte {
   **/
   get currentPage(){
     if (undefined === this._currentpage){
-      this.indexCurrentPage = 0
-      // TODO Plus tard, on pourra mettre la dernière page retenue dans les
-      // données du texte.
-      this._currentpage = this.pages[this.indexCurrentPage]
+      this.numeroCurrentPage = 1
+      this._currentpage = this.pages[this.numeroCurrentPage]
     } return this._currentpage
   }
   set currentPage(v){this._currentpage = v}

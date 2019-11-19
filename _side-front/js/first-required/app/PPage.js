@@ -32,27 +32,27 @@ class PPage {
 
   // Affiche la page suivante
   static next(ev){
-    if ( this.current.numero < this.lastNumero ){
-      this.setCurrentPageTo(this.current.numero + 1)
+    if ( this.current.next ){
+      this.setCurrentPageTo(this.current.next.numero)
       this.setButtonsPrevNext()
       return stopEvent(ev)
     }
   }
   static prev(ev){
-    if ( this.current.numero > 1 ) {
-      this.setCurrentPageTo(this.current.numero - 1)
+    if ( this.current.prev ) {
+      this.setCurrentPageTo(this.current.prev.numero)
       this.setButtonsPrevNext()
       return stopEvent(ev)
     }
   }
   static setCurrentPageTo(numero){
     const curTexte = PTexte.current
-    this.current = curTexte.pages[numero - 1]
+    this.current = curTexte.pages[numero]
   }
 
   static setButtonsPrevNext(){
-    const showBtnPrev = this.current.numero > 1
-    const showBtnNext = this.current.numero < this.lastNumero
+    const showBtnPrev = !this.current.isFirstPage
+    const showBtnNext = !this.current.isLastPage
     $('.btn-prev-page')[showBtnPrev?'removeClass':'addClass']('hidden')
     $('.btn-next-page')[showBtnNext?'removeClass':'addClass']('hidden')
   }
@@ -64,7 +64,7 @@ class PPage {
     this.items(/PPage.items) (array)
   **/
   static split(str, owner){
-    var pages = []
+    var pages = [null/* couverture, pour que l'index corresponde au numéro*/]
       , pageNumber  = 0
       , pageOffset  = 0 // offset de la page
       , portion
@@ -157,6 +157,9 @@ class PPage {
     pages = null
   }
 
+
+
+
   /** ---------------------------------------------------------------------
     *   INSTANCE
     *
@@ -168,20 +171,42 @@ class PPage {
     this.lastCharacter = lastChar
   }
 
+  log(msg, params){
+    if (undefined === params){
+      console.log(`%cPage #${this.numero} ${msg}`, 'color:green;')
+    } else {
+      console.log(`%cPage #${this.numero} ${msg}`, params, 'color:green;')
+    }
+  }
+
   async edit(){
-    console.log("Édition de la page #", this.number)
+    this.log("-> edit()")
     // Si la page n'est pas encore construite, il faut la construire
-    if (!this.built) this.build()
-    else this.show()
+    if (!this.built){
+      this.log("= Construction (et check) de la page nécessaire =")
+      await this.build()
+      // On checke la page (pour sa construction complète)
+      await this.check()
+      this.log("* Fin de construction et check *")
+    }
+    else {
+      this.show()
+    }
     // Indiquer le numéro de page
     DGet('#page-number').innerHTML = this.number
     // Indiquer la longueur courant du texte
     DGet('#text-length').innerHTML = this.originalText.length
+    this.log("<- edit()")
   }
 
-  show(){
+  async show(){
     this.page.show()
-    this.taggedPage.show()
+    if ( this.taggedPage ) {
+      this.taggedPage.show()
+    } else {
+      await this.check()
+    }
+    this.next && !this.next.built && this.next.build()
   }
   hide(){
     this.page.hide()
@@ -193,15 +218,15 @@ class PPage {
     à créer un éditeur dessus.
   **/
   async build(){
+    this.log("-> build()")
     if (this.built) return
     this.div = DCreate('DIV',{id:this.domId, 'data-id':this.number, class:'page'})
     UI.workingPagesSection.append(this.div)
     // Mettre le texte dans l'éditeur
     await this.setEditor()
-    // On checke la page (pour sa construction)
-    this.check()
     // On marque que la page est construite
     this.built = true
+    this.log("<- build()")
   }
 
   // Pour séparer les pages, sans que ça puisse entrer en collision avec des
@@ -213,7 +238,7 @@ class PPage {
     comportant toutes les proximités trouvées en fonction des paramètres.
   **/
   async check(){
-    console.log("-> check")
+    this.log("-> check()")
     const my = this
     // La première chose à faire est de récupérer le texte qui doit servir de
     // base. Ce texte correspond au texte de la page courante à laquelle il
@@ -228,7 +253,7 @@ class PPage {
       portion.push(this.next.rawText)
     }
     portion = portion.join(` ${PPage.PAGE_SEPARATOR} `)
-    // console.log("Portion pris en compte pour le check des proximités : <<<%s>>>", portion)
+    console.log("Portion pris en compte pour le check des proximités : <<<%s>>>", portion)
 
     // On procède à l'analyse
     await TexteAnalyse.analyze(portion)
@@ -236,64 +261,131 @@ class PPage {
     // On analyse le retour, principalement en récupérant les pages et
     // les paragraphes
     TexteAnalyse.tag()
-      .then( taggedTexte => {
+      .then( async (taggedTexte) => {
         // console.log("==== Texte taggué : <<<%s>>>", taggedTexte.outerHTML)
         // Le délimiteur de texte
         var portions = taggedTexte.innerHTML.split('<br><br><br><br>')
         // console.log("====> Portions de textes taggués :",portions)
         // portions.forEach(portion => console.log("  == portion : >>>%s<<<", portion))
 
+        var lastIndexPortion = portions.length - 1
+
+        for( var i = 0 ; i < lastIndexPortion ; ++i){
+          portions[i] += '</span>'
+        }
+        for (i = 1 ; i < lastIndexPortion ; ++ i){
+          portions[i] = portions[i].replace(/\<\/span\>/,'')
+        }
+        // if ( portions < 2 ){
+        //   // Rien à faire
+        // } else if ( portions < 3 ) {
+        //   // 2 portions
+        //   portions[0] += '</span>'
+        //   portions[1] = portions[1].replace(/\<\/span\>/,'')
+        // } else {
+        //   // 3 portions
+        //   portions[0] += '</span>'
+        //   portions[1] += '</span>'
+        //   portions[1] = portions[1].replace(/\<\/span\>/,'')
+        //   portions[2] = portions[2].replace(/\<\/span\>/,'')
+        // }
+
         // L'index de la portion à afficher en fonction du numéro de page. Si
         // c'est la première page, on prend la première portion
         // Si c'est la dernière page, on prend la dernière portion. Si c'est une
         // autre page, on prend la deuxième (sur 3 ou 2)
-        // TODO : on ne se contente pas de refaire la page courante, on actualise
-        // aussi les pages autour
-        var portionPage
-        if ( this.isFirstPage ) {
-          portionPage = portions[0]
-        } else if ( this.isLastPage ) {
-          portionPage = portions[portions.length-1]
-        } else {
-          portionPage = portions[1]
-        }
+        var portionPage = (()=>{
+          if ( this.isFirstPage ) {
+            return portions[0]
+          } else if ( this.isLastPage ) {
+            return portions[portions.length-1]
+          } else {
+            return portions[1]
+          }
+        })()
 
         // On découpe le retour en paragraphes pour l'afficher correctement
-        this.updateTaggedPageWith(portionPage)
+        await this.updateTaggedPageWith(portionPage)
+        // On affiche la page tagguée
+        this.taggedPage.show()
+
+        // On s'occupe ensuite des autres pages, quitte à faire…
+        if ( this.isFirstPage ) {
+          this.next && (await this.next.updateTaggedPageWith(portions[1]))
+        } else if ( this.isLastPage ) {
+          await this.prev.updateTaggedPageWith(portions[0])
+        } else {
+          await this.prev.updateTaggedPageWith(portions[0])
+          this.next && (await this.next.updateTaggedPageWith(portions[2]))
+        }
 
       })
-    console.log("<- check")
+    this.log("<- check")
   }
 
-  updateTaggedPageWith(html){
+  async updateTaggedPageWith(html){
+    const my = this
+    this.log("-> updateTaggedPageWith(taggedCode)")
+    // console.log("taggedCode complet : >>>%s<<<", html)
     // Pour suivre l'index du paragraph
     // TODO MAIS ATTENTION : que se passe-t-il lorsqu'on a créé un nouveau
     // paragraphe dans la page ?
     var paragIndex = 0
 
     // On crée la page si c'est nécessaire (la première fois)
-    DGet(this.taggedDomId) || this.createTaggedPage()
+    DGet(this.taggedDomId) || (await this.createTaggedPage())
+    this.log("retour de createdTaggedPage si la version tagguée n'existe pas")
 
     // On découpe en paragraphes
-    html.split('<br>').map(taggedCode => {
-      PParagraph.get(`${this.numero}_${++paragIndex}`).update(taggedCode)
-    })
-    console.log("Nouveaux paragraphes : ", this.paragraphes)
+    // this.log(" * update des paragraphes taggués")
+    let html_splited = html.split('<br>')
+      , paragCount   = html_splited.length
 
+    html_splited.map(taggedCode => {
+      // // Quand il ne s'agit pas du dernier paragraphe, il faut ajouter '</span>'
+      // // pour clore la dernière balise span ouverte.
+      // if (paragIndex + 1 < paragCount) {
+      //   console.log("Pas le dernier paragraphe")
+      //   taggedCode += '</span>'
+      // }
+      //
+      // // Quand il ne s'agit pas du premier paragraphe, il faut supprimer le
+      // // premier 'span' de fermeture résultant de la coupure <br> du code
+      // // complet
+      // if (paragIndex > 0) {
+      //   taggedCode = taggedCode.replace(/\<\/span\>/,'').trim()
+      // }
+
+      ++paragIndex
+
+      // this.log(`ID paragraphe taggué à updater : '${my.numero}_${paragIndex}'`)
+      // Note : le paragraphe n'est pas toujours défini, lorsqu'un retour charriot
+      // est rajouté, par exemple.
+      var parag = PParagraph.get(`${my.numero}_${paragIndex}`)
+      parag && parag.update(taggedCode)
+    })
+    // console.log("Nouveaux paragraphes : ", this.paragraphes)
+
+    this.log("<- updateTaggedPageWith(...)")
   }
 
   /**
     Crée la page "taggué" en miroir et regard du texte courant
   **/
-  createTaggedPage(){
+  async createTaggedPage(){
+    this.log("-> createTaggedPage()")
+
+    // Mais si la page n'est pas encore créée
+    this.built || (await this.build())
+    this.built || this.log("- Fin de la construction")
+
     // Créer un div pour cette page
     UI.taggedPagesSection.append(
-      DCreate('DIV',{class:'tagged-page',id:this.taggedDomId, 'data-id':this.id})
+      DCreate('DIV',{class:'tagged-page noDisplay',id:this.taggedDomId, 'data-id':this.id})
     )
     this.taggedPage = new UIObject(`#tagged-page-${this.id}`)
-    // On affiche la page tagguée
-    this.taggedPage.show()
 
+    this.log("<- createTaggedPage")
   }
 
 
@@ -303,7 +395,7 @@ class PPage {
   }
 
   forSave(data){
-    console.log("-> PPage.forSave")
+    this.log("-> forSave(...)")
     // console.log("Data du texte renvoyées par le save de editorjs", data)
     if ( undefined === this.initialData ){
       console.log("C'est le premier appel")
@@ -314,6 +406,7 @@ class PPage {
       // C'est une modification
       console.log("C'est une première modification")
     }
+    this.log("<- forSave")
   }
 
   /**
