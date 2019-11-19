@@ -61,7 +61,23 @@ class PParagraph {
   **/
   update(taggedCode){
     this.taggedCode = taggedCode
-    DGet(`#${this.taggedDomId}`).replaceWith(this.taggedCode)
+    if (this.taggedObj) {
+      // <= L'objet taggué a déjà été construit dans la page
+      // => On le remplace par le nouveau code
+      this.taggedobj.replaceWith(this.taggedCode)
+    } else {
+      // <= L'objet taggué n'a pas encore été construit
+      // => On le crée
+      this.page.taggedPage.append(this.buildTagged())
+    }
+  }
+
+  buildTagged(){
+    return DCreate('DIV',{id:this.taggedDomId, 'data-id':this.id, class:'tagged-par',inner:this.taggedCode})
+  }
+
+  get taggedObj(){
+    return this.taggedobj || ( this.taggedobj = DGet(`#${this.taggedDomId}`) )
   }
 
   /**

@@ -271,11 +271,8 @@ class PPage {
     // paragraphe dans la page ?
     var paragIndex = 0
 
-    // On crée la page si c'est nécessaire
+    // On crée la page si c'est nécessaire (la première fois)
     DGet(this.taggedDomId) || this.createTaggedPage()
-
-    // On affiche la page tagguée
-    this.taggedPage.show()
 
     // On découpe en paragraphes
     html.split('<br>').map(taggedCode => {
@@ -294,12 +291,14 @@ class PPage {
       DCreate('DIV',{class:'tagged-page',id:this.taggedDomId, 'data-id':this.id})
     )
     this.taggedPage = new UIObject(`#tagged-page-${this.id}`)
+    // On affiche la page tagguée
+    this.taggedPage.show()
+
   }
 
 
   onEditorReady(){
     const my = this
-    console.log("Je vais capter les données une première fois")
     this.editor.save().then(my.forSave.bind(my))
   }
 
@@ -356,24 +355,29 @@ class PPage {
     Transforme le texte original de la page en données Block pour editorjs
   **/
   text2blocks(){
+    const my = this
+
     var blocks = []
-    var index  = -1
+      , index  = -1
     // Index du paragraphe, pour construire son ID, qui est composé du
     // numéro de la page et de son index dans la page ('parag_<page>_<index>')
-    var paragIndex = 0
+      , paragIndex = 0
 
     this.paragraphes = this.originalText.split(CR).map(paragText => {
       return new PParagraph(this, {index:++paragIndex, md:paragText})
     })
+    console.log("=== Nombre de paragraphes : %d", this.paragraphes.length)
+    // console.log("this.paragraphes = ", this.paragraphes)
 
-    this.paragraphs.forEach(pparag => {
+    this.paragraphes.forEach(pparag => {
       blocks.push({type:'myparagraph',
         data:{
             md_original:pparag.md
-          , text:pparag.text
+          , text:pparag.md // il faut garder 'text' pour editorjs
+          , md:pparag.md
           , html:pparag.html
           , raw: pparag.raw
-          , pageNumero: pparag.pageNumero
+          , page: my
           , index:  pparag.index
         }})
     })

@@ -14,10 +14,6 @@ class MyParagraph extends Paragraph {
     * Pour la classe Paragraph, cf. :
     * https://github.com/editor-js/paragraph/blob/master/src/index.js
   *** --------------------------------------------------------------------- */
-  static newId(){
-    if (undefined === this.lastId) this.lastId = 0
-    return ++this.lastId
-  }
   static get current(){return this._current}
   static set current(v){this._current = v}
   /** ---------------------------------------------------------------------
@@ -27,7 +23,6 @@ class MyParagraph extends Paragraph {
   constructor(args){
     super(args)
     // var {data,api,config} = args
-    this.id     = this.constructor.newId()
     this.data   = args.data
     this.api    = args.api
     this.config = args.config
@@ -51,6 +46,7 @@ class MyParagraph extends Paragraph {
       // console.log("Blur du paragraphe #%d", this.id)
       MyParagraph.current = null
     })
+    this._element.setAttribute('data-id', this.id)
     return this._element
   }
   save(toolsContent){
@@ -62,7 +58,8 @@ class MyParagraph extends Paragraph {
           html: this.html
         , raw:  this.raw
         , md:   this.md
-        , text: this.md
+        , text: this.md // garder pour editorjs
+        , id:   this.id
       }
   }
   // get default(){return this.html}
@@ -73,7 +70,28 @@ class MyParagraph extends Paragraph {
     this._md  = html2md(v)
   }
   get raw(){return this._raw || (this._raw = html2raw(this.html))}
-  get md(){return this._md || (this._md = this.data.md_original||this.data.text)}
+  get md(){return this._md || (this._md = this.data.md_original||this.data.md)}
+
+  /**
+    Page (instance {PPage}) du paragraphe
+  **/
+  get page(){
+    return this._page || ( this._page = this.data.page )
+  }
+
+  /**
+    Index du paragraphe
+  **/
+  get index(){
+    return this._index || ( this._index = this.data.index )
+  }
+
+  /**
+    Identifiant absolu du paragraphe
+  **/
+  get id(){
+    return this._id || (this._id = `${this.page.numero}_${this.index}`)
+  }
 }
 
 // console.log("EditorJS = ", EditorJS)
