@@ -228,11 +228,13 @@ class PPage {
       portion.push(this.next.rawText)
     }
     portion = portion.join(` ${PPage.PAGE_SEPARATOR} `)
-    console.log("Portion pris en compte pour le check des proximités : <<<%s>>>", portion)
+    // console.log("Portion pris en compte pour le check des proximités : <<<%s>>>", portion)
 
     // On procède à l'analyse
     await TexteAnalyse.analyze(portion)
 
+    // On analyse le retour, principalement en récupérant les pages et
+    // les paragraphes
     TexteAnalyse.tag()
       .then( taggedTexte => {
         // console.log("==== Texte taggué : <<<%s>>>", taggedTexte.outerHTML)
@@ -245,6 +247,8 @@ class PPage {
         // c'est la première page, on prend la première portion
         // Si c'est la dernière page, on prend la dernière portion. Si c'est une
         // autre page, on prend la deuxième (sur 3 ou 2)
+        // TODO : on ne se contente pas de refaire la page courante, on actualise
+        // aussi les pages autour
         var portionPage
         if ( this.isFirstPage ) {
           portionPage = portions[0]
@@ -254,28 +258,44 @@ class PPage {
           portionPage = portions[1]
         }
 
-        // On peut la mettre dans la fenêtre
-        my.showTaggedVersion(portionPage)
+        // On découpe le retour en paragraphes pour l'afficher correctement
+        this.updateTaggedPageWith(portionPage)
+
       })
     console.log("<- check")
   }
 
-  /**
-    Affiche le code HTML +htmlCode+ en miroir du texte courant
-  **/
-  showTaggedVersion(htmlCode){
-    // Créer un div pour cette page
-    if (!DGet(`#tagged-page-${this.id}`)){
-      var d = DCreate('DIV',{class:'tagged-page',id:`tagged-page-${this.id}`, 'data-id':this.id, inner:htmlCode})
-      UI.taggedPagesSection.append(d)
-      this.taggedPage = new UIObject(`#tagged-page-${this.id}`)
-      d = null
-    }
+  updateTaggedPageWith(html){
+    // Pour suivre l'index du paragraph
+    // TODO MAIS ATTENTION : que se passe-t-il lorsqu'on a créé un nouveau
+    // paragraphe dans la page ?
+    var paragIndex = 0
+
+    // On crée la page si c'est nécessaire
+    DGet(this.taggedDomId) || this.createTaggedPage()
+
+    // On affiche la page tagguée
     this.taggedPage.show()
+
+    // On découpe en paragraphes
+    html.split('<br>').map(taggedCode => {
+      PParagraph.get(`${this.numero}_${++paragIndex}`).update(taggedCode)
+    })
+    console.log("Nouveaux paragraphes : ", this.paragraphes)
+
   }
 
-  get isFirstPage(){ return this.numero == 1 }
-  get isLastPage(){ return this.numero == PPage.lastNumero }
+  /**
+    Crée la page "taggué" en miroir et regard du texte courant
+  **/
+  createTaggedPage(){
+    // Créer un div pour cette page
+    UI.taggedPagesSection.append(
+      DCreate('DIV',{class:'tagged-page',id:this.taggedDomId, 'data-id':this.id})
+    )
+    this.taggedPage = new UIObject(`#tagged-page-${this.id}`)
+  }
+
 
   onEditorReady(){
     const my = this
@@ -338,16 +358,26 @@ class PPage {
   text2blocks(){
     var blocks = []
     var index  = -1
-    this.originalText.split(CR).forEach(parag => {
-      var html = md2html(parag)
+    // Index du paragraphe, pour construire son ID, qui est composé du
+    // numéro de la page et de son index dans la page ('parag_<page>_<index>')
+    var paragIndex = 0
+
+    this.paragraphes = this.originalText.split(CR).map(paragText => {
+      return new PParagraph(this, {index:++paragIndex, md:paragText})
+    })
+
+    this.paragraphs.forEach(pparag => {
       blocks.push({type:'myparagraph',
         data:{
-            md_original:parag
-          , text:parag
-          , html:html
-          , raw: html2raw(html)
+            md_original:pparag.md
+          , text:pparag.text
+          , html:pparag.html
+          , raw: pparag.raw
+          , pageNumero: pparag.pageNumero
+          , index:  pparag.index
         }})
     })
+
     return blocks
   }
 
@@ -377,6 +407,10 @@ class PPage {
   }
   destroyEditor(){this.editor.destroy()}
 
+  get isFirstPage(){ return this.numero == 1 }
+  get isLastPage(){ return this.numero == PPage.lastNumero }
+
+
   /**
     Le texte brut de la page
   **/
@@ -398,6 +432,13 @@ class PPage {
     return this._domid || (this._domid = `page-${this.number}`)
   }
 
+  /**
+    Identifiant de la version page tagguée
+  **/
+  get taggedDomId(){
+    return this._tagdomid || ( this._tagdomid = `tagged-page-${this.id}` )
+  }
+
   // Retourne l'instance UIObject de la page dans le DOM
   get page(){
     return this._page || (this._page = new UIObject(`#${this.domId}`))
@@ -408,11 +449,16 @@ class PPage {
   get prev(){
     return this._prev || (this._prev = PPage.get(this.numero-1))
   }
+
+  // Page suivante ({PPage})
   get next(){
     return this._next || (this._next = PPage.get(this.numero+1))
   }
+
   /**
     Alias de number
+    TODO En fait, il faudrait supprimer `number`, qui est moins intuitif ici
+    et n'est même pas plus court.
   **/
   get numero(){return this.number}
 

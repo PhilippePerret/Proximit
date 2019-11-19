@@ -1,3 +1,8 @@
+* Fonctionner en terme de paragraphe aussi dans `analyse_texte.rb`.
+  Il faut que l'affichage du texte taggué suive l'affichage dans l'editorjs
+  Ou alors, on détecte les retours charriot dans le retour formaté pour afficher en paragraphe.
+  => Découpe du texte retourné suivant les <br> et création des paragraphes
+  
 * Implémenter le hover pour montrer les deux mots en proximité quand on passe la souris dessus
   Étudier le cas spécial où un des mots serait sur une autre page. Dans ce cas, il faudrait afficher l'extrait contenant ce mot
   + Attention, cela implique de construire la page tagguée suivante (pour qu'elle soit prête)
