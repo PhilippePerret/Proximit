@@ -73,7 +73,7 @@ class PParagraph {
   }
 
   buildTagged(){
-    return DCreate('DIV',{id:this.taggedDomId, 'data-id':this.id, class:'tagged-par',inner:this.taggedCode})
+    return DCreate('DIV',{id:this.taggedDomId, 'data-id':this.id, class:'tagged-par',inner:[this.taggedCode]})
   }
 
   get taggedObj(){

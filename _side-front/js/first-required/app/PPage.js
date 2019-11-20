@@ -10,6 +10,13 @@ se fait par page, pour accélérer tous les processus.
 *** --------------------------------------------------------------------- */
 
 class PPage {
+  // Pour séparer les pages, sans que ça puisse entrer en collision avec des
+  // éléments du texte (entendu que le maximum de retours qu'on puisse avoir
+  // d'affilée dans un texte est 2)
+  static get PAGE_SEPARATOR(){return CR+CR+CR+CR}
+  static get REG_PAGE_DELIMITOR(){
+    return this._regpagedelimitor || (this._regpagedelimitor = new RegExp(this.PAGE_SEPARATOR))
+  }
   static get PAGE_DEFAULT_LENGTH(){return 1500}
 
   static get current(){ return this._current }
@@ -20,7 +27,7 @@ class PPage {
     }
     this._current = v
     PTexte.current.currentPage = v
-    this._current.edit()
+    this._current.show()
   }
 
   // Retourne l'instance PPage de la page de numéro +numero+
@@ -179,211 +186,184 @@ class PPage {
     }
   }
 
-  async edit(){
-    this.log("-> edit()")
-    // Si la page n'est pas encore construite, il faut la construire
-    if (!this.built){
-      this.log("= Construction (et check) de la page nécessaire =")
-      await this.build()
-      // On checke la page (pour sa construction complète)
-      await this.check()
-      this.log("* Fin de construction et check *")
-    }
-    else {
-      this.show()
-    }
+  /**
+    Affichage de la page
+    --------------------
+    Cela consiste à afficher la page et son miroir taggué.
+    Si la page n'est pas construite, il faut la construire.
+
+    NOTES
+      - indique aussi le numéro de page et le nombre de
+        signes.
+  **/
+  async show(){
+    this.log("-> show()")
+    this.built || await this.build()
+    this.page.show()
+    console.log("--- J'APPELLE show() de la taggedPage")
+    this.taggedPage.show()
     // Indiquer le numéro de page
     DGet('#page-number').innerHTML = this.number
     // Indiquer la longueur courant du texte
     DGet('#text-length').innerHTML = this.originalText.length
-    this.log("<- edit()")
+    this.log("<- show()")
   }
 
-  async show(){
-    this.page.show()
-    if ( this.taggedPage ) {
-      this.taggedPage.show()
-    } else {
-      await this.check()
-    }
-    this.next && !this.next.built && this.next.build()
-  }
   hide(){
     this.page.hide()
     this.taggedPage.hide()
   }
 
   /**
+    Construction de la page normale
+    -------------------------------
     Construction de la page, ça consiste à faire son div (de classe .page) et
     à créer un éditeur dessus.
+    Procède aussi à la construction de la page tagguée (appelle this.buildTaggedPage)
   **/
   async build(){
     this.log("-> build()")
-    if (this.built) return
-    this.div = DCreate('DIV',{id:this.domId, 'data-id':this.number, class:'page'})
-    UI.workingPagesSection.append(this.div)
-    // Mettre le texte dans l'éditeur
-    await this.setEditor()
-    // On marque que la page est construite
-    this.built = true
+    this.built        || await this.buildPage()
+    this.taggedBuilt  || await this.buildTaggedPage()
     this.log("<- build()")
   }
 
-  // Pour séparer les pages, sans que ça puisse entrer en collision avec des
-  // éléments du texte (entendu que le maximum de retours qu'on puisse avoir
-  // d'affilée dans un texte est 2)
-  static get PAGE_SEPARATOR(){return CR+CR+CR+CR}
+  async buildPage(){
+    this.log("-> buildPage")
+    this.div = DCreate('DIV',{id:this.domId, 'data-id':this.number, class:'page'})
+    UI.workingPagesSection.append(this.div)
+    // Instancier l'éditeur et mettre le texte de la page dedans
+    await this.setEditor()
+    // On marque que la page est construite
+    this.built = true
+    this.log("<- buildPage")
+  }
+  async buildTaggedPage(){
+    this.log("-> buildTaggedPage")
+    // On crée la page si c'est nécessaire (la première fois)
+    DGet(this.taggedDomId) || (await this.createTaggedPage())
+    this.checked || ( await this.check() )
+    this.log("<- buildTaggedPage")
+  }
+
   /**
+    Méthode qui
+  **/
+  async feedTaggedPage(paragraphs){
+    const my = this
+    this.log("-> feedTaggedPage(paragraphs)")
+    this.taggedBuilt || await this.createTaggedPage()
+    var paragIndex = 0 // +1 start
+    let paragCount   = paragraphs.length
+
+    paragraphs.map(taggedCode => {
+      ++paragIndex
+      var pparag = PParagraph.get(`${my.numero}_${paragIndex}`)
+      pparag && pparag.update(taggedCode)
+    })
+
+    this.log("<- feedTaggedPage")
+  }
+
+  /**
+    Checke des proximités de la page
+    --------------------------------
     Méthode principale qui checke la page et affiche son miroir (page tagguée)
     comportant toutes les proximités trouvées en fonction des paramètres.
   **/
   async check(){
     this.log("-> check()")
     const my = this
-    // La première chose à faire est de récupérer le texte qui doit servir de
-    // base. Ce texte correspond au texte de la page courante à laquelle il
-    // faut ajouter le texte de la page précédente (if any) et le texte de la
-    // page suivante (if any)
-    var portion = []
-    if( this.numero > 1 ) {
-      portion.push(this.prev.rawText)
-    }
-    portion.push(this.rawText)
-    if (this.numero < PPage.lastNumero){
-      portion.push(this.next.rawText)
-    }
-    portion = portion.join(` ${PPage.PAGE_SEPARATOR} `)
-    console.log("Portion pris en compte pour le check des proximités : <<<%s>>>", portion)
 
-    // On procède à l'analyse
+    // On récupère le texte qui doit servir pour le check
+    var portion = this.getCheckableTexte()
+
+    // On procède à l'analyse (elle prend un certain temps)
     await TexteAnalyse.analyze(portion)
 
     // On analyse le retour, principalement en récupérant les pages et
     // les paragraphes
-    TexteAnalyse.tag()
-      .then( async (taggedTexte) => {
-        // console.log("==== Texte taggué : <<<%s>>>", taggedTexte.outerHTML)
-        // Le délimiteur de texte
-        var portions = taggedTexte.innerHTML.split('<br><br><br><br>')
-        // console.log("====> Portions de textes taggués :",portions)
-        // portions.forEach(portion => console.log("  == portion : >>>%s<<<", portion))
+    TexteAnalyse.tag().then(this.afterCheck.bind(this))
 
-        var lastIndexPortion = portions.length - 1
-
-        for( var i = 0 ; i < lastIndexPortion ; ++i){
-          portions[i] += '</span>'
-        }
-        for (i = 1 ; i < lastIndexPortion ; ++ i){
-          portions[i] = portions[i].replace(/\<\/span\>/,'')
-        }
-        // if ( portions < 2 ){
-        //   // Rien à faire
-        // } else if ( portions < 3 ) {
-        //   // 2 portions
-        //   portions[0] += '</span>'
-        //   portions[1] = portions[1].replace(/\<\/span\>/,'')
-        // } else {
-        //   // 3 portions
-        //   portions[0] += '</span>'
-        //   portions[1] += '</span>'
-        //   portions[1] = portions[1].replace(/\<\/span\>/,'')
-        //   portions[2] = portions[2].replace(/\<\/span\>/,'')
-        // }
-
-        // L'index de la portion à afficher en fonction du numéro de page. Si
-        // c'est la première page, on prend la première portion
-        // Si c'est la dernière page, on prend la dernière portion. Si c'est une
-        // autre page, on prend la deuxième (sur 3 ou 2)
-        var portionPage = (()=>{
-          if ( this.isFirstPage ) {
-            return portions[0]
-          } else if ( this.isLastPage ) {
-            return portions[portions.length-1]
-          } else {
-            return portions[1]
-          }
-        })()
-
-        // On découpe le retour en paragraphes pour l'afficher correctement
-        await this.updateTaggedPageWith(portionPage)
-        // On affiche la page tagguée
-        this.taggedPage.show()
-
-        // On s'occupe ensuite des autres pages, quitte à faire…
-        if ( this.isFirstPage ) {
-          this.next && (await this.next.updateTaggedPageWith(portions[1]))
-        } else if ( this.isLastPage ) {
-          await this.prev.updateTaggedPageWith(portions[0])
-        } else {
-          await this.prev.updateTaggedPageWith(portions[0])
-          this.next && (await this.next.updateTaggedPageWith(portions[2]))
-        }
-
-      })
     this.log("<- check")
   }
 
-  async updateTaggedPageWith(html){
-    const my = this
-    this.log("-> updateTaggedPageWith(taggedCode)")
-    // console.log("taggedCode complet : >>>%s<<<", html)
-    // Pour suivre l'index du paragraph
-    // TODO MAIS ATTENTION : que se passe-t-il lorsqu'on a créé un nouveau
-    // paragraphe dans la page ?
-    var paragIndex = 0
+  /**
+    Méthode appelée avec les portions de texte taggué (après le check)
 
-    // On crée la page si c'est nécessaire (la première fois)
-    DGet(this.taggedDomId) || (await this.createTaggedPage())
-    this.log("retour de createdTaggedPage si la version tagguée n'existe pas")
+    @param {Array} taggedTexts Données retournée par TexteAnalyse après
+          l'analyse du texte fourni.
+          C'est une liste de données de texte
+          Chaque données de texte contient une liste de paragraphes
+          Chaque paragraphe est un DIV de class 'paragraph' qui contient
+          les mots taggués.
+  **/
+  async afterCheck(taggedTexts){
+    this.log("-> afterCheck")
 
-    // On découpe en paragraphes
-    // this.log(" * update des paragraphes taggués")
-    let html_splited = html.split('<br>')
-      , paragCount   = html_splited.length
+    console.log("taggedTexts = ", taggedTexts)
 
-    html_splited.map(taggedCode => {
-      // // Quand il ne s'agit pas du dernier paragraphe, il faut ajouter '</span>'
-      // // pour clore la dernière balise span ouverte.
-      // if (paragIndex + 1 < paragCount) {
-      //   console.log("Pas le dernier paragraphe")
-      //   taggedCode += '</span>'
-      // }
-      //
-      // // Quand il ne s'agit pas du premier paragraphe, il faut supprimer le
-      // // premier 'span' de fermeture résultant de la coupure <br> du code
-      // // complet
-      // if (paragIndex > 0) {
-      //   taggedCode = taggedCode.replace(/\<\/span\>/,'').trim()
-      // }
+    // L'index du texte à afficher en fonction du numéro de page. Si
+    // c'est la première page, on prend la première portion
+    // Si c'est la dernière page, on prend la dernière portion. Si c'est une
+    // autre page, on prend la deuxième (sur 3 ou 2)
+    this.taggedParagraphs = (()=>{
+      if ( this.isFirstPage ) {
+        return taggedTexts[0]
+      } else if ( this.isLastPage ) {
+        return taggedTexts[portions.length-1]
+      } else {
+        return taggedTexts[1]
+      }
+    })()
 
-      ++paragIndex
+    // On peut afficher les paragraphes dans la page tagguée
+    await this.feedTaggedPage(this.taggedParagraphs)
 
-      // this.log(`ID paragraphe taggué à updater : '${my.numero}_${paragIndex}'`)
-      // Note : le paragraphe n'est pas toujours défini, lorsqu'un retour charriot
-      // est rajouté, par exemple.
-      var parag = PParagraph.get(`${my.numero}_${paragIndex}`)
-      parag && parag.update(taggedCode)
-    })
-    // console.log("Nouveaux paragraphes : ", this.paragraphes)
+    // On s'occupe ensuite des autres pages, quitte à faire…
+    if ( this.isFirstPage ) {
+      this.next && (await this.next.feedTaggedPage(taggedTexts[1]))
+    } else if ( this.isLastPage ) {
+      await this.prev.feedTaggedPage(taggedTexts[0])
+    } else {
+      await this.prev.feedTaggedPage(taggedTexts[0])
+      this.next && (await this.next.feedTaggedPage(taggedTexts[2]))
+    }
+    this.checked = true
+    this.log("<- afterCheck")
+  }
 
-    this.log("<- updateTaggedPageWith(...)")
+  /**
+    Méthode qui retourne le texte à checker pour les proximités en
+    fonction de la place de la page (première, dernière, normale)
+    @return {String} Le texte à checker (par la méthode `check`)
+  **/
+  getCheckableTexte(){
+    this.log("-> getCheckableTexte")
+    var portion = []
+    this.isFirstPage  || portion.push(this.prev.rawText)
+    portion.push(this.rawText)
+    this.isLastPage   || portion.push(this.next.rawText)
+    portion = portion.join(` ${PPage.PAGE_SEPARATOR} `)
+    // console.log("Portion pris en compte pour le check des proximités : <<<%s>>>", portion)
+    return portion
   }
 
   /**
     Crée la page "taggué" en miroir et regard du texte courant
+    Note : mais ne la remplit pas. C'est la méthode feedTaggedPage qui s'en
+    occupe
   **/
   async createTaggedPage(){
     this.log("-> createTaggedPage()")
-
-    // Mais si la page n'est pas encore créée
-    this.built || (await this.build())
-    this.built || this.log("- Fin de la construction")
 
     // Créer un div pour cette page
     UI.taggedPagesSection.append(
       DCreate('DIV',{class:'tagged-page noDisplay',id:this.taggedDomId, 'data-id':this.id})
     )
     this.taggedPage = new UIObject(`#tagged-page-${this.id}`)
+
+    this.taggedBuilt = true
 
     this.log("<- createTaggedPage")
   }

@@ -62,6 +62,16 @@ class Mot {
     ]
   }
 
+  /**
+    Retourne true si le mot est en fait un délimiteur de texte
+  **/
+  get isTextDelimitor(){
+    return this._istextdelimitor || ( this._istextdelimitor = this.tbw.match(PPage.REG_PAGE_DELIMITOR))
+  }
+  get isParagraphDelimitor(){
+    return this._isrc || (this._isrc = this.tbw.match(/\n/))
+  }
+
   // Retourne le className de l'élément contenant le mot
   get class(){
     if (undefined === this._class){

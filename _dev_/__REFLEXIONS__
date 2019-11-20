@@ -1,13 +1,36 @@
-La difficulté, avec la version 0.3, est de connaitre la portion exacte de texte qui est affichée à l'écran. Même si l'on part du principe que le tagging-field (un div) puisse suivre exactement le writing-field (un textarea), trouver le début affiché et difficile.
+Fonctionnement de l'affichage
 
-L'idée serait de fonctionner par page, en sachant qu'une page serait la quantité de texte qu'on peut afficher dans l'interface (ou alors on fait vraiment des vraies pages, en essayant de se rapprocher de la longueur des pages du livre — ce qui en plus, offrirait l'avantage de savoir où on en est)
+o On ouvre un texte
+  <> Il contient une seule page
+      => on étudie cette page et on affiche les proximités
+  <> Il contient plus d'une page
+      => on étudie la page et la page suivante
+      => on affiche la page et son miroir taggué
+      => [Coulisses] on construit la page suivante et son miroir taggué
+        (note : pour le miroir taggué, il faut prendre en compte la 3e page)
+      o On passe à la page suivante
+        => On affiche la page
+        => On construit la page suivante
+        => On étudie les proximités avec la page suivante
 
-Donc, on procèderait de cette manière :
+Définition précise des méthodes :
 
-* on s'assure qu'il n'y a aucun quadruple retour chariot dans les textes. On les remplace par des doubles
-* on affiche une page des deux côtés. Pour le check du texte, on rassemble les 2 ou 3 pages autour — ou en tout cas le nombre de signes voulus pour les proximités (on les sépare par des quadruples retours chariot)
-* On fait le check de ce texte
-* On l'affiche en affichant seulement la page courante
-  - si un mot est en relation avec une page précédente (non affichée), on le signale et on peut passer à la page précédent (du tagging-field) pour la voir. Si on veut corriger, on doit repasser à la page précédente dans le working-field, ce qui actualisera aussi
+`show()` pour afficher la page normale et la page miroir, entendu qu'il faut
+  toujours afficher la page miroir avec
+  Si la page n'est pas construite, il faut la construire (build)
+  NOTE : dans la méthode générale appelant 'show', il faut regarder si la
+  page possède des pages autour (prev et next) et les construire si elles ne
+  le sont pas (pour accélérer l'affichage).
+  NOTE 2 : pendant cette construction (le check ?), il faudrait empêcher de
+  pouvoir passer à une autre page.
 
-=> Pouvoir définir dans les préférences le nombre de mots par page
+`showTagged()` pour afficher la page miroir taggué (et seulement ça)
+  Si la page tagguée n'est pas construite, il faut la construire (buildTagged)
+
+`build()` Construction de la page normale et de la page tagguée si nécessaire
+`buildTagged()` Construction de la page tagguée. Si la page n'a pas été checkée, il faut le faire (check())
+
+`check()` Vérification des proximités de la page
+  En prenant les pages autour.
+
+Note : toutes ces méthodes sont asynchrones puisqu'elles peuvent, dans l'absolu, appeler le check des proximités.

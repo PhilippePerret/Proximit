@@ -113,18 +113,51 @@ class TexteAnalyse {
 
       // Produit this.tableMots (qui contient les instances Mot des mots) et
       // this.firstMot (le premier mot du texte)
-      console.log("--> Définition de la table de mots")
+      // console.log("--> Définition de la table de mots")
       await this.defineTableMots()
-      console.log("<-- Retour de la Définition de la table de mots")
+      // console.log("<-- Retour de la Définition de la table de mots")
 
-      var taggedText = DCreate('DIV')
+      // Variable qui contiendra toutes les portions de texte taggués
+      var taggedTexts = []
+
+      // Pour les paragraphes d'un texte
+      var taggedParagraphs = []
+
+      // Pour mettre dans 'data-index' du div du paragraphe l'index du
+      // paragraphe. Pourra être utilisé par la méthode appelante pour
+      // définir le vrai id
+      var indexParag = 0 // +1 start
+
+      // Pour mettre les mots du paragraphe
+      var taggedText = DCreate('DIV',{class:'paragraph', 'data-index':++indexParag})
+
+      // On part du premier mot
       var mot = this.firstMot
       while(mot){
         // console.log("Mot as dom : ", mot.asDom)
+        // console.log("--> mot #%d : '%s'", mot.id, mot.mot)
+
+        // Dans tous les cas, il faut ajouter le mot, car c'est dans le
+        // `tbw` du mot qu'on cherche les délimiteurs.
         mot.asDom.forEach(domEl => taggedText.appendChild(domEl))
+
+        // Si le mot est un délimiteur de texte, on crée un nouveau texte
+        if ( mot.isTextDelimitor || mot.isParagraphDelimitor ) {
+          taggedParagraphs.push(taggedText)
+          taggedText = DCreate('DIV',{class:'paragraph', 'data-index':++indexParag})
+          if ( mot.isTextDelimitor ) {
+            taggedTexts.push(taggedParagraphs)
+            taggedParagraphs = []
+          }
+        }
+
+        // On prend le mot suivant
         mot = mot.motN
       }
-      ok(taggedText)
+      // On rentre le dernier texte (ou le seul, s'il n'y en a qu'un)
+      taggedParagraphs.push(taggedText)
+      taggedTexts.push(taggedParagraphs)
+      ok(taggedTexts)
     })
   }
 
