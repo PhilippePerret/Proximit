@@ -18,6 +18,7 @@ class Proximity {
     L'alternative dépend de la présence ou non du fichier proximites.json
   **/
   static async loadData(){
+    console.log("-> Proximity.loadData")
     this.reset()
     if ( fs.existsSync(this.jsonDataPath) ) {
       log.debug("* Chargement des données depuis le fichier proximites.json…")
@@ -88,12 +89,6 @@ class Proximity {
     Object.assign(this.items, {[iprox.id]: iprox})
     if (iprox.id > this.lastId) this.lastId = parseInt(iprox.id,10)
     if ( iprox.ignored ) ++ this.ignoredCount
-
-    // Compatibilité avec les anciennes versions
-    if ( ! iprox.motA._px_idN ) {
-      iprox.motA._px_idN = iprox.id
-      iprox.motB._px_idP = iprox.id
-    }
 
     // console.log("Création de la proximité :", iprox)
   }

@@ -1,18 +1,6 @@
-* [BUG #21]
-  NOTE : il faut revoir tout le fonctionnement d'affichage et, pour commencer, bien
-  le définir:
-    * quand j'ouvre le texte (page 1) on fait ceci, puis etc.
-  Pour le reproduire :
-    - on ouvrir le texte
-    - on va à la page 3 (toutes les pages sont bonnes, pour le moment)
-    - on revient à la page 2
-      [BUG] => On voit les balises HTML
-
-* Quand on affiche la page N (edit) et que la page N+1 existe mais n'est pas construite => on doit lancer la construction de la page N+1
-
+* Couleur différente suivant proximité
 * Implémenter le hover pour montrer les deux mots en proximité quand on passe la souris dessus
   Étudier le cas spécial où un des mots serait sur une autre page. Dans ce cas, il faudrait afficher l'extrait contenant ce mot
-  + Attention, cela implique de construire la page tagguée suivante (pour qu'elle soit prête)
   + faut-il, dans les attributs du mots, indiquer sa page ? si oui, il faut transmettre le numéro
     de page.
 * Implémenter la jauge qui doit permettre :

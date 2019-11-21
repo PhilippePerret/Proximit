@@ -1,8 +1,11 @@
 /* Le bloc contenant la proximité courante */
-span.mot.proxacceptable {
+span.mot.proxpassab {
   color:green;
 }
-span.mot.proxwarning {
+span.mot.proxnotice {
+  color:blue;
+}
+span.mot.proxwarn {
   color:orange;
 }
 span.mot.proxdanger {

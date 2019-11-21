@@ -103,15 +103,62 @@ class Mot {
   get class(){
     if (undefined === this._class){
       var c = ['mot']
-      // Si le mot est en proximité, il faut le signaler
-      if (this.px_idP || this.px_idN){c.push('proxdanger')}
+      // Si le mot est en proximité, il faut le signaler avec un indicateur
+      // différent en fonction de la distance.
+      if (this.px_idP || this.px_idN) {
+        c.push(this.indicateurCSSDistance)
+        // TODO ajouter en attributs les données qui permettront de
+        // construire l'info-bulle qui donnera les infos sur la proximité
+      }
       this._class = c.join(' ')
       c = null
     }
     return this._class
   }
 
-  // Retourne l'objet DOM (pour le détruire ou le rendre éditable, par exemple)
+  /**
+    Retourne la classe CSS qui correspond à la distance relative du
+    mot par rapport à sa proximité.
+
+    On considère :
+      Qu'il y a danger (proxdanger) lorsque le mot est à moins d'un quart
+      de la distance minimale (pour 1200 signes, ce serait à 300 signes)
+  **/
+  get indicateurCSSDistance(){
+    if ( undefined === this._indiccssdist){
+      // On prend la plus petite distance relative
+      var dists = [], dist
+      this.proxP && dists.push(this.relDistanceProxP)
+      this.proxN && dists.push(this.relDistanceProxN)
+      var dist = Math.min(...dists)
+      console.log("Dists, Dist = ", dists, dist)
+      if ( isNaN(dist) ) {
+        console.log("Mot sans dist",{
+            px_idN:this.px_idN
+          , px_idP:this.px_idP
+          , proxN: this.proxN
+          , proxP: this.proxP
+          , distanceP: this.proxP.distance
+          , distanceN: this.proxN.distance
+          , minDistP: this.proxP.distance_minimale
+          , minDistN: this.proxN.distance_minimale
+        })
+      }
+
+      this._indiccssdist = ((d)=>{
+        if      (d < 25)  return 'proxdanger'
+        else if (d < 50)  return 'proxwarn'
+        else if (d < 75)  return 'proxnotice'
+        else              return 'proxpassab'
+      })(dist)
+      console.log("Indicateur distance : ", this._indiccssdist)
+    }
+    return this._indiccssdist
+  }
+
+  /**
+    Retourne l'objet DOM (pour le détruire ou le rendre éditable, par exemple)
+  **/
   get domObj(){
     return UI.taggedPagesSection.find(`.mot[data-id="${this.id}"]`)
   }
@@ -133,20 +180,65 @@ class Mot {
     return this._icanon || (this._icanon = Canon.get(this.canon))
   }
 
-  // La proximité avec un mot avant (if any)
+  /**
+    La proximité avec un mot avant (if any)
+  **/
   get proxP(){
     if (undefined === this._proxP){
       this._proxP = this.px_idP ? Proximity.get(this.px_idP) : null
     }
     return this._proxP
   }
+  /**
+    La distance avec le mot en proximité avant
+  **/
+  get distanceProxP(){
+    return this._distproxp || (this._distproxp = (this.proxP && this.proxP.distance))
+  }
+  /**
+    La distance minimale qu'on doit avoir entre le mot et sa proximité avant
+  **/
+  get minimaleDistanceProxP(){
+    return this._mindistproxp || (this._mindistproxp = (this.proxP && this.proxP.distance_minimale))
+  }
+  /**
+    Le pourcentage de proximité par rapport à la distance et la
+    distance minimale attendue.
+    Ce chiffre correspond à un pourcentage. 100% signifie qu'on se trouve
+    à la distance maximale tandis que 0% indiquerait que l'on se trouve tout
+    proche du mot en proximité
+  **/
+  get relDistanceProxP(){
+    if ( undefined === this._reldistproxp) {
+      this._reldistproxp = parseInt(100 * (this.distanceProxP / this.minimaleDistanceProxP),10)
+    } return this._reldistproxp
+  }
+  get relDistanceProxN(){
+    if ( undefined === this._reldistproxn) {
+      this._reldistproxn = parseInt(100 * (this.distanceProxN / this.minimaleDistanceProxN),10)
+    } return this._reldistproxn
+  }
 
-  // La proximité avec un mot après (if any)
+  /**
+    La proximité avec un mot après (if any)
+  **/
   get proxN(){
     if (undefined === this._proxN){
       this._proxN = this.px_idN ? Proximity.get(this.px_idN) : null
     }
     return this._proxN
+  }
+  /**
+    La distance avec le mot en proximité avant
+  **/
+  get distanceProxN(){
+    return this._distproxn || (this._distproxn = (this.proxN && this.proxN.distance))
+  }
+  /**
+    La distance minimale qu'on doit avoir entre le mot et sa proximité avant
+  **/
+  get minimaleDistanceProxN(){
+    return this._mindistproxn || (this._mindistproxn = (this.proxN && this.proxN.distance_minimale))
   }
 
   get mot(){return this._real_init}

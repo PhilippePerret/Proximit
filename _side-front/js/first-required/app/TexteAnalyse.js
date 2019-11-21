@@ -31,7 +31,8 @@ class TexteAnalyse {
   **/
   static async analyze(str){
     this.current = new this(str)
-    // Pour benchmarker les deux
+    // Pour benchmarker deux méthodes (mais pour le moment, seule la méthode
+    // ruby est opérationnelle)
     // this.current.analyze({method:'ruby', callback:this.analyzeWithJS.bind(this)})
     await this.current.analyze({method:'ruby'})
   }
@@ -117,6 +118,12 @@ class TexteAnalyse {
       await this.defineTableMots()
       // console.log("<-- Retour de la Définition de la table de mots")
 
+      // Une fois que la table des mots est définie, on peut définir les
+      // proximité. Normalement, ici, ça n'est pas une fonction asynchrone
+      // puisque le résultat a été transmis à PTexte.resultats
+      console.log("Résultats : ", PTexte.current.resultats)
+      await Proximity.loadData()
+
       // Variable qui contiendra toutes les portions de texte taggués
       var taggedTexts = []
 
@@ -200,9 +207,16 @@ class TexteAnalyse {
       Object.assign(this.tableMots,{[ditem.id]: new Mot(ditem)})
       if (ditem.idP === null) { firstMotId = ditem.id }
     })
+    /* C'est lourd, mais pour le moment, on fait comme ça pour
+     * passer les mots à la classe Mot qui a aussi besoin de connaitre
+     * les mots pour pouvoir gérer les proximités
+     */
+    Mot.items = this.tableMots
+
+    // On prend le premier mot
     this.firstMot = this.tableMots[firstMotId]
     Mot.items = this.tableMots
-    console.log("Premier mot : ", this.firstMot)
+    // console.log("Premier mot : ", this.firstMot)
   }
 
   get wholeTexteData(){ return this._wholetextedata }
@@ -225,14 +239,14 @@ class TexteAnalyse {
     // execFile(`./bin/analyse_texte.rb`, [my.path], this.afterAnalyzeWithRuby.bind(this))
     let cmd = `./bin/analyse_texte.rb "${my.path}"`
     // console.log("Commande : ", cmd)
+    Bench.start('analyse avec ruby')
     exec(cmd) // synchrone
     this.afterAnalyzeWithRuby.call(this)
   }
   async afterAnalyzeWithRuby(err, stdout, stderr){
     Bench.stop('analyse avec ruby')
     if ( err ){ return this.onError(err) }
-    console.log("Texte correctement écrit.")
-    // ON charge le résultat de la recherche
+    // On charge le résultat de la recherche
     await this.loadTableResultats()
     await this.loadTableDatas()
     // this.rubyData = JSON.parse(fs.readFileSync(this.datas_path,'utf-8'))
@@ -242,7 +256,9 @@ class TexteAnalyse {
     if (this.callbackAfterAnalyzeWithRuby){this.callbackAfterAnalyzeWithRuby()}
   }
 
-  // Chargement asynchrone des résultas de l'analyse
+  /**
+    Chargement asynchrone des résultas de l'analyse
+  **/
   loadTableResultats(){
     const my = this
     return new Promise((ok,ko)=>{
@@ -250,6 +266,10 @@ class TexteAnalyse {
         if(err) return this.onError(err)
         my.rubyTableResultats = JSON.parse(str)
         // console.log("Table de résultat par ruby : ", my.rubyTableResultats)
+
+        /* Pour gérer les proximités, on met le résultat dans PTexte et
+         * on appelle le chargement des données proximités. */
+        PTexte.current._resultats = my.rubyTableResultats
         ok()
       })
     })
