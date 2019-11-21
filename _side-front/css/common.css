@@ -12,6 +12,7 @@
 .hidden { visibility: hidden;}
 .visible {visibility:visible;}
 .noDisplay {display:none;}
+.discret {opacity:0.5;}
 /*
   Styles
  */

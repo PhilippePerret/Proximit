@@ -7,6 +7,7 @@ const App = {
     this.loading = true
     UI.init.call(UI)
     UI.initApp.call(UI)
+    Console.init()
 
     // On instancie l'éditeur (this.editor/App.editor)
     EditorJS.init()
