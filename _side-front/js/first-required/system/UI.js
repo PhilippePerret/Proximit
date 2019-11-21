@@ -1,12 +1,15 @@
 'use strict'
 /**
   Constante UI
-  version 1.5.0
+  version 1.6.0
   ------------
 
   Requis :
     - UI.css
     - img/divers/waiter-rond-bleu.gif
+
+  # version 1.6.0
+    * Ajout de la méthode `infoBulle` qui permet de gérer une info-bulle.
 
   # version 1.5.0
     * "Isolation" du waiter, pour le faire apparaitre au milieu de la page
@@ -241,6 +244,40 @@ const UI = {
     }
   }
 
+  /**
+    Permet d'afficher une info-bulle
+
+    @param {String} text      Le texte à afficher
+    @param {Object} params    Les paramètres (ou l'évènement triggé)
+                              Doit contenir clientX et clientY pour pouvoir
+                              positionner l'info-bulle
+                              Peut contenir `titre` pour définir un titre
+  **/
+, infoBulle(text, params){
+    if (undefined === this.oInfoBulle){
+      DGet('#infobulle') || this.buildInfoBulle()
+      this.oInfoBulle = new UIObject('#infobulle')
+    }
+    this.oInfoBulle.find('.infobulle-content').innerHTML = text.replace(/\r?\n/g,'<br>')
+    if (params.titre) {
+      this.oInfoBulle.find('.infobulle-title').innerHTML = params.titre.replace(/\r?\n/g,'<br>')
+    }
+    // On la positionne à la souris
+    let x = params.clientX
+      , y = params.clientY
+    this.oInfoBulle.domObj.style.top   = `${y}px`
+    this.oInfoBulle.domObj.style.left  = `${x}px`
+    this.oInfoBulle.show()
+  }
+, hideInfoBulle(){
+    this.oInfoBulle && this.oInfoBulle.hide()
+  }
+, buildInfoBulle(){
+    document.body.appendChild(DCreate('DIV',{id:'infobulle',inner:[
+        DCreate('DIV',{class:'infobulle-title'})
+      , DCreate('DIV',{class:'infobulle-content'})
+    ]}))
+  }
 
 }
 Object.defineProperties(UI,{

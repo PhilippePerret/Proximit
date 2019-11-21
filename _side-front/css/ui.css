@@ -1,3 +1,7 @@
+/*
+  UI.css
+  Pour la version >= 1.6 de UI.js
+ */
 body {
   display: grid;
   grid-template-columns: 50% 50%;
@@ -162,3 +166,14 @@ div#waiter {
   z-index:3000;
 }
 div#waiter img {width:40%;}
+
+div#infobulle {
+  position:fixed;
+  display:inline-block;
+  font-size:11pt;
+  padding:8px;
+  border-radius:8px;
+  background-color:black;
+  color:white;
+  z-index:5000;
+}

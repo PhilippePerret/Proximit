@@ -1,9 +1,9 @@
-* Couleur différente suivant proximité
 * Implémenter le hover pour montrer les deux mots en proximité quand on passe la souris dessus
   Étudier le cas spécial où un des mots serait sur une autre page. Dans ce cas, il faudrait afficher l'extrait contenant ce mot
   + faut-il, dans les attributs du mots, indiquer sa page ? si oui, il faut transmettre le numéro
     de page.
-* Implémenter la jauge qui doit permettre :
+* Pouvoir enregistrer le nouveau texte
+* Implémenter la jauge/préférence qui doit permettre :
   - de définir la distance maximale (empan)
   - l'unité de distance (mots ou caractères)
 

@@ -52,6 +52,34 @@ class Mot {
     // console.log("Instanciation du mot avec les données : ", data, this)
   }
 
+  /** ---------------------------------------------------------------------
+    *   Méthodes d'évènements
+    *
+  *** --------------------------------------------------------------------- */
+
+  /**
+    Méthode appelée quand on glisse la souris sur le mot, quand c'est un
+    mot en proximité avec un autre. On met les deux mots en exergue et
+    on affiche une info-bulle présentant les informations
+  **/
+  onMouseover(ev){
+    var infos = []
+    for (var where of ['P','N']){
+      var proxId = `prox${where}` // proxP ou proxN
+      if (!this[proxId]) continue;
+      var prox = this[proxId]
+        , motx = prox[`mot${where=='P'?'A':'B'}`]
+      infos.push(`Proximité avec '${motx.real_init}' à ${prox.distance} signes ${where=='P'?'avant':'après'}`)
+    }
+    UI.infoBulle(infos.join(CR), ev)
+    return stopEvent(ev)
+  }
+  onMouseout(ev){
+    UI.hideInfoBulle()
+    return stopEvent(ev)
+  }
+
+
   // ---------------------------------------------------------------------
   //  HELPERS
 
@@ -101,12 +129,12 @@ class Mot {
             , moi = parseInt(len/2,10)
             , debMot = fmot.substring(0, moi)
             , finMot = fmot.substring(moi, len)
-          spans.push(Dom.create('SPAN',{text:debMot, 'data-id':this.id, class:this.classProxP}))
-          spans.push(Dom.create('SPAN',{text:finMot, 'data-id':this.id, class:this.classProxN}))
+          spans.push(Dom.create('SPAN',{text:debMot, 'data-id':this.id, class:this.classProxP, 'data-prox':'P'}))
+          spans.push(Dom.create('SPAN',{text:finMot, 'data-id':this.id, class:this.classProxN, 'data-prox':'N'}))
         } else if (this.proxP) {
-          spans.push(Dom.create('SPAN',{text:fmot, 'data-id':this.id, class:this.classProxP}))
+          spans.push(Dom.create('SPAN',{text:fmot, 'data-id':this.id, class:this.classProxP, 'data-prox':'P'}))
         } else /* quand proxN */{
-          spans.push(Dom.create('SPAN',{text:fmot, 'data-id':this.id, class:this.classProxN}))
+          spans.push(Dom.create('SPAN',{text:fmot, 'data-id':this.id, class:this.classProxN, 'data-prox':'N'}))
         }
       } else {
         // Quand ce mot n'est en proximité avec rien
@@ -143,7 +171,7 @@ class Mot {
         else if (d < 75)  return 'proxnotice'
         else              return 'proxpassab'
       })(this.relDistanceProxP)
-      console.log("'%s (#%d)' — Indicateur distance : '%s' (distance relative avec '%s' #%d : %d — %d/%d)", this.real_init, this.id, this._indiccssdistproxp, this.proxP.motA.real_init, this.proxP.motA.id, this.relDistanceProxP, this.distanceProxP, this.minimaleDistanceProxP)
+      // console.log("'%s (#%d)' — Indicateur distance : '%s' (distance relative avec '%s' #%d : %d — %d/%d)", this.real_init, this.id, this._indiccssdistproxp, this.proxP.motA.real_init, this.proxP.motA.id, this.relDistanceProxP, this.distanceProxP, this.minimaleDistanceProxP)
     }
     return this._indiccssdistproxp
   }
@@ -162,7 +190,7 @@ class Mot {
         else if (d < 75)  return 'proxnotice'
         else              return 'proxPassab'
       })(this.relDistanceProxN)
-      console.log("'%s (#%d)' - Indicateur distance : '%s' (distance relative avec '%s' (#%d) : %d — %d/%d)", this.real_init, this.id, this._indiccssdistproxn, this.proxN.motB.real_init, this.proxN.motB.id, this.relDistanceProxN, this.distanceProxN, this.minimaleDistanceProxN)
+      // console.log("'%s (#%d)' - Indicateur distance : '%s' (distance relative avec '%s' (#%d) : %d — %d/%d)", this.real_init, this.id, this._indiccssdistproxn, this.proxN.motB.real_init, this.proxN.motB.id, this.relDistanceProxN, this.distanceProxN, this.minimaleDistanceProxN)
     }
     return this._indiccssdistproxn
   }
@@ -196,7 +224,6 @@ class Mot {
   **/
   get proxP(){
     if (undefined === this._proxP){
-      console.log("this.px_idP = ", this.px_idP)
       this._proxP = this.px_idP && Proximity.get(this.px_idP)
     }
     return this._proxP
@@ -236,7 +263,6 @@ class Mot {
   **/
   get proxN(){
     if (undefined === this._proxN){
-      console.log("this.px_idN = ", this.px_idN)
       this._proxN = this.px_idN && Proximity.get(this.px_idN)
     }
     return this._proxN

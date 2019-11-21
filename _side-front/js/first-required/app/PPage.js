@@ -242,7 +242,7 @@ class PPage {
     this.log("-> buildTaggedPage")
     // On crée la page si c'est nécessaire (la première fois)
     DGet(this.taggedDomId) || (await this.createTaggedPage())
-    this.checked || ( await this.check() )
+    this.checked || await this.check()
     this.log("<- buildTaggedPage")
   }
 
@@ -260,6 +260,13 @@ class PPage {
       ++paragIndex
       var pparag = PParagraph.get(`${my.numero}_${paragIndex}`)
       pparag && pparag.update(taggedCode)
+    })
+
+    // On observe les mots taggué
+    this.taggedPage.findAll('.mot[data-prox]').forEach(mdom => {
+      var mot = Mot.get(parseInt(mdom.getAttribute('data-id'),10))
+      mdom.addEventListener('mouseover', mot.onMouseover.bind(mot))
+      mdom.addEventListener('mouseout', mot.onMouseout.bind(mot))
     })
 
     this.log("<- feedTaggedPage")
