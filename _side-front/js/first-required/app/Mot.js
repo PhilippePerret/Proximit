@@ -56,9 +56,36 @@ class Mot {
   //  HELPERS
 
   get asDom(){
+    //
+    //
+    /*
+      On détermine s'il faut rajouter quelque chose en début de mot qui
+      viendrait d'un "reste" du mot précédent quand ce mot précédent est un
+      délimiteur de paragraphe ou de page (ie contient un retour charriot dans
+      son tbw).
+      Pour rappel, si on trouve le texte :
+      « Mon texte.
+        - C'est mon texte.
+      »
+      Il sera découpé de cette manière :
+        mot 2 : mot:"texte" tbw:".\n– "
+        mot 3 : mot:"C", tbw:"'"
+      Donc il faut ajouter le tiret de dialogue au mot 3 quand on le construit.
+      Même chose pour un changement de page.
+     */
+    var fmot = this.mot
+    if ( this.motP && (this.motP.isParagraphDelimitor||this.motP.isTextDelimitor)){
+      fmot = `${this.motP.tbw_after_rc}${fmot}`
+    }
+    var ftbw
+    if (this.isParagraphDelimitor||this.isTextDelimitor){
+      ftbw = this.tbw_before_rc + this.tbw_rcs.replace(/\r?\n/g,'<br>')
+    } else {
+      ftbw = this.tbw
+    }
     return [
-        Dom.create('SPAN',{text:this.mot, 'data-id':this.id, class:this.class})
-      , Dom.create('SPAN',{text:this.tbw.replace(/\r?\n/g,'<br>')})
+        Dom.create('SPAN',{text:fmot, 'data-id':this.id, class:this.class})
+      , Dom.create('SPAN',{text:ftbw})
     ]
   }
 
@@ -123,6 +150,29 @@ class Mot {
   }
 
   get mot(){return this._real_init}
+
+  /**
+    Quand le mot est une fin de paragraphe (tbw contient un retour charriot),
+    ces deux méthodes retournent les textes avant et après ce retour de charriot
+  **/
+  get tbw_before_rc(){
+    return this._tbw_before_rc || (this._tbw_before_rc = this.splitTbw().before)
+  }
+  get tbw_after_rc(){
+    return this._tbw_after_rc || (this._tbw_after_rc = this.splitTbw().after)
+  }
+  // Les retours charriot entre before et after ci-dessus
+  get tbw_rcs(){
+    return this._tbw_rcs || (this._tbw_rcs = this.splitTbw().rcs)
+  }
+  splitTbw(){
+    let spl = this.tbw.split(CR)
+      , bef = spl[0]
+      , num = spl.length
+      , rcs = "".padEnd(num - 1,CR)
+      , aft = spl[num-1]
+    return {before:bef, after:aft, rcs:rcs}
+  }
 
   // ---------------------------------------------------------------------
   //  PROPERTIES SAVED

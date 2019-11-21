@@ -149,6 +149,12 @@ class TexteAnalyse {
             taggedTexts.push(taggedParagraphs)
             taggedParagraphs = []
           }
+          /*//
+          else {
+            // Si c'est un délimiteur de paragraphe
+            console.log("---- Mot délimiteur de paragraphe : ", mot)
+          }
+          //*/
         }
 
         // On prend le mot suivant
