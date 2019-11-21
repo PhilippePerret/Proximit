@@ -20,7 +20,10 @@ class Proximity {
   static async loadData(){
     console.log("-> Proximity.loadData")
     this.reset()
-    if ( fs.existsSync(this.jsonDataPath) ) {
+    if ( false /* <- pour le moment fs.existsSync(this.jsonDataPath) */ ) {
+      // TODO Une fois qu'on pourra réenregistrer des données depuis
+      // la nouvelle app Proximit, on pourra utiliser ce chargement plutôt,
+      // qui permet de mémoriser des proximités à passer.
       log.debug("* Chargement des données depuis le fichier proximites.json…")
       await IO.loadLargeJSONData(this,this.jsonDataPath)
     } else {
@@ -854,7 +857,8 @@ class Proximity {
     if (undefined === this._motB) {
       this._motB = Mot.get(this.motB_id)
       if ( ! this._motB ) {
-        log.error("Impossible d'obtenir le mot d'index %d dans la liste : ", this.motB_id, Mot.items)
+        log.error("Impossible d'obtenir le mot d'index #%d dans la liste des mots (clés existantes : %s)", this.motB_id, Object.keys(Mot.items).join(', '))
+        log.error("Proximité problématique : ", this)
       }
     }
     return this._motB

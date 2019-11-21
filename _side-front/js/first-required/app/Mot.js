@@ -56,37 +56,66 @@ class Mot {
   //  HELPERS
 
   get asDom(){
-    //
-    //
-    /*
-      On détermine s'il faut rajouter quelque chose en début de mot qui
-      viendrait d'un "reste" du mot précédent quand ce mot précédent est un
-      délimiteur de paragraphe ou de page (ie contient un retour charriot dans
-      son tbw).
-      Pour rappel, si on trouve le texte :
-      « Mon texte.
-        - C'est mon texte.
-      »
-      Il sera découpé de cette manière :
-        mot 2 : mot:"texte" tbw:".\n– "
-        mot 3 : mot:"C", tbw:"'"
-      Donc il faut ajouter le tiret de dialogue au mot 3 quand on le construit.
-      Même chose pour un changement de page.
-     */
-    var fmot = this.mot
-    if ( this.motP && (this.motP.isParagraphDelimitor||this.motP.isTextDelimitor)){
-      fmot = `${this.motP.tbw_after_rc}${fmot}`
-    }
-    var ftbw
-    if (this.isParagraphDelimitor||this.isTextDelimitor){
-      ftbw = this.tbw_before_rc + this.tbw_rcs.replace(/\r?\n/g,'<br>')
-    } else {
-      ftbw = this.tbw
-    }
-    return [
-        Dom.create('SPAN',{text:fmot, 'data-id':this.id, class:this.class})
-      , Dom.create('SPAN',{text:ftbw})
-    ]
+    if ( undefined === this._asdom) {
+      //
+      //
+      /*
+        On détermine s'il faut rajouter quelque chose en début de mot qui
+        viendrait d'un "reste" du mot précédent quand ce mot précédent est un
+        délimiteur de paragraphe ou de page (ie contient un retour charriot dans
+        son tbw).
+        Pour rappel, si on trouve le texte :
+        « Mon texte.
+          - C'est mon texte.
+        »
+        Il sera découpé de cette manière :
+          mot 2 : mot:"texte" tbw:".\n– "
+          mot 3 : mot:"C", tbw:"'"
+        Donc il faut ajouter le tiret de dialogue au mot 3 quand on le construit.
+        Même chose pour un changement de page.
+       */
+      var fmot = this.mot
+      if ( this.motP && (this.motP.isParagraphDelimitor||this.motP.isTextDelimitor)){
+        fmot = `${this.motP.tbw_after_rc}${fmot}`
+      }
+      var ftbw
+      if (this.isParagraphDelimitor||this.isTextDelimitor){
+        ftbw = this.tbw_before_rc + this.tbw_rcs.replace(/\r?\n/g,'<br>')
+      } else {
+        ftbw = this.tbw
+      }
+
+      // Pour mettre tous les spans qui seront construits
+      var spans = []
+
+      /**
+        Il faut un traitement spécial lorsque le mot est en proximité avant
+        et en proximité après
+      **/
+      if ( this.proxP || this.proxN ) {
+        // Quand il y a une proximité
+        if ( this.proxP && this.proxN ) {
+          // <= Quand les deux proximités sont définies
+          // => Il faut découper le mot
+          var len = fmot.length
+            , moi = parseInt(len/2,10)
+            , debMot = fmot.substring(0, moi)
+            , finMot = fmot.substring(moi, len)
+          spans.push(Dom.create('SPAN',{text:debMot, 'data-id':this.id, class:this.classProxP}))
+          spans.push(Dom.create('SPAN',{text:finMot, 'data-id':this.id, class:this.classProxN}))
+        } else if (this.proxP) {
+          spans.push(Dom.create('SPAN',{text:fmot, 'data-id':this.id, class:this.classProxP}))
+        } else /* quand proxN */{
+          spans.push(Dom.create('SPAN',{text:fmot, 'data-id':this.id, class:this.classProxN}))
+        }
+      } else {
+        // Quand ce mot n'est en proximité avec rien
+        spans.push(Dom.create('SPAN',{text:fmot, 'data-id':this.id, class:'mot'}))
+      }
+      spans.push(Dom.create('SPAN',{text:ftbw}))
+
+      this._asdom = spans
+    } return this._asdom
   }
 
   /**
@@ -99,61 +128,43 @@ class Mot {
     return this._isrc || (this._isrc = this.tbw.match(/\n/))
   }
 
-  // Retourne le className de l'élément contenant le mot
-  get class(){
-    if (undefined === this._class){
+  get classProxP(){
+    if (undefined === this._classproxp){
       var c = ['mot']
-      // Si le mot est en proximité, il faut le signaler avec un indicateur
-      // différent en fonction de la distance.
-      if (this.px_idP || this.px_idN) {
-        c.push(this.indicateurCSSDistance)
-        // TODO ajouter en attributs les données qui permettront de
-        // construire l'info-bulle qui donnera les infos sur la proximité
-      }
-      this._class = c.join(' ')
-      c = null
-    }
-    return this._class
+      this.proxP && c.push(this.indicateurCSSDistProxP)
+      this._classproxp = c.join(' ')
+    } return this._classproxp
   }
-
-  /**
-    Retourne la classe CSS qui correspond à la distance relative du
-    mot par rapport à sa proximité.
-
-    On considère :
-      Qu'il y a danger (proxdanger) lorsque le mot est à moins d'un quart
-      de la distance minimale (pour 1200 signes, ce serait à 300 signes)
-  **/
-  get indicateurCSSDistance(){
-    if ( undefined === this._indiccssdist){
-      // On prend la plus petite distance relative
-      var dists = [], dist
-      this.proxP && dists.push(this.relDistanceProxP)
-      this.proxN && dists.push(this.relDistanceProxN)
-      var dist = Math.min(...dists)
-      console.log("Dists, Dist = ", dists, dist)
-      if ( isNaN(dist) ) {
-        console.log("Mot sans dist",{
-            px_idN:this.px_idN
-          , px_idP:this.px_idP
-          , proxN: this.proxN
-          , proxP: this.proxP
-          , distanceP: this.proxP.distance
-          , distanceN: this.proxN.distance
-          , minDistP: this.proxP.distance_minimale
-          , minDistN: this.proxN.distance_minimale
-        })
-      }
-
-      this._indiccssdist = ((d)=>{
+  get indicateurCSSDistProxP(){
+    if ( undefined === this._indiccssdistproxp){
+      this._indiccssdistproxp = ((d)=>{
         if      (d < 25)  return 'proxdanger'
         else if (d < 50)  return 'proxwarn'
         else if (d < 75)  return 'proxnotice'
         else              return 'proxpassab'
-      })(dist)
-      console.log("Indicateur distance : ", this._indiccssdist)
+      })(this.relDistanceProxP)
+      console.log("'%s (#%d)' — Indicateur distance : '%s' (distance relative avec '%s' #%d : %d — %d/%d)", this.real_init, this.id, this._indiccssdistproxp, this.proxP.motA.real_init, this.proxP.motA.id, this.relDistanceProxP, this.distanceProxP, this.minimaleDistanceProxP)
     }
-    return this._indiccssdist
+    return this._indiccssdistproxp
+  }
+  get classProxN(){
+    if (undefined === this._classproxn){
+      var c = ['mot']
+      this.proxN && c.push(this.indicateurCSSDistProxN)
+      this._classproxn = c.join(' ')
+    } return this._classproxn
+  }
+  get indicateurCSSDistProxN(){
+    if ( undefined === this._indiccssdistproxn){
+      this._indiccssdistproxn = ((d)=>{
+        if      (d < 25)  return 'proxdanger'
+        else if (d < 50)  return 'proxwarn'
+        else if (d < 75)  return 'proxnotice'
+        else              return 'proxPassab'
+      })(this.relDistanceProxN)
+      console.log("'%s (#%d)' - Indicateur distance : '%s' (distance relative avec '%s' (#%d) : %d — %d/%d)", this.real_init, this.id, this._indiccssdistproxn, this.proxN.motB.real_init, this.proxN.motB.id, this.relDistanceProxN, this.distanceProxN, this.minimaleDistanceProxN)
+    }
+    return this._indiccssdistproxn
   }
 
   /**
@@ -185,7 +196,8 @@ class Mot {
   **/
   get proxP(){
     if (undefined === this._proxP){
-      this._proxP = this.px_idP ? Proximity.get(this.px_idP) : null
+      console.log("this.px_idP = ", this.px_idP)
+      this._proxP = this.px_idP && Proximity.get(this.px_idP)
     }
     return this._proxP
   }
@@ -224,7 +236,8 @@ class Mot {
   **/
   get proxN(){
     if (undefined === this._proxN){
-      this._proxN = this.px_idN ? Proximity.get(this.px_idN) : null
+      console.log("this.px_idN = ", this.px_idN)
+      this._proxN = this.px_idN && Proximity.get(this.px_idN)
     }
     return this._proxN
   }
