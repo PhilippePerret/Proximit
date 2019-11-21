@@ -32,3 +32,8 @@ select, select option {
   font-style:italic;
   font-size:0.85em;
 }
+
+.blue{color:blue;}
+.red{color:red;}
+.orange{color:orange;}
+.green{color:green;}

@@ -63,19 +63,33 @@ class Mot {
     on affiche une info-bulle présentant les informations
   **/
   onMouseover(ev){
+    // L'info-bulle pour afficher les informations + la mise en exergue
+    // des mots en proximité.
     var infos = []
     for (var where of ['P','N']){
       var proxId = `prox${where}` // proxP ou proxN
       if (!this[proxId]) continue;
       var prox = this[proxId]
         , motx = prox[`mot${where=='P'?'A':'B'}`]
-      infos.push(`Proximité avec '${motx.real_init}' à ${prox.distance} signes ${where=='P'?'avant':'après'}`)
+      var info = `Proximité avec '${motx.real_init}' à ${prox.distance} signes ${where=='P'?'avant':'après'}`
+      if ( motx.pageNumber != this.pageNumber ) {
+        info += ` <span class="red">(page ${where=='N'?'suivante':'précédente'})</span>`
+      }
+      infos.push(info)
+      motx.taggedSpans.forEach(o => o.classList.add('exergue-prox'))
     }
     UI.infoBulle(infos.join(CR), ev)
+
+    // La mise en exergue des mots proches
+
     return stopEvent(ev)
   }
   onMouseout(ev){
+    // On ferme l'info bulle
     UI.hideInfoBulle()
+    // On retirer la mise en exergue des mots en proximité
+    this.proxP && this.proxP.motA.taggedSpans.forEach(o => o.classList.remove('exergue-prox'))
+    this.proxN && this.proxN.motB.taggedSpans.forEach(o => o.classList.remove('exergue-prox'))
     return stopEvent(ev)
   }
 
@@ -83,6 +97,21 @@ class Mot {
   // ---------------------------------------------------------------------
   //  HELPERS
 
+  /**
+    Retourne l'objet DOM du span du mot
+  **/
+  get taggedSpan(){
+    return this._taggedspan || (this._taggedspan = DGet(`.mot[data-id="${this.id}"]`, UI.taggedPagesSection))
+  }
+  get taggedSpans(){
+    return this._taggedspans || (this._taggedspans = DGetAll(`.mot[data-id="${this.id}"]`, UI.taggedPagesSection))
+  }
+
+  /**
+    Retourne l'objet DOM du mot
+    ---------------------------
+    Note : pour la page tagguée
+  **/
   get asDom(){
     if ( undefined === this._asdom) {
       //
@@ -303,6 +332,23 @@ class Mot {
       , rcs = "".padEnd(num - 1,CR)
       , aft = spl[num-1]
     return {before:bef, after:aft, rcs:rcs}
+  }
+
+  /**
+    Retourne le numéro de la page du mot (en fonction des préférences)
+
+    Note : il est pris en lisant le data-id du conteneur de page tagguée
+  **/
+  get pageNumber(){
+    if ( undefined === this._pagenumber ) {
+      if ( this.taggedSpan ) {
+        var ancestor = this.taggedSpan.parentNode
+        while(!ancestor.classList.contains('tagged-page')){ancestor = ancestor.parentNode}
+        this._pagenumber = parseInt(ancestor.getAttribute('data-id'),10)
+      } else {
+        console.error("Impossible de prendre le numéro de page du mot '%s' (#%d). Son span taggué n'existe pas…", this.real_init, this.id)
+      }
+    } return this._pagenumber
   }
 
   // ---------------------------------------------------------------------

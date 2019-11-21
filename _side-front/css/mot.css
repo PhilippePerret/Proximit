@@ -12,6 +12,15 @@ span.mot.proxdanger {
   color:red;
 }
 
+/* Quand la proximité est mise en exergue au survol */
+span.mot.exergue-prox {
+  color:white
+}
+span.mot.exergue-prox.proxdanger {background-color:red;}
+span.mot.exergue-prox.proxwarn {background-color:orange;}
+span.mot.exergue-prox.proxnotice {background-color:darkblue;}
+span.mot.exergue-prox.proxpassab {background-color:darkgreen;}
+
 div#full_texte .mot {
   border:1px solid transparent;
 }
