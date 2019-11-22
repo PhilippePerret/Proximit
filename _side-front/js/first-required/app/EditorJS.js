@@ -46,8 +46,14 @@ class MyParagraph extends Paragraph {
       // console.log("Blur du paragraphe #%d", this.id)
       MyParagraph.current = null
     })
+    this._element.addEventListener('change', this.onChange.bind(this))
+
     this._element.setAttribute('data-id', this.id)
     return this._element
+  }
+  onChange(ev){
+    console.log("Modification du paragraphe #%d", this.id)
+    return stopEvent(ev)
   }
   save(toolsContent){
     if(undefined === toolsContent) toolsContent = this._element

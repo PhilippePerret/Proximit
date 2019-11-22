@@ -401,13 +401,17 @@ class PPage {
   **/
   onChange(){
     const my = this
-    console.log("Un paragraphe a été changé")
-    // // TODO Passer en revue les paragraphes de la page pour le trouver
-    // this.editor.save().then(my.studyChanges.bind(my))
     if (MyParagraph.current){
+      console.log("Le paragraphe #%s a été modifié", MyParagraph.current.id)
+      var [pageId, paragId] = MyParagraph.current.id.split('_')
+      pageId  = parseInt(pageId,10)
+      paragId = parseInt(paragId,10)
       // Car il peut ne pas exister, si on a été vite ou si on a
       // ouvert l'input pour l'url d'un lien.
-      console.log("Le paragraphe modifié est le paragraphe : %s", MyParagraph.current.save().md)
+      let savedData = MyParagraph.current.save()
+      console.log("Le paragraphe modifié est le paragraphe : “%s”", savedData.md)
+      // On le modifie dans currentData pour l'enregistrement
+      this.currentData.blocks[paragId - 1].data = savedData
     }
   }
 

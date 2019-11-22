@@ -362,22 +362,6 @@ class PTexte {
     }
   }
 
-
-  // /**
-  //   Sauvegarde de tous les canons du texte courant, sous une forme que
-  //   pourra recharger Proximit
-  // **/
-  // saveTexte(){
-  //   const my = this
-  //   return new Promise((ok,ko)=>{
-  //     let writeStream = fs.createWriteStream(my.correctedTextPath);
-  //     writeStream.write(my.correctedText, 'utf-8');
-  //     writeStream.on('finish', ok);
-  //     writeStream.end();
-  //   })
-  // }
-  // get correctedTextPath(){return this.in_prox('corrected_text.txt')}
-
   /**
     | ---------------------------------------------------------------------
     |   VERSIONS
@@ -445,50 +429,16 @@ class PTexte {
   // /Fin des méthodes version
   // ---------------------------------------------------------------------
 
-  /**
-    Retourne le texte intégral corrigé
-    Attention, ce texte peut être immense (tout un livre)
-  **/
-  get correctedText(){
-    var fulltext = ''
-    var curMot = this.firstMot
-    while ( curMot ) {
-      fulltext  = fulltext.concat(curMot.mot, (curMot.tbw||''))
-      curMot    = curMot.motN
-    }
-    log.debug("LONGUEUR TEXTE RETOURNÉ : %d", fulltext.length)
-    return fulltext
-  }
 
   get dataPath(){ return this.in_prox('data.json') }
 
   /**
     Retourne le texte du fichier contenant le texte entier (texte_entier.txt)
-    TODO Il faut vérifier si on tient compte ici des versions de corrections.
-    (dans le cas où on enregistre le texte avec des numéros de version différent à chaque fois)
   **/
   get fullTextInFile(){
     var t = String(fs.readFileSync(this.fulltext_path))
     // console.log("Texte dans le fichier = ", t)
     return t
-  }
-
-  /**
-    |
-    | Méthode pour corriger les proximités
-    |
-  **/
-  correctProximities(){
-    // Vérifier qu'on puisse le faire
-    if ( undefined === this.resultats ){
-      return UI.error("Le texte n'a pas encore été analysé. On ne peut pas afficher ses proximités. Jouer le menu « Texte > Analyser… »")
-    }
-    // console.log("résultats : ", resultats)
-    // console.log("Proximités:", proximites)
-    // let proximites = this.resultats.datas.proximites.datas
-    this.initWhenAnalyzed()
-    Proximity.show(0)
-    // Affichage de la première proximité
   }
 
   /**

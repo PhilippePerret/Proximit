@@ -1,5 +1,5 @@
-* Tout passer par la console
-* Pouvoir enregistrer le nouveau texte
+* Modifier currentData de PPage quand on modifie le texte
+
 * Pouvoir suivre les modifications et actualiser les proximités
 
 * Pouvoir mémoriser les proximités traitées

@@ -78,11 +78,11 @@ const ObjMenus = {
           }
         , {type:'separator'}
         , {
-              label: 'Corriger les proximités'
+              label: 'Suivre les proximités'
             , id: 'texte-correct-proximities'
             , accelerator: 'CmdOrCtrl+Shift+P'
             , enabled: true // à corriger plus tard
-            , click:function(){execJS("PTexte.current.correctProximities.call(PTexte.current)")}
+            , click:function(){execJS("PPage.follow.call(PPage)")}
           }
         , {type:'separator'}
         , {
