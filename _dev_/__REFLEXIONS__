@@ -3,3 +3,5 @@ SAUVEGARDE DES DONNÉES
 Faire vraiment un format Proximite du fichier, qui contiendra toutes les données. En fait, un faux dossier, comme pour scrivener.
 
 Donc : quand un fichier n'est pas au format Proximit, on l'interprète, on en fait un document Proximit. Ensuite, c'est ce fichier qu'on charge s'il a été sauvé.
+
+La classe `PPackage` s'occupe du dossier package de l'application.

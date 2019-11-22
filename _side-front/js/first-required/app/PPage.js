@@ -449,11 +449,20 @@ class PPage {
     console.log("=== Nombre de paragraphes : %d", this.paragraphes.length)
     // console.log("this.paragraphes = ", this.paragraphes)
 
+    var indexMot = 0 // +1-start
     this.paragraphes.forEach(pparag => {
+      // Pour essayer de mettre les mots dans des spans (conditions sine qua non
+      // pour pouvoir gérer correctement les textes), j'essai ici de redéfinir
+      // html
+      // NOTE Pour le moment, je renonce à cette complexité
+      // var html = pparag.md.split(' ').map(mot => `<span class="mot" data-id="${++indexMot}">${mot}</span>`)
+      // html = html.join('')
+
       blocks.push({type:'myparagraph',
         data:{
             md_original:pparag.md
           , text:pparag.md // il faut garder 'text' pour editorjs
+          // , text:html
           , md:pparag.md
           , html:pparag.html
           , raw: pparag.raw

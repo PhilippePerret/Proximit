@@ -97,7 +97,7 @@ class PTexte {
     Méthode appelée par le bouton ou le menu pour sauver le texte courant
     (toutes ses données)
   **/
-  static saveCurrent() {
+  static async saveCurrent() {
     this.current || raise("Pas de texte courant à sauver !")
     this.current.save()
   }
@@ -267,47 +267,116 @@ class PTexte {
   }
 
   /**
-    Sauvegarde de toutes les données courantes
+    Sauvegarde du PTexte
 
-    Note : cette méthode ne sauvent pas dans les mêmes fichiers que
-    l'analyse ruby. Ici, on utilise mots.json, canons.json, proximites.json
-    et corrected_text.txt (et peut-être d'autres fichiers à l'avenir)
+    Pour le moment, on sauve simplement le texte tel qu'il est, en le lisant
+    dans l'éditeur à droite.
+
   **/
   async save(){
-    log.info("Enregistrement des données, merci de patienter…",{style:'warning', keep:true, waiter:true})
-    console.time('Sauvegarde')
-    log.debug("*** SAUVEGARDE DE L'ANALYSE DU TEXTE '%s'…", this.name)
-    log.debug("* Sauvegarde des données mots…")
-    await Mot       .saveData()
-    log.debug("  = OK (mots)")
-    log.debug("* Sauvegarde des données Canons…")
-    await Canon     .saveData()
-    log.debug("  = OK (canons)")
-    await Proximity .saveData()
-    await this      .saveTexte()
-    this.saveData()
-    log.info("=== DONNÉES PROXIMIT SAUVEGARDÉES AVEC SUCCÈS ===")
-    console.timeEnd('Sauvegarde')
-    UI.flash("Fin de la sauvegarde", {style:'neutre', replace:true})
+    const my = this
+    UI.waiter("Sauvegarde du texte. Merci de patienter…")
+    console.log("-> save")
+    // Par prudence, on fait une copie (backup) du fichier original
+    if (!this.makeBackupText()){
+      UI.stopWaiter()
+      return false
+    }
+
+    try {
+
+      // On exécute une boucle sur tous les paragraphes pour les enregistrer
+      // dans le fichier texte.
+      var pageNumber = 0 // +1-start
+        , fullTexte  = []
+        , ppage = PPage.get(++pageNumber)
+
+      while ( ppage ) {
+        console.log("Traitement de la page #%d", ppage.numero)
+        if (ppage.currentData){
+          // <= Les données courantes existent, c'est-à-dire que la page
+          //    a été éditée.
+          // => On doit récupérer le texte depuis ces données courantes
+          // console.log("Ses données : ", ppage.currentData.blocks)
+          ppage.currentData.blocks.forEach(block => {
+            fullTexte.push(block.data.md + CR)
+          })
+        } else {
+          // <= Pas de données courantes => la page n'a pas été éditée
+          // => On prend son texte actuel
+          fullTexte.push(ppage.originalText)
+        }
+        // On prend la page suivante (if any)
+        ppage = PPage.get(++pageNumber)
+      }
+
+      // On constitue le texte final
+      // NOTE TODO À l'avenir, on pourrait imaginer de mettre une enête
+      // avec des informations.
+      fullTexte = fullTexte.join(CR)
+
+      // On fait une petite vérification pour voir s'il n'y a pas eu
+      // un problème.
+      if (fs.existsSync(this.path)){
+        let originalLength = this.fullTextInFile.length
+          , nouvelleLength = fullTexte.length
+          , diffLength = Math.abs(this.fullTextInFile.length - fullTexte.length)
+
+        if ( diffLength > originalLength/20 ) {
+          if (!confirmer("La longueur du nouveau texte est différente de plus de 20 % par rapport au texte original. Dois-je sauver quand même ?")) raise("Annulation de la sauvegarde.")
+        }
+      }
+
+      return new Promise((ok,ko)=>{
+        let writeStream = fs.createWriteStream(my.path);
+        writeStream.write(fullTexte, 'utf-8');
+        writeStream.on('finish', () => {
+          // On peut détruire le backup, maintenant que tout est sauvé et correct
+          // Le backup n'existe pas quand on fait un "Save as…" par exemple
+          fs.existsSync(this.backupPath) && fs.unlinkSync(this.backupPath)
+          UI.stopWaiter()
+          ok()
+        });
+        writeStream.end();
+      })
+
+    } catch (e) {
+      UI.stopWaiter()
+      console.error(e)
+    }
   }
 
-  /**
-    Sauvegarde de tous les canons du texte courant, sous une forme que
-    pourra recharger Proximit
-  **/
-  saveTexte(){
-    const my = this
-    return new Promise((ok,ko)=>{
-      let writeStream = fs.createWriteStream(my.correctedTextPath);
-      writeStream.write(my.correctedText, 'utf-8');
-      writeStream.on('finish', () => {
-          log.debug('Toutes les proximités ont été écrites dans le fichier');
-          ok()
-      });
-      writeStream.end();
-    })
+  makeBackupText(){
+    if (fs.existsSync(this.path)){
+      fs.copyFileSync(this.path, this.backupPath)
+      if (fs.existsSync(this.backupPath)){
+        return true
+      } else {
+        raise("Le backup du fichier original devrait exister. Je ne peux pas prendre le risque d'enregistrer le nouveau texte.")
+        return false
+      }
+    } else {
+      // <= Il n'y a pas de fichier origina (save as…)
+      // => rien à faire
+      return true
+    }
   }
-  get correctedTextPath(){return this.in_prox('corrected_text.txt')}
+
+
+  // /**
+  //   Sauvegarde de tous les canons du texte courant, sous une forme que
+  //   pourra recharger Proximit
+  // **/
+  // saveTexte(){
+  //   const my = this
+  //   return new Promise((ok,ko)=>{
+  //     let writeStream = fs.createWriteStream(my.correctedTextPath);
+  //     writeStream.write(my.correctedText, 'utf-8');
+  //     writeStream.on('finish', ok);
+  //     writeStream.end();
+  //   })
+  // }
+  // get correctedTextPath(){return this.in_prox('corrected_text.txt')}
 
   /**
     | ---------------------------------------------------------------------
@@ -488,15 +557,22 @@ class PTexte {
   /**
     Propriétés de path
   **/
+
+  /**
+    Retourne le backup du texte courant
+  **/
+  get backupPath(){
+    return this._backuppath || (this._backuppath = path.join(this.texteFolder,`${this.affixe}.backup.md`))
+  }
   in_prox(relpath){ return path.join(this.prox_folder,relpath) }
   get fulltext_path(){return this._fulltext_path || (this._fulltext_path = this.in_prox('texte_entier.txt'))}
   get resultats_path(){return this._resultatspath || (this._resultatspath = this.in_prox('table_resultats.json'))}
 
   // Le path du dossier contenant tous les éléments
-  get prox_folder(){return this._prox_folder || (this._prox_folder = path.join(this.text_folder,`${this.affixe}_prox`))}
+  get prox_folder(){return this._prox_folder || (this._prox_folder = path.join(this.texteFolder,`${this.affixe}_prox`))}
 
   // Le path du dossier du fichier texte
-  get text_folder(){return this._textfolder || (this._textfolder = path.dirname(this.path))}
+  get texteFolder(){return this._textfolder || (this._textfolder = path.dirname(this.path))}
 
   // L'affixe du fichier (pour le nom du dossier)
   get affixe(){return this._affixe || (this._affixe = path.basename(this.path,path.extname(this.path)))}

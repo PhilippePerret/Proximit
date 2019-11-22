@@ -6,6 +6,7 @@
   * [Fonctionnement de l'affichage des pages](#fonctionnementaffpages)
 * [Principes généraux](#principes_generaux)
 * [Tests](#les_tests)
+* [Dossier package du texte](#packagefoldertexte)
 * [Obtenir l'instance d'un mot quelconque](#get_mot)
 * [Modification d'une proximité](#modify_a_prox)
 * [Appendum (gestion des modifications)](#laddendum)
@@ -133,6 +134,18 @@ Pour lancer ces seconds tests il suffit de jouer `npm test`.
 La création des tests se fait dans le dossier `js/tests` et ils s'écrivent comme du javascript normal, sans se prendre la tête.
 
 On peut juste utiliser les méthodes `assert(valeur, message succès, message erreur)` pour produire des succès ou des erreurs dans la console suivant la valeur de `valeur`.
+
+---------------------------------------------------------------------
+
+## Dossier package du texte {#packagefoldertexte}
+
+> pour le moment, ces fonctionnalités ne sont pas encore utilisées, l'application reste simple et présente toujours toutes les proximités qui n'ont pas été corrigée. On peut juste décider de retirer tel ou tel mot.
+
+Les données du texte sont enregistrées dans un dossier `.prox` qui doit se comporter comme un package.
+
+`PPackage` est la classe qui s'occupe de gérer les fichiers d'un `PTexte` (du `PTexte.current` plus exactement).
+
+Principe : une fois traité une première fois dans Proximit, le texte est enregistré par paragraphes (cela permet de modifier la taille des pailles chaque fois). Le fichier `paragraphes.json` contient la liste de tous les mots du paragraphe, c'est-à-dire leur identifiant puisque chaque mot est identifié
 
 ---------------------------------------------------------------------
 

@@ -77,7 +77,7 @@ class Console {
     Pour jouer la commande voulue (this.command)
   **/
   run(){
-    switch(thi.real_command){
+    switch(this.real_command.command){
       case 'write':
         // => enregistrer le texte
         PTexte.saveCurrent()
