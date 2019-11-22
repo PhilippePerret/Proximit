@@ -402,7 +402,7 @@ class PPage {
   onChange(){
     const my = this
     if (MyParagraph.current){
-      console.log("Le paragraphe #%s a été modifié", MyParagraph.current.id)
+      // console.log("Le paragraphe #%s a été modifié", MyParagraph.current.id)
       var [pageId, paragId] = MyParagraph.current.id.split('_')
       pageId  = parseInt(pageId,10)
       paragId = parseInt(paragId,10)
@@ -412,6 +412,28 @@ class PPage {
       console.log("Le paragraphe modifié est le paragraphe : “%s”", savedData.md)
       // On le modifie dans currentData pour l'enregistrement
       this.currentData.blocks[paragId - 1].data = savedData
+      // On doit modifier le raw text pour que les proximités puissent être
+      // étudiées
+      delete this._rawtext
+      // Si les préférences le demandent, il faut checker à nouveau la page
+      if ( true ) this.check()
+    } else {
+      // Ça se produit par exemple lorsqu'on ajoute un paragraphe au paragraphe
+      // en passant à la ligne.
+      // Dans ce cas-là, on se retrouve sur une ligne sans 'data-id'.
+      // QUESTION Que faut-il faire ? Faut-il reconstruire toute la page ?
+      console.error("Il y a eu une modification, mais sans paragraphe courant…")
+      // On fait deux choses ici pour le moment :
+      //  1. on récupère le contenu du paragraphe (en le passant en markdown)
+      //  2. on modifie l'identifiant du paragraphe
+      var paragIndex = 0 // +1-start
+        , parags = []
+      DGetAll('div.codex-editor__redactor div.ce-block div.ce-paragraph',this.page.domObj)
+      .forEach(div => {
+        console.log("Paragraphe “%s”", div.innerHTML)
+        div.setAttribute('data-id', `${my.id}_${++paragIndex}`)
+        parags.push(html2md(div.innerHTML))
+      })
     }
   }
 

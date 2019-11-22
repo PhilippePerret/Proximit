@@ -57,9 +57,9 @@ class MyParagraph extends Paragraph {
   }
   save(toolsContent){
     if(undefined === toolsContent) toolsContent = this._element
-    console.log(">>> html au départ : '%s'",toolsContent.innerHTML)
+    // console.log(">>> html au départ : '%s'",toolsContent.innerHTML)
     this.html = Converter.replaceHTMLEntities(toolsContent.innerHTML)
-    console.log('<<< html après conversion : "%s"', this.html)
+    // console.log('<<< html après conversion : "%s"', this.html)
     return {
           html: this.html
         , raw:  this.raw
