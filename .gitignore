@@ -2,5 +2,9 @@
 
 node_modules/
 
+built/
+
+_dev_/
+
 spec/support/assets/textes/Un_Amour_fou.txt
 spec/support/assets/textes/Un_Amour_fou_prox/

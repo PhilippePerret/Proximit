@@ -97,7 +97,10 @@ class PTexte {
     Méthode appelée par le bouton ou le menu pour sauver le texte courant
     (toutes ses données)
   **/
-  static saveCurrent(){ this.current.save() }
+  static saveCurrent() {
+    this.current || raise("Pas de texte courant à sauver !")
+    this.current.save()
+  }
 
   /**
     Méthode appelée pour charger toutes les données du texte courant

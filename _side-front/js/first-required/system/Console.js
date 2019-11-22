@@ -77,7 +77,18 @@ class Console {
     Pour jouer la commande voulue (this.command)
   **/
   run(){
-    console.log("Commande à jouer : ", this.real_command)
+    switch(thi.real_command){
+      case 'write':
+        // => enregistrer le texte
+        PTexte.saveCurrent()
+        break;
+      case 'find':
+        // => Chercher dans le texte
+        break;
+      case 'goto':
+        // => Se rendre à une page particulière
+        break;
+    }
   }
 
   get real_command(){

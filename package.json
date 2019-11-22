@@ -8,13 +8,12 @@
     "test": "TESTS=true electron .",
     "start": "electron .",
     "start-update": "UPDATE_MAIN_HTML=true electron .",
-    "build": "electron-packager . --platform=darwin --icon=icons/app --asar --out=built --overwrite",
+    "build": "electron-packager . --platform=darwin --asar --out=built --overwrite",
     "dev": "electron . --debug"
   },
   "author": "Philippe Perret <philippe.perret@yahoo.fr>",
   "license": "ISC",
   "devDependencies": {
-    "@editorjs/paragraph": "^2.6.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "electron": "^6.0.0",
@@ -23,6 +22,7 @@
   },
   "dependencies": {
     "@editorjs/editorjs": "^2.15.1",
+    "@editorjs/paragraph": "^2.6.0",
     "JSONStream": "^1.3.5",
     "adm-zip": "^0.4.13",
     "electron-log": "^3.0.8",
