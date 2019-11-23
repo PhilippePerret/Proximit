@@ -253,7 +253,15 @@ class PPage {
   async feedTaggedPage(paragraphs){
     const my = this
     this.log("-> feedTaggedPage(paragraphs)")
-    this.taggedBuilt || await this.createTaggedPage()
+    if ( ! this.taggedBuilt ) {
+      // <= La page tagguée n'existe pas
+      // => Il faut la construire
+      await this.createTaggedPage()
+    } else {
+      // <= La page tagguée existe
+      // => Il faut la nettoyer (la vider)
+      this.taggedPage.clean()
+    }
     var paragIndex = 0 // +1 start
     let paragCount   = paragraphs.length
 
@@ -286,7 +294,7 @@ class PPage {
     // On récupère le texte qui doit servir pour le check
     var portion = this.getCheckableTexte()
 
-    console.log("+++ Portion à analyser : ", portion)
+    // console.log("+++ Portion à analyser : ", portion)
 
     // On procède à l'analyse (elle prend un certain temps)
     await TexteAnalyse.analyze(portion)
@@ -306,7 +314,8 @@ class PPage {
     @param {Array} taggedTexts Données retournée par TexteAnalyse après
           l'analyse du texte fourni.
           C'est une liste de données de texte
-          Chaque données de texte contient une liste de paragraphes
+          Chaque donnée est une page
+          chaque donnée de page contient une liste de paragraphes
           Chaque paragraphe est un DIV de class 'paragraph' qui contient
           les mots taggués.
   **/
@@ -452,7 +461,7 @@ class PPage {
       .forEach(div => {
         // console.log("Paragraphe “%s”", div.innerHTML)
         div.setAttribute('data-id', `${my.id}_${++paragIndex}`)
-        my.paragraphes.push(new PParagraph(my,{md:html2md(div.innerHTML), index:++paragIndex}))
+        my.paragraphes.push(new PParagraph(my,{md:html2md(div.innerHTML), index:paragIndex}))
       })
 
       console.log("--- my.paragraphes mis à ", my.paragraphes)
