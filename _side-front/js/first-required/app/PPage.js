@@ -64,6 +64,13 @@ class PPage {
     $('.btn-next-page')[showBtnNext?'removeClass':'addClass']('hidden')
   }
 
+  static checkCurrentPage(){
+    if (this.current) {
+      this.current.updateTagged()
+    } else {
+      console.warn("Pas de page courante à vérifier…")
+    }
+  }
   /**
     Découpe le texte +str+ en pages (instances PPage)
     Si +owner+ est défini, c'est le PTexte concerné et on met les pages
@@ -410,72 +417,127 @@ class PPage {
     this.log('<- forSave')
   }
 
+  // /**
+  //   Appelé lorsqu'un paragraphe a été modifié
+  //
+  //   OBSOLÈTE : maintenant, on ne fait plus rien jusqu'à ce que le check
+  //   soit demandé.
+  // **/
+  // async onChange(){
+  //   const my = this
+  //   my.log('-> onChange')
+  //   if(my.doNothingWhenChange){
+  //     my.log('<- onChange (court-circuitée car `doNothingWhenChange` est true)')
+  //     return
+  //   }
+  //   if (MyParagraph.current){
+  //     // console.log("Le paragraphe #%s a été modifié", MyParagraph.current.id)
+  //     var [pageId, paragId] = MyParagraph.current.id.split('_')
+  //     pageId  = parseInt(pageId,10)
+  //     paragId = parseInt(paragId,10)
+  //     // Car il peut ne pas exister, si on a été vite ou si on a
+  //     // ouvert l'input pour l'url d'un lien.
+  //     let savedData = MyParagraph.current.save()
+  //     my.log("Le paragraphe modifié est le paragraphe : “%s”", savedData.md)
+  //     // On le modifie dans currentData pour l'enregistrement
+  //     this.currentData.blocks[paragId - 1].data = savedData
+  //     // On doit modifier le raw text pour que les proximités puissent être
+  //     // étudiées
+  //     delete this._rawtext
+  //     // Si les préférences le demandent, il faut checker à nouveau la page
+  //     if ( true ) this.check()
+  //   } else {
+  //     // Ça se produit par exemple lorsqu'on ajoute un paragraphe au paragraphe
+  //     // en passant à la ligne.
+  //     // Dans ce cas-là, on se retrouve sur une ligne sans 'data-id'.
+  //     my.log("Modification, mais sans paragraphe courant.")
+  //     // On fait deux choses ici pour le moment :
+  //     //  1. on récupère le contenu du paragraphe (en le passant en markdown)
+  //     //  2. on modifie l'identifiant du paragraphe
+  //     var paragIndex = 0 // +1-start
+  //
+  //     // On réinitialise la liste des paragraphes de la page
+  //     my.paragraphes = []
+  //
+  //     // C'est assez lourd, mais pendant qu'on place les 'data-id' sur les
+  //     // paragraphes, il faut couper la méthode onChange de la page qui serait
+  //     // sinon appelée chaque fois.
+  //     my.doNothingWhenChange = true
+  //     my.log("doNothingWhenChange est mis à true")
+  //     // delete my.editor.onChange
+  //
+  //     // On boucle sur les paragraphes actuels pour les relever
+  //     DGetAll('div.codex-editor__redactor div.ce-block div.ce-paragraph',this.page.domObj)
+  //     .forEach(div => {
+  //       // console.log("Paragraphe “%s”", div.innerHTML)
+  //       div.setAttribute('data-id', `${my.id}_${++paragIndex}`)
+  //       my.paragraphes.push(new PParagraph(my,{md:html2md(div.innerHTML), index:paragIndex}))
+  //     })
+  //
+  //     console.log("--- my.paragraphes mis à ", my.paragraphes)
+  //     // On actualise le texte (les blocks) et on demande un check
+  //     delete my._rawtext
+  //     my.paragraphs2blocks()
+  //     await my.check()
+  //
+  //     // my.editor.onChange = my.onChange.bind(my)
+  //     my.log("doNothingWhenChange est remis à false")
+  //     my.doNothingWhenChange = false
+  //
+  //   }
+  //   my.log('<- onChange (@sync parfois)')
+  // }
+
   /**
-    Appelé lorsqu'un paragraphe a été modifié
+    Méthode qui récupère le texte dans l'éditeur lui-même
+  
+    Actualise :
+      this.paragraphes
+      this.blocks
+
+    Note : en plus de récupérer le texte, elle actualise les data-id des
+    paragraphes, même si ça ne sert à rien pour le moment.
   **/
-  async onChange(){
+  getTextInEditor(){
     const my = this
-    my.log('-> onChange')
-    if(my.doNothingWhenChange){
-      my.log('<- onChange (court-circuitée car `doNothingWhenChange` est true)')
-      return
-    }
-    if (MyParagraph.current){
-      // console.log("Le paragraphe #%s a été modifié", MyParagraph.current.id)
-      var [pageId, paragId] = MyParagraph.current.id.split('_')
-      pageId  = parseInt(pageId,10)
-      paragId = parseInt(paragId,10)
-      // Car il peut ne pas exister, si on a été vite ou si on a
-      // ouvert l'input pour l'url d'un lien.
-      let savedData = MyParagraph.current.save()
-      my.log("Le paragraphe modifié est le paragraphe : “%s”", savedData.md)
-      // On le modifie dans currentData pour l'enregistrement
-      this.currentData.blocks[paragId - 1].data = savedData
-      // On doit modifier le raw text pour que les proximités puissent être
-      // étudiées
-      delete this._rawtext
-      // Si les préférences le demandent, il faut checker à nouveau la page
-      if ( true ) this.check()
-    } else {
-      // Ça se produit par exemple lorsqu'on ajoute un paragraphe au paragraphe
-      // en passant à la ligne.
-      // Dans ce cas-là, on se retrouve sur une ligne sans 'data-id'.
-      my.log("Modification, mais sans paragraphe courant.")
-      // On fait deux choses ici pour le moment :
-      //  1. on récupère le contenu du paragraphe (en le passant en markdown)
-      //  2. on modifie l'identifiant du paragraphe
-      var paragIndex = 0 // +1-start
+    my.log('-> getTextInEditor')
+    // On fait deux choses ici pour le moment :
+    //  1. on récupère le contenu du paragraphe (en le passant en markdown)
+    //  2. on modifie l'identifiant du paragraphe
+    var paragIndex = 0 // +1-start
 
-      // On réinitialise la liste des paragraphes de la page
-      my.paragraphes = []
+    // On réinitialise la liste des paragraphes de la page
+    my.paragraphes = []
 
-      // C'est assez lourd, mais pendant qu'on place les 'data-id' sur les
-      // paragraphes, il faut couper la méthode onChange de la page qui serait
-      // sinon appelée chaque fois.
-      my.doNothingWhenChange = true
-      my.log("doNothingWhenChange est mis à true")
-      // delete my.editor.onChange
+    // On boucle sur les paragraphes actuels pour les relever
+    DGetAll('div.codex-editor__redactor div.ce-block div.ce-paragraph',my.page.domObj)
+    .forEach(div => {
+      // console.log("Paragraphe “%s”", div.innerHTML)
+      div.setAttribute('data-id', `${my.id}_${++paragIndex}`)
+      my.paragraphes.push(new PParagraph(my,{md:html2md(div.innerHTML), index:paragIndex}))
+    })
 
-      // On boucle sur les paragraphes actuels pour les relever
-      DGetAll('div.codex-editor__redactor div.ce-block div.ce-paragraph',this.page.domObj)
-      .forEach(div => {
-        // console.log("Paragraphe “%s”", div.innerHTML)
-        div.setAttribute('data-id', `${my.id}_${++paragIndex}`)
-        my.paragraphes.push(new PParagraph(my,{md:html2md(div.innerHTML), index:paragIndex}))
-      })
+    my.paragraphs2blocks()
 
-      console.log("--- my.paragraphes mis à ", my.paragraphes)
-      // On actualise le texte (les blocks) et on demande un check
-      delete my._rawtext
-      my.paragraphs2blocks()
-      await my.check()
+    my.log('<- getTextInEditor')
+  }
+  /**
+    Méthode appelée quand on veut lancer le check sur le texte pour afficher
+    les nouvelles proximités.
 
-      // my.editor.onChange = my.onChange.bind(my)
-      my.log("doNothingWhenChange est remis à false")
-      my.doNothingWhenChange = false
-
-    }
-    my.log('<- onChange (@sync parfois)')
+    On doit pouvoir l'atteindre de trois façons différentes :
+      - par un raccourci clavier général (CMD + Enter)
+      - par une commande dans la console (u[pdate])
+      - par un bouton du pied de page (Vérifier)
+  **/
+  async updateTagged(){
+    const my = this
+    my.log('-> updateTagged')
+    this.getTextInEditor()
+    await my.check()
+    // Pour forcer le recalcul des valeurs
+    delete my._rawtext
+    my.log('<- updateTagged (@async)')
   }
 
   /**
@@ -548,7 +610,7 @@ class PPage {
           }
         }
       , data:{time:(new Date().getTime()), blocks:my.blocks}
-      , onChange: my.onChange.bind(my)
+      , onChange: null
       , onReady:  my.onEditorReady.bind(my)
     })
     await this._editor.isReady;

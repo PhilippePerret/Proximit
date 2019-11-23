@@ -66,22 +66,20 @@
     <section id="footer">
       <section id="footer-left-section">
         <input type="text" id="console" class="discret" />
-        <button type="button" onclick="PTexte.loadCurrent.call(PTexte)">Charge</button>
-        <button type="button" onclick="PTexte.saveCurrent.call(PTexte)">Sauve</button>
-        <button type="button" onclick="PTexte.watchCurrent.call(PTexte)" class="pressable main">Surveiller</button>
       </section>
       <section id="footer-right-section">
         <span id="footer-page-length">
           <span id="text-length">---</span><span> signes</span>
         </span>
 
-        <span id="control-buttons">
-          <button type="button" class="btn-prev-page hidden">◁</button>
-          <label>Page </label><span id="page-number">---</span> / <span id="page-number-total">-</span>
-          <button type="button" class="btn-next-page visible">▷</button>
-        </span>
-
       </section>
+
+      <!-- Boite de contrôleur -->
+      <div id="control-buttons">
+        <button type="button" class="btn-prev-page hidden">◁</button>
+        <label>Page </label><span id="page-number">---</span> / <span id="page-number-total">-</span>
+        <button type="button" class="btn-next-page visible">▷</button>
+      </div>
 
 
       <!-- Infos de pied de page sur le texte -->

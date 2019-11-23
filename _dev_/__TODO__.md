@@ -1,7 +1,8 @@
+POURSUIVRE AVEC :
+  - enregistrer vraiment la page comme elle est (il faut la reprendre, comme pour le check => faire une méthode indépendante => procédure de récupération du texte)
+  - renseigner l'aide (CMD+U pour checker la page)
+  - mémoriser quand la page est modifiée pour le signaler quand on veut changer de page
 
-POURSUIVRE L'AJOUT DE PARAGRAPHES À LA PAGE
-  (on a modifié les 'data-id' des paragraphes, on a récupéré la liste des nouveaux textes, il faut mettre tout ça dans les données de la PPage.current)
-  + La corection des proximités en live, au mesure des modifications
 
 * Pouvoir suivre les modifications et actualiser les proximités
 

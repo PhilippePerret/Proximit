@@ -261,6 +261,7 @@ class PTexte {
   /**
     Appelée lorsque le texte de l'éditeur a changé (mais après un
     laps de temps, ce qui permet de ne pas interrompre la frappe)
+    OBSOLÈTE normalement
   **/
   onChange(ev){
     this.editor.save(data => console.log("nouvelles data:", data))
@@ -269,9 +270,7 @@ class PTexte {
   /**
     Sauvegarde du PTexte
 
-    Pour le moment, on sauve simplement le texte tel qu'il est, en le lisant
-    dans l'éditeur à droite.
-
+    C'est-à-dire sauvegarde de ses pages
   **/
   async save(){
     const my = this
@@ -293,19 +292,12 @@ class PTexte {
 
       while ( ppage ) {
         console.log("Traitement de la page #%d", ppage.numero)
-        if (ppage.currentData){
-          // <= Les données courantes existent, c'est-à-dire que la page
-          //    a été éditée.
-          // => On doit récupérer le texte depuis ces données courantes
-          // console.log("Ses données : ", ppage.currentData.blocks)
-          ppage.currentData.blocks.forEach(block => {
-            fullTexte.push(block.data.md + CR)
-          })
-        } else {
-          // <= Pas de données courantes => la page n'a pas été éditée
-          // => On prend son texte actuel
-          fullTexte.push(ppage.originalText)
-        }
+        // On répète pour chaque block/paragraphe de la page
+        // TODO: Ici, faire une procédure pour vérifier si la page a été
+        // modifiée, sinon prendre simplement son texte original
+        ppage.blocks.forEach(block => {
+          fullTexte.push(block.data.md + CR)
+        })
         // On prend la page suivante (if any)
         ppage = PPage.get(++pageNumber)
       }

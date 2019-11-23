@@ -54,8 +54,17 @@ body > section#footer section#footer-right-section {
 }
 
 /* Le span contenant les boutons pour passer de page en page */
-body > section#footer section#footer-right-section span#control-buttons,
-body > section#footer section#footer-right-section span#control-buttons button {
+div#control-buttons {
+  position:fixed;
+  bottom:40px;
+  right:10px;
+  background-color:white;
+  color:#777777;
+  opacity:0.5;
+}
+div#control-buttons:hover {opacity:1;}
+div#control-buttons,
+div#control-buttons button {
   font-size:1.31em;
 }
 
@@ -123,7 +132,7 @@ body > div#aide a.btn-close {
 div#flash {
   position:fixed;
   bottom:48px;
-  right: 4px;
+  left: 4px;
   opacity:0.6;
   z-index:1000;
   text-align:left;

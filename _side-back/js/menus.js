@@ -78,6 +78,13 @@ const ObjMenus = {
           }
         , {type:'separator'}
         , {
+              label: 'Vérifier la page'
+            , id: 'verify-current-page'
+            , accelerator: 'CmdOrCtrl+U'
+            , enabled: true // à corriger plus tard
+            , click:function(){execJS('PPage.checkCurrentPage.call(PPage)')}
+          }
+        , {
               label: 'Suivre les proximités'
             , id: 'texte-correct-proximities'
             , accelerator: 'CmdOrCtrl+Shift+P'
