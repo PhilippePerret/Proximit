@@ -247,7 +247,8 @@ class PPage {
   }
 
   /**
-    Méthode qui
+    Méthode qui place dans la section tagguée en miroir les paragraphes
+    taggués (où apparaissent les proximités)
   **/
   async feedTaggedPage(paragraphs){
     const my = this
@@ -285,12 +286,16 @@ class PPage {
     // On récupère le texte qui doit servir pour le check
     var portion = this.getCheckableTexte()
 
+    console.log("+++ Portion à analyser : ", portion)
+
     // On procède à l'analyse (elle prend un certain temps)
     await TexteAnalyse.analyze(portion)
 
     // On analyse le retour, principalement en récupérant les pages et
     // les paragraphes
-    TexteAnalyse.tag().then(this.afterCheck.bind(this))
+    TexteAnalyse.tag()
+      .then(this.afterCheck.bind(this))
+      .catch(err => {throw(err)})
 
     this.log("<- check")
   }
@@ -346,7 +351,7 @@ class PPage {
     @return {String} Le texte à checker (par la méthode `check`)
   **/
   getCheckableTexte(){
-    this.log("-> getCheckableTexte")
+    this.log('-> getCheckableTexte')
     var portion = []
     this.isFirstPage  || portion.push(this.prev.rawText)
     portion.push(this.rawText)
@@ -362,7 +367,7 @@ class PPage {
     occupe
   **/
   async createTaggedPage(){
-    this.log("-> createTaggedPage()")
+    this.log('-> createTaggedPage()')
 
     // Créer un div pour cette page
     UI.taggedPagesSection.append(
@@ -372,7 +377,7 @@ class PPage {
 
     this.taggedBuilt = true
 
-    this.log("<- createTaggedPage")
+    this.log('<- createTaggedPage')
   }
 
 
@@ -382,7 +387,7 @@ class PPage {
   }
 
   forSave(data){
-    this.log("-> forSave(...)")
+    this.log('-> forSave(...)')
     // console.log("Data du texte renvoyées par le save de editorjs", data)
     if ( undefined === this.initialData ){
       console.log("C'est le premier appel")
@@ -393,14 +398,19 @@ class PPage {
       // C'est une modification
       console.log("C'est une première modification")
     }
-    this.log("<- forSave")
+    this.log('<- forSave')
   }
 
   /**
     Appelé lorsqu'un paragraphe a été modifié
   **/
-  onChange(){
+  async onChange(){
     const my = this
+    my.log('-> onChange')
+    if(my.doNothingWhenChange){
+      my.log('<- onChange (court-circuitée car `doNothingWhenChange` est true)')
+      return
+    }
     if (MyParagraph.current){
       // console.log("Le paragraphe #%s a été modifié", MyParagraph.current.id)
       var [pageId, paragId] = MyParagraph.current.id.split('_')
@@ -409,7 +419,7 @@ class PPage {
       // Car il peut ne pas exister, si on a été vite ou si on a
       // ouvert l'input pour l'url d'un lien.
       let savedData = MyParagraph.current.save()
-      console.log("Le paragraphe modifié est le paragraphe : “%s”", savedData.md)
+      my.log("Le paragraphe modifié est le paragraphe : “%s”", savedData.md)
       // On le modifie dans currentData pour l'enregistrement
       this.currentData.blocks[paragId - 1].data = savedData
       // On doit modifier le raw text pour que les proximités puissent être
@@ -421,50 +431,51 @@ class PPage {
       // Ça se produit par exemple lorsqu'on ajoute un paragraphe au paragraphe
       // en passant à la ligne.
       // Dans ce cas-là, on se retrouve sur une ligne sans 'data-id'.
-      // QUESTION Que faut-il faire ? Faut-il reconstruire toute la page ?
-      console.error("Il y a eu une modification, mais sans paragraphe courant…")
+      my.log("Modification, mais sans paragraphe courant.")
       // On fait deux choses ici pour le moment :
       //  1. on récupère le contenu du paragraphe (en le passant en markdown)
       //  2. on modifie l'identifiant du paragraphe
       var paragIndex = 0 // +1-start
-        , parags = []
+
+      // On réinitialise la liste des paragraphes de la page
+      my.paragraphes = []
+
+      // C'est assez lourd, mais pendant qu'on place les 'data-id' sur les
+      // paragraphes, il faut couper la méthode onChange de la page qui serait
+      // sinon appelée chaque fois.
+      my.doNothingWhenChange = true
+      my.log("doNothingWhenChange est mis à true")
+      // delete my.editor.onChange
+
+      // On boucle sur les paragraphes actuels pour les relever
       DGetAll('div.codex-editor__redactor div.ce-block div.ce-paragraph',this.page.domObj)
       .forEach(div => {
-        console.log("Paragraphe “%s”", div.innerHTML)
+        // console.log("Paragraphe “%s”", div.innerHTML)
         div.setAttribute('data-id', `${my.id}_${++paragIndex}`)
-        parags.push(html2md(div.innerHTML))
+        my.paragraphes.push(new PParagraph(my,{md:html2md(div.innerHTML), index:++paragIndex}))
       })
+
+      console.log("--- my.paragraphes mis à ", my.paragraphes)
+      // On actualise le texte (les blocks) et on demande un check
+      delete my._rawtext
+      my.paragraphs2blocks()
+      await my.check()
+
+      // my.editor.onChange = my.onChange.bind(my)
+      my.log("doNothingWhenChange est remis à false")
+      my.doNothingWhenChange = false
+
     }
+    my.log('<- onChange (@sync parfois)')
   }
 
-  /**
-    Méthode appelée pour comparer les données actuelles (currentData)
-    avec les données +newData+ envoyées
-    Note : les +newData+ sont les données actuellement affichées dans l'éditeur
-    de la page.
-  **/
-  studyChanges(newData){
-    console.log("-> studyChanges")
-    const paragsCount = this.currentData.blocks.length;
-    // console.log("paragsCount = ", paragsCount)
-    // console.log("this.currentData.blocks:", this.currentData.blocks)
-
-    for(var iparag = 0; iparag < paragsCount; ++iparag){
-      var curParag = this.currentData.blocks[iparag].data.text
-      var newParag = newData.blocks[iparag].data.text
-      if ( curParag != newParag ) {
-        console.log("Le paragraphe %d a changé :\n---- «%s»\ncontre :\n---- «%s»", iparag, curParag, newParag)
-      }
-    }
-  }
   /**
     Transforme le texte original de la page en données Block pour editorjs
   **/
   text2blocks(){
     const my = this
 
-    var blocks = []
-      , index  = -1
+    var index  = -1
     // Index du paragraphe, pour construire son ID, qui est composé du
     // numéro de la page et de son index dans la page ('parag_<page>_<index>')
       , paragIndex = 0
@@ -475,36 +486,45 @@ class PPage {
     console.log("=== Nombre de paragraphes : %d", this.paragraphes.length)
     // console.log("this.paragraphes = ", this.paragraphes)
 
-    var indexMot = 0 // +1-start
-    this.paragraphes.forEach(pparag => {
-      // Pour essayer de mettre les mots dans des spans (conditions sine qua non
-      // pour pouvoir gérer correctement les textes), j'essai ici de redéfinir
-      // html
-      // NOTE Pour le moment, je renonce à cette complexité
-      // var html = pparag.md.split(' ').map(mot => `<span class="mot" data-id="${++indexMot}">${mot}</span>`)
-      // html = html.join('')
+    return this.paragraphs2blocks()
+  }
 
+  /**
+    Prends les this.paragraphes (instance PParagraph de la page) pour
+    construire une données `blocks` correspondant à editorjs
+  **/
+  paragraphs2blocks(){
+    const my = this
+    var blocks = []
+    my.paragraphes.forEach(pparag => {
       blocks.push({type:'myparagraph',
         data:{
             md_original:pparag.md
-          , text:pparag.md // il faut garder 'text' pour editorjs
-          // , text:html
-          , md:pparag.md
-          , html:pparag.html
-          , raw: pparag.raw
-          , page: my
+          , text:   pparag.md // il faut garder 'text' pour editorjs
+          , md:     pparag.md
+          , html:   pparag.html
+          , raw:    pparag.raw
+          , page:   my
           , index:  pparag.index
         }})
     })
-
+    this._blocks = blocks
     return blocks
   }
 
+  /**
+    Retourne le texte brut (pour comparaison de proximité) à partir des
+    blocks définis.
+
+    Note : on pourrait aussi partir des paragraphes (this.paragraphes)
+    Note : c'est cette méthode qui alimente this.rawText
+  **/
   blocks2text(){
+    const my = this
+    my.log("-> blocks2text")
     var t = []
-    this.blocks.forEach(dparag => {
-      t.push(dparag.data.raw)
-    })
+    this.blocks.forEach(dparag => t.push(dparag.data.raw))
+    my.log('<- blocks2text')
     return t.join(CR)
   }
 
@@ -532,6 +552,9 @@ class PPage {
 
   /**
     Le texte brut de la page
+    ------------------------
+    Comme il est au départ et comme il sera modifié au cours
+    du travail d'écriture.
   **/
   get rawText(){
     return this._rawtext || (this._rawtext = this.blocks2text().trim())

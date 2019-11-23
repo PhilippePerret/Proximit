@@ -93,7 +93,9 @@ class TexteAnalyse {
                                         Autre valeur possible : 'js'
   **/
   analyze(options){
-    console.log("-> TexteAnalyse#analyze")
+    const my = this
+    my.log('-> analyze')
+    console.log("Texte à analyser : ", my.original)
     return new Promise((ok,ko)=>{
       options = options || {}
       options.method = options.method || 'ruby'
@@ -110,7 +112,10 @@ class TexteAnalyse {
       console.log("-> TexteAnalyse#tag")
       const Res   = this.rubyTableResultats
       const Data  = this.rubyData
-      Res || raise("Il faut appeler l'analyse, avant de demander à tagguer le texte.")
+      if ( ! Res ) {
+        ko()
+        raise("Il faut appeler l'analyse, avant de demander à tagguer le texte.")
+      }
 
       // Produit this.tableMots (qui contient les instances Mot des mots) et
       // this.firstMot (le premier mot du texte)
@@ -156,12 +161,6 @@ class TexteAnalyse {
             taggedTexts.push(taggedParagraphs)
             taggedParagraphs = []
           }
-          /*//
-          else {
-            // Si c'est un délimiteur de paragraphe
-            console.log("---- Mot délimiteur de paragraphe : ", mot)
-          }
-          //*/
         }
 
         // On prend le mot suivant
@@ -171,6 +170,10 @@ class TexteAnalyse {
       taggedParagraphs.push(taggedText)
       taggedTexts.push(taggedParagraphs)
       ok(taggedTexts)
+
+      // On peut détruire entièrement le texte provisoire et les fichiers
+      // de l'analyse
+      this.destroy()
     })
   }
 
@@ -244,6 +247,7 @@ class TexteAnalyse {
     this.afterAnalyzeWithRuby.call(this)
   }
   async afterAnalyzeWithRuby(err, stdout, stderr){
+    this.log('-> afterAnalyzeWithRuby')
     Bench.stop('analyse avec ruby')
     if ( err ){ return this.onError(err) }
     // On charge le résultat de la recherche
@@ -251,19 +255,19 @@ class TexteAnalyse {
     await this.loadTableDatas()
     // this.rubyData = JSON.parse(fs.readFileSync(this.datas_path,'utf-8'))
     // console.log("Data retournées par ruby : ", this.rubyData)
-    // On peut détruire entièrement le texte
-    this.destroy()
     if (this.callbackAfterAnalyzeWithRuby){this.callbackAfterAnalyzeWithRuby()}
+    this.log('<- afterAnalyzeWithRuby')
   }
 
   /**
     Chargement asynchrone des résultas de l'analyse
   **/
   loadTableResultats(){
+    this.log('-> loadTableResultats')
     const my = this
     return new Promise((ok,ko)=>{
       fs.readFile(this.resultats_path,'utf-8', (err, str) => {
-        if(err) return this.onError(err)
+        if(err){return ko(err)}
         my.rubyTableResultats = JSON.parse(str)
         // console.log("Table de résultat par ruby : ", my.rubyTableResultats)
 
@@ -273,20 +277,22 @@ class TexteAnalyse {
         ok()
       })
     })
+    this.log('<- loadTableResultats (@async)')
   }
 
   // Chargement asynchrone des datas de l'analyse
   // Note : pour le moment, cette table ne sert pas
   loadTableDatas(){
+    this.log('-> loadTableDatas')
     const my = this
     return new Promise((ok,ko)=>{
       fs.readFile(this.datas_path,'utf-8', (err, str) => {
-        if(err) return this.onError(err)
+        if(err){return ko(err)}
         my.rubyData = JSON.parse(str)
-        // console.log("Table des datas par ruby : ", my.rubyData)
         ok()
       })
     })
+    this.log('<- loadTableDatas (@async)')
   }
 
   onError(err){
@@ -294,14 +300,22 @@ class TexteAnalyse {
     console.error(err)
     return false
   }
+
   /**
     Détruit le fichier et le dossier de son analyse (pour ne pas
     laisser de choses trainer)
+    Note : la méthode est appelée en toute fin de processus
   **/
   destroy(){
-    // TODO
+    this.log("-> destroy")
+    fs.unlinkSync(this.path)
+    exec(`rm -rf "${this.prox_folder}"`)
+    this.log("<- destroy")
   }
 
+  log(msg){
+    console.log("%c" + `[inst TexteAnalyse] ${msg}`, "color:green;")
+  }
 
   /**
     On procède à l'analyse, mais avec le node-module tree-tagger, tout en
