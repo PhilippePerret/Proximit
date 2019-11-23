@@ -1,8 +1,5 @@
 'use strict';
 
-// const REG_NON_WORD_CHARACTERS = new RegExp("[  \\/\\\\(\\)\"':,.;<>\\~\\!@\\#\\$\\%\\^\\&\\*\\•\\|+=[]\\{\\}`\\?—–…-]",'g')
-const REG_NON_WORD_CHARACTERS = new RegExp("  ",'g')
-
 /**
   |
   | Classe PTexte
@@ -151,6 +148,7 @@ class PTexte {
 
   constructor(data){
     for(var k in data) this[`_${k}`] = data[k] // data.path => this._path
+
     this.open = this.open.bind(this)
     this.save = this.save.bind(this)
   }
@@ -169,6 +167,10 @@ class PTexte {
     const my = this
     my.log('-> open')
     my.loading = true
+
+    // TODO Si l'analyse du texte n'a pas été faite, il faut la lancer
+
+    // On peut afficher le texte en prenant les 
     UI.waiter("Affichage du texte, merci de patienter…")
     try {
       PParagraph.reset()
@@ -518,12 +520,13 @@ Avec un [lien pour voir](http://www.atelier-icare.net) ce que ça donne.
     return this._backuppath || (this._backuppath = path.join(this.texteFolder,`${this.affixe}.backup.md`))
   }
   in_prox(relpath){ return path.join(this.prox_folder,relpath) }
-  // get fulltextPath(){return this._fulltextPath || (this._fulltextPath = this.in_prox('texte_entier.txt'))}
+  get fulltextPath(){return this._fulltextPath || (this._fulltextPath = this.in_prox('texte_entier.txt'))}
 
-  /**
-    Dans la nouvelle formule, on prend le fichier original
-  **/
-  get fulltextPath(){return this.path}
+  // /**
+  //   Dans la nouvelle formule, on prend le fichier original
+  // **/
+  // get fulltextPath(){return this.path}
+
   get resultats_path(){return this._resultatspath || (this._resultatspath = this.in_prox('table_resultats.json'))}
 
   // Le path du dossier contenant tous les éléments
