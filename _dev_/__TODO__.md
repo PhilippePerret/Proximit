@@ -1,3 +1,11 @@
+ESSAI AUTREMENT :
+  – Repart au départ : on analyse tout le texte avec analyse_texte.rb puis on
+    le remonte.
+
+
+ESSAI DE TRAVAIL AVEC text-buffer, d'Atom
+  ÇA NE FONCTIONNE PAS : JE N'ARRIVE PAS À TÉLÉCHARGER LE PACKAGE
+
 POURSUIVRE AVEC :
   - enregistrer vraiment la page comme elle est (il faut la reprendre, comme pour le check => faire une méthode indépendante => procédure de récupération du texte)
   - renseigner l'aide (CMD+U pour checker la page)

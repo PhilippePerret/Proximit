@@ -1,5 +1,8 @@
 'use strict';
 
+// const REG_NON_WORD_CHARACTERS = new RegExp("[  \\/\\\\(\\)\"':,.;<>\\~\\!@\\#\\$\\%\\^\\&\\*\\•\\|+=[]\\{\\}`\\?—–…-]",'g')
+const REG_NON_WORD_CHARACTERS = new RegExp("  ",'g')
+
 /**
   |
   | Classe PTexte
@@ -9,6 +12,10 @@
 **/
 class PTexte {
 
+  /**
+    Longueur de ce qu'on appelle une "page" ici. Par défaut, c'est la taille
+    habituelle de 1500 signes
+  **/
   static get PAGE_LENGTH(){
     return this._page_length || Prefs.get('page_length') || PPage.PAGE_DEFAULT_LENGTH
   }
@@ -25,17 +32,7 @@ class PTexte {
   }
 
   /**
-    Appelée quand on veut surveiller ou arrêter de surveiller le texte
-    courant.
-  **/
-  static watchCurrent(){
-    this.current[this.watchingCurrent?'stopWatching':'watch'].call(this.current)
-    this.watchingCurrent = !this.watchingCurrent
-  }
-
-  /**
-    Appelée quand on joue le menu "Fichier > Choisir le texte…", cette méthode
-    permet de choisir un texte.
+    Pour choisir un nouveau texte
   **/
   static chooseText(){
     const my = this
@@ -51,14 +48,22 @@ class PTexte {
       this.proceedChooseText()
     }
   }
+
+  /**
+    Pour enregistrer le texte courant et en choisir un nouveau
+  **/
   static async saveAndChooseText() {
     await this.current.save()
     this.proceedChooseText()
   }
+
+  /**
+    Pour choisir vraiment le nouveau texte
+  **/
   static proceedChooseText() {
     let choix = IO.choose({
       message:'Choisir le texte à analyser ou voir…',
-      file:true, extensions:['odt','txt','text','rtf','doc','docx','md','scriv']
+      file:true, extensions:['txt','text','md']
     })[0]
     if ( !choix ) return // aucun fichier choisi
     this.open(choix)
@@ -66,12 +71,7 @@ class PTexte {
   }
 
   /**
-    Méthode qui procède vraiment à l'ouverture du texte de path +pth+
-    Peut être appelée depuis le menu "Fichier > Ouvrir" ou le lancement de
-    l'application.
-
-    À l'ouverture d'un texte, on procède seulement à l'affichage de son
-    état d'analyse et de correction (en tout cas pour le moment).
+    Ouverture du texte de path +pth+
   **/
   static open(pth){
     log.debug("-> PTexte::open(%s)",pth)
@@ -86,16 +86,13 @@ class PTexte {
     log.debug("-> PTexte::reset")
     delete this._current
     this.current = undefined
-    UI.reset() // on nettoie tout
-    Proximity.reset()
-    Canon.reset()
-    Mot.reset()
+    UI.reset()
     log.debug("<- PTexte::reset")
   }
 
   /**
-    Méthode appelée par le bouton ou le menu pour sauver le texte courant
-    (toutes ses données)
+    Sauvegarde (enregistrement) du texte courant
+    dans son fichier.
   **/
   static async saveCurrent() {
     this.current || raise("Pas de texte courant à sauver !")
@@ -103,51 +100,18 @@ class PTexte {
   }
 
   /**
-    Méthode appelée pour charger toutes les données du texte courant
-    (quand elles ne viennent pas de ruby mais de javascript)
-
-    Normalement, elle n'est appelée que pour un rechargement. Lorsque le
-    texte est ouvert normalement, c'est la méthode d'instance 'init' qui
-    s'occupe de tout charger.
+    Chargement du texte courant
   **/
   static loadCurrent(){ this.current.open() }
 
+  /**
+    Rechargement du texte courant
+  **/
   static reloadCurrent(){
     if ( this.current ) {
       this.loadCurrent()
     } else {
       UI.error("Il faut d'abord choisir un texte à recharger !")
-    }
-  }
-
-  static resetCurrent(){
-    if ( this.current ) {
-      var opts = {
-        buttons: [
-            {text:'Non', onclick:()=>{UI.message('Opération abandonnée','neutre')}}
-          , {text:'OUI',onclick:this.proceedResetCurrent.bind(this)}
-        ]
-      }
-      ask("La ré-initialisation consiste à revenir à la dernière analyse du texte.\n\nCette ré-initialisation va détruire toutes les modifications et corrections opérées.\n\nVoulez-vous vraiment procéder à cette opération ?", opts)
-    } else {
-      UI.error("Aucun texte courant à réinitialiser…")
-    }
-  }
-  static async proceedResetCurrent(){
-    await UI.waiter("Ré-initialisation complète du texte…")
-    try {
-      const ptexte = this.current
-          , files  = ['mots.json','canons.json','proximites.json', 'corrected_text.txt']
-      files.forEach( fname => {
-        var fpath = ptexte.in_prox(fname)
-        fs.existsSync(fpath) && fs.unlinkSync(fpath)
-        fs.existsSync(fpath) && raise(`Le fichier "${fpath}" aurait dû être détruit…`)
-        log.debug("Destruction du fichier '%s'", fname)
-      })
-    } catch (e) {
-      console.error(e)
-    } finally {
-      UI.stopWaiter()
     }
   }
 
@@ -162,10 +126,16 @@ class PTexte {
     return this._states || (this.states = App.getYAMLData('texte_states'))
   }
 
+  /**
+    Data des formats de sortie du texte
+  **/
   static get OUTPUT_FORMATS(){
     return this._outputformats || (this._outputformats = App.getYAMLData('output_formats'))
   }
 
+  /**
+    Écrire le message +msg+ en console.
+  **/
   static log(msg){
     console.log('%c'+`[class PTexte] ${msg}`, 'color:blue;')
   }
@@ -181,44 +151,65 @@ class PTexte {
 
   constructor(data){
     for(var k in data) this[`_${k}`] = data[k] // data.path => this._path
-    delete this.firstMot
+    this.open = this.open.bind(this)
+    this.save = this.save.bind(this)
   }
 
   log(msg){
     console.log('%c'+`[inst PTexte] ${msg}`, 'color:blue;')
   }
+
   /**
     Ouverture du texte courant
     --------------------------
-    Depuis la version 0.3, on se contente de charger son texte dans le
-    "working field"
+    Dans la version 0.4, on utile un text-editor d'Atom et peut-être
+    même un text-editor (d'Atom toujours).
   **/
   async open(){
-    this.loading = true
-    delete this.firstMot
-    // UI.flash("Affichage du texte, merci de patienter…",{style:'neutre', keep:true, waiter:true})
+    const my = this
+    my.log('-> open')
+    my.loading = true
     UI.waiter("Affichage du texte, merci de patienter…")
-
-    // Préparation de l'interface pour ce texte
-    this.setUI()
-
-    // Création des pages du texte (cela produit la donnée this.pages) qui
-    // liste toutes les pages du texte
-    this.splitPages()
-
-    // On met le texte de la page courante dans l'éditeur
-    this.editWorkingTexte()
-
-    // Écriture de l'état de l'analyse des proximités du texte
-    this.writeState()
-
-    this.inited = true
-
-    UI.stopWaiter()
-    UI.flash("Texte prêt à être travaillé.", {style:'neutre',replace:true})
-
-    this.loading = false
+    try {
+      PParagraph.reset()
+      my.setUI()
+      my.inited = true
+      my.showText()
+      UI.flash("Texte prêt à être travaillé.", {style:'neutre',replace:true})
+    } catch (e) {
+      console.error(e)
+      my.inited = false
+    } finally {
+      UI.stopWaiter()
+    }
+    my.loading = false
+    my.log('<- open')
   }
+
+  /**
+    NOUVELLE
+
+    Méthode qui doit afficher le texte simplement,
+  **/
+  showText(){
+    // let s = this.fullTextInFile()
+    let s = `
+Un premier **paragraphe**.
+
+Et *un autre* paragraphe :
+
+Avec un [lien pour voir](http://www.atelier-icare.net) ce que ça donne.
+    `
+
+    // On découpe le texte en paragraphe
+    this.paragraphes = s.split(CR).map( p => new PParagraph(this, {md: p}) )
+
+    // On met des observateurs sur les paragraphes
+    this.paragraphes.forEach(p => UI.workingPagesSection.append(p.div))
+
+
+  }
+
 
   // Pour surveiller le texte
   watch(){

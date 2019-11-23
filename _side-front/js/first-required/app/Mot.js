@@ -39,6 +39,11 @@ class Mot {
     return Object.keys(this.items).length
   }
 
+  static newId(){
+    this.lastId || (this.lastId = 0)
+    return ++this.lastId
+  }
+
 
   /** ---------------------------------------------------------------------
     |
@@ -173,6 +178,19 @@ class Mot {
 
       this._asdom = spans
     } return this._asdom
+  }
+
+  /**
+    Le span dans le text
+  **/
+  get span(){
+    if (undefined === this._span){
+      this._span = DCreate('SPAN',{class:'mot', 'data-id':this.id})
+    } return this._span
+  }
+
+  get reg(){
+    return this._reg || (this._reg = new RegExp(this.real_init))
   }
 
   /**
