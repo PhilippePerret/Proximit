@@ -9,6 +9,10 @@ const execFileS = require('child_process').execFileSync
 const execFile  = require('child_process').execFile
 const YAML      = require('yaml')
 
+const TextBuffer = require('text-buffer')
+console.log("TextBuffer = ", TextBuffer)
+const { Point, Range } = TextBuffer;
+
 const {clipboard} = require('electron')
 const remote    = require('electron').remote
 const Dialog    = remote.dialog
