@@ -166,14 +166,27 @@ class PTexte {
     return this._outputformats || (this._outputformats = App.getYAMLData('output_formats'))
   }
 
+  static log(msg){
+    console.log('%c'+`[class PTexte] ${msg}`, 'color:blue;')
+  }
+
+
+
+
   /** ---------------------------------------------------------------------
     | INSTANCE
   **/
+
+
+
   constructor(data){
     for(var k in data) this[`_${k}`] = data[k] // data.path => this._path
     delete this.firstMot
   }
 
+  log(msg){
+    console.log('%c'+`[inst PTexte] ${msg}`, 'color:blue;')
+  }
   /**
     Ouverture du texte courant
     --------------------------
@@ -275,7 +288,7 @@ class PTexte {
   async save(){
     const my = this
     UI.waiter("Sauvegarde du texte. Merci de patienter…")
-    console.log("-> save")
+    my.log("-> save")
     // Par prudence, on fait une copie (backup) du fichier original
     if (!this.makeBackupText()){
       UI.stopWaiter()
@@ -289,15 +302,21 @@ class PTexte {
       var pageNumber = 0 // +1-start
         , fullTexte  = []
         , ppage = PPage.get(++pageNumber)
-
+        , msg
       while ( ppage ) {
-        console.log("Traitement de la page #%d", ppage.numero)
+        msg = `Traitement de la page ${ppage.numero}`
         // On répète pour chaque block/paragraphe de la page
         // TODO: Ici, faire une procédure pour vérifier si la page a été
         // modifiée, sinon prendre simplement son texte original
-        ppage.blocks.forEach(block => {
-          fullTexte.push(block.data.md + CR)
-        })
+        if (ppage.isModified) {
+          msg += " (actualisation du texte)"
+          ppage.updateText()
+          fullTexte.push(ppage.modifiedText)
+        } else {
+          msg += " (texte original)"
+          fullTexte.push(ppage.originalText)
+        }
+        console.log(msg)
         // On prend la page suivante (if any)
         ppage = PPage.get(++pageNumber)
       }
@@ -327,6 +346,7 @@ class PTexte {
           // Le backup n'existe pas quand on fait un "Save as…" par exemple
           fs.existsSync(this.backupPath) && fs.unlinkSync(this.backupPath)
           UI.stopWaiter()
+          UI.flash('Texte enregistré avec succès.', {style:'neutre', replace:true})
           ok()
         });
         writeStream.end();
@@ -428,7 +448,7 @@ class PTexte {
     Retourne le texte du fichier contenant le texte entier (texte_entier.txt)
   **/
   get fullTextInFile(){
-    var t = String(fs.readFileSync(this.fulltext_path))
+    var t = String(fs.readFileSync(this.fulltextPath))
     // console.log("Texte dans le fichier = ", t)
     return t
   }
@@ -457,7 +477,7 @@ class PTexte {
     } else {
       this.writeRowInfo(null, "Analyse et correction", "Il faut lancer l'analyse de ce texte.")
     }
-    this.writeRowInfo(fs.existsSync(this.fulltext_path), "Fichier du texte complet", "OK")
+    this.writeRowInfo(fs.existsSync(this.fulltextPath), "Fichier du texte complet", "OK")
     this.writeRowInfo(fs.existsSync(this.resultats_path), "Fichier intégral des résultats", "OK")
     this.writeRowInfo(null, "Dernier ID de mot", Mot.lastId)
   }
@@ -507,7 +527,12 @@ class PTexte {
     return this._backuppath || (this._backuppath = path.join(this.texteFolder,`${this.affixe}.backup.md`))
   }
   in_prox(relpath){ return path.join(this.prox_folder,relpath) }
-  get fulltext_path(){return this._fulltext_path || (this._fulltext_path = this.in_prox('texte_entier.txt'))}
+  // get fulltextPath(){return this._fulltextPath || (this._fulltextPath = this.in_prox('texte_entier.txt'))}
+
+  /**
+    Dans la nouvelle formule, on prend le fichier original
+  **/
+  get fulltextPath(){return this.path}
   get resultats_path(){return this._resultatspath || (this._resultatspath = this.in_prox('table_resultats.json'))}
 
   // Le path du dossier contenant tous les éléments

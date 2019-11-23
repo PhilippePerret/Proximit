@@ -489,8 +489,28 @@ class PPage {
   // }
 
   /**
+    Méthode appelée (à l'enregistrement principalement) pour actualiser
+    les blocks, donc le contenu actuel de la page.
+  **/
+  updateText(){
+    const my = this
+    my.getTextInEditor()
+    delete this._modifiedText
+  }
+
+  get modifiedText(){
+    const my = this
+    if ( undefined === my._modifiedText){
+      var str = []
+      my.blocks.forEach(block => str.push(block.data.md))
+      my._modifiedText = str.join(CR)
+      console.log("++++> Texte actualisé : ", my._modifiedText)
+      str = null
+    } return my._modifiedText
+  }
+  /**
     Méthode qui récupère le texte dans l'éditeur lui-même
-  
+
     Actualise :
       this.paragraphes
       this.blocks
@@ -610,7 +630,7 @@ class PPage {
           }
         }
       , data:{time:(new Date().getTime()), blocks:my.blocks}
-      , onChange: null
+      , onChange: () => {my.isModified = true}
       , onReady:  my.onEditorReady.bind(my)
     })
     await this._editor.isReady;
@@ -619,7 +639,8 @@ class PPage {
 
   get isFirstPage(){ return this.numero == 1 }
   get isLastPage(){ return this.numero == PPage.lastNumero }
-
+  get isModified(){ return this._modified === true}
+  set isModified(v){ this._modified = v}
 
   /**
     Le texte brut de la page
