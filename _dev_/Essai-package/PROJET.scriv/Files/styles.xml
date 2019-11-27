@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Styles>
+    <Style Name="Titre" ID="EAA682C9-6125-444B-BAD5-411C7526688B" Type="Para+Char" FontChange="Size">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\froman\fcharset0 Palatino-Roman;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl264\slmult1\sb260\pardirnatural\partightenfactor0
+
+\f0\fs56 \cf0 Attributes}]]></Format>
+    </Style>
+    <Style Name="Vedette 1" ID="3E239580-9337-4E69-B47A-2EEF63EA248F" Type="Para+Char" FontChange="Size" Shortcut="4">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Palatino-Roman;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl264\slmult1\sb260\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <$Scr_H::1>
+\f1\b\fs36 Attributes
+\f0\b0\fs24 <!$Scr_H::1>}]]></Format>
+    </Style>
+    <Style Name="Vedette 2" ID="E3C8923C-5A87-4240-914B-C1C6DC263C5B" Type="Para+Char" FontChange="Size" Shortcut="5">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\froman\fcharset0 Palatino-Roman;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl264\slmult1\sb260\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 <$Scr_H::2>
+\f1\b\fs26 Attributes
+\f0\b0\fs24 <!$Scr_H::2>}]]></Format>
+    </Style>
+    <Style Name="Texte centré" ID="B91CA4AA-3865-4D95-926B-A734208538B9" Type="Para" Shortcut="1">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\froman\fcharset0 Palatino-Roman;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx360\tx720\tx1080\tx1440\tx1800\tx2160\tx2880\tx3600\tx4320\sl264\slmult1\pardirnatural\qc\partightenfactor0
+
+\f0\fs26 \cf0 Attributes}]]></Format>
+    </Style>
+    <Style Name="Bloc de citation" ID="8D9612F1-48B7-4077-B3A2-6B794E787616" Type="Para" FontChange="Size" Shortcut="2">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\froman\fcharset0 Palatino-Roman;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx720\tx1080\tx1440\li720\sl264\slmult1\sb240\sa240\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Attributes}]]></Format>
+    </Style>
+    <Style Name="Attribution" ID="84F30EE3-3CB2-48A3-B8F1-F6C03B2C1AB9" Type="Para" FontChange="Size" Shortcut="">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\froman\fcharset0 Palatino-Roman;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx720\tx1080\tx1440\li720\sl264\slmult1\sa240\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Attributes}]]></Format>
+    </Style>
+    <Style Name="Bloc de codes" ID="8641A1D9-BC8F-434C-A685-DDC3BD736F3D" Type="Para+Char" FontChange="Face+Size" Next="8641A1D9-BC8F-434C-A685-DDC3BD736F3D">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx720\tx1080\tx1440\tx1800\tx2160\li720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf0 Attributes}]]></Format>
+    </Style>
+    <Style Name="Balise span" ID="263EDF1D-1105-4FF5-8A79-8FF7FC6DD548" Type="Char" FontChange="Face+Size">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx720\tx1080\tx1440\tx1800\tx2160\li720\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf0 Attributes}]]></Format>
+    </Style>
+    <Style Name="ÜBERSCHRIFT" ID="ABB2237B-246A-4899-B159-F8BA904E530E" Type="Para" FontChange="Size" Shortcut="3">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\froman\fcharset0 Palatino-Roman;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\sl264\slmult1\sa160\pardirnatural\qc\partightenfactor0
+
+\f0\fs26 \cf0 Attributes}]]></Format>
+    </Style>
+    <Style Name="Mise en évidence" ID="BF918AD8-510E-4248-BEC3-93D56A8D98BB" Type="Char">
+        <Format><![CDATA[{\rtf1\ansi\ansicpg1252\cocoartf1561\cocoasubrtf200
+{\fonttbl\f0\froman\fcharset0 Palatino-Roman;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\pard\tx360\tx720\tx1080\tx1440\tx1800\tx2160\tx2880\tx3600\tx4320\fi360\sl264\slmult1\pardirnatural\partightenfactor0
+
+\f0\i\fs26 \cf0 Attributes}]]></Format>
+    </Style>
+</Styles>

@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ScrivenerProject Identifier="A0A523C0-CEF3-40C8-BBE3-0176A646D8B6" Version="2.0" Creator="SCRMAC-3.0-75" Device="MacBook-Air-de-Philippe" Author="Philippe Perret" Modified="2017-12-18 09:01:15 +0100" ModID="B3055AF5-3F95-42EE-A8B4-8589C7FBF01D">
+    <Binder>
+        <BinderItem UUID="F8F9FDEF-FD9F-4A8C-B33D-3434A1220ADC" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+            <Title>Novel Format</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+                <IconFileName>Information.tiff</IconFileName>
+            </MetaData>
+            <TextSettings>
+                <TextSelection>778,0</TextSelection>
+            </TextSettings>
+        </BinderItem>
+        <BinderItem UUID="4A1D6B18-0952-42EB-A487-D17915DD3BA1" Type="DraftFolder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:16 +0100">
+            <Title>Manuscrit</Title>
+            <Children>
+                <BinderItem UUID="0361E2D1-033E-4D45-82A4-565F53D27F4C" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:21 +0100">
+                    <Title>EXPOSITION</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                    <Children>
+                        <BinderItem UUID="FD75AC3C-F304-4EA6-ADCC-2C32D6589969" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:27 +0100">
+                            <Title>Préambule</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                            <Children>
+                                <BinderItem UUID="93228926-385D-4124-BCFC-85382DAD641A" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                                    <Title>Scene</Title>
+                                    <MetaData>
+                                        <StatusID>2</StatusID>
+                                        <IncludeInCompile>Yes</IncludeInCompile>
+                                    </MetaData>
+                                    <TextSettings>
+                                        <TextSelection>0,0</TextSelection>
+                                    </TextSettings>
+                                </BinderItem>
+                            </Children>
+                        </BinderItem>
+                        <BinderItem UUID="0A7EDD9F-9DE0-4CC9-9AC1-EE0E3769B6A8" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:33 +0100">
+                            <Title>Incident perturbateur</Title>
+                            <MetaData>
+                                <StatusID>2</StatusID>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                        <BinderItem UUID="D8BCC7D1-3939-4841-9016-EE608E6D2E36" Type="Text" Created="2017-12-17 17:36:53 +0100" Modified="2017-12-17 17:37:00 +0100">
+                            <Title>Incident déclencheur</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                        <BinderItem UUID="41AAF27B-5D18-422C-A340-9DB321D50532" Type="Folder" Created="2017-12-17 17:34:49 +0100" Modified="2017-12-17 17:34:56 +0100">
+                            <Title>Refus de l'appel</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                            <Children>
+                                <BinderItem UUID="BEB0B361-0E26-4884-A812-C9BB03E7D706" Type="Text" Created="2017-12-17 17:36:34 +0100" Modified="2017-12-17 17:36:37 +0100">
+                                    <Title>Pivot 1</Title>
+                                    <MetaData>
+                                        <IncludeInCompile>Yes</IncludeInCompile>
+                                    </MetaData>
+                                    <TextSettings>
+                                        <TextSelection>0,0</TextSelection>
+                                    </TextSettings>
+                                </BinderItem>
+                            </Children>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+                <BinderItem UUID="7C691629-31E1-488F-A24E-2C9F4A60C72A" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:35:14 +0100">
+                    <Title>DÉVELOPPEMENT - P1</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                    <Children>
+                        <BinderItem UUID="CCB308DA-B28A-479C-A67B-CF6B55DB674E" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:35:33 +0100">
+                            <Title>Début</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                            <Children>
+                                <BinderItem UUID="AD5E3DFF-1219-4679-B74F-823A4E06CEE6" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                                    <Title>Scene</Title>
+                                    <MetaData>
+                                        <IncludeInCompile>Yes</IncludeInCompile>
+                                    </MetaData>
+                                    <TextSettings>
+                                        <TextSelection>0,0</TextSelection>
+                                    </TextSettings>
+                                </BinderItem>
+                            </Children>
+                        </BinderItem>
+                        <BinderItem UUID="056EEDD5-5FA8-46BD-991E-1B9165166472" Type="Text" Created="2017-12-17 17:35:41 +0100" Modified="2017-12-17 17:35:46 +0100">
+                            <Title>Clé de voûte</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+                <BinderItem UUID="186C1806-CEE6-4FA0-9F56-10D1A78EFC5C" Type="Folder" Created="2017-12-17 17:36:09 +0100" Modified="2017-12-17 17:36:16 +0100">
+                    <Title>DÉVELOPPEMENT - P2</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                    <Children>
+                        <BinderItem UUID="51D4B8CE-F545-4417-8882-12F7E6CB0EA3" Type="Text" Created="2017-12-17 17:36:24 +0100" Modified="2017-12-17 17:36:28 +0100">
+                            <Title>Pivot 2</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+                <BinderItem UUID="DCBD2092-FDE1-4C5E-934D-D95E63628114" Type="Folder" Created="2017-12-17 17:37:40 +0100" Modified="2017-12-17 17:37:56 +0100">
+                    <Title>DÉNOUEMENT</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                    <Children>
+                        <BinderItem UUID="712DF1B1-4964-44C7-B6E7-41784B0747F0" Type="Text" Created="2017-12-17 17:37:46 +0100" Modified="2017-12-17 17:37:51 +0100">
+                            <Title>Climax</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+            </Children>
+        </BinderItem>
+        <BinderItem UUID="06C0455C-36DD-4F38-BB7B-F7DD2453A8A5" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+            <Title>Characters</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+                <IconFileName>Characters (Photo).tiff</IconFileName>
+            </MetaData>
+            <TextSettings>
+                <TextSelection>0,0</TextSelection>
+            </TextSettings>
+            <DefaultChildTemplateUUID>BE948F87-BDA3-4551-8E08-AC248FE89301</DefaultChildTemplateUUID>
+        </BinderItem>
+        <BinderItem UUID="6830B6AC-686B-4370-A979-2FD1D7288BDA" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+            <Title>Places</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+                <IconFileName>Locations (Map).tiff</IconFileName>
+            </MetaData>
+            <TextSettings>
+                <TextSelection>0,0</TextSelection>
+            </TextSettings>
+            <DefaultChildTemplateUUID>87D59B4E-F1D6-4025-9FBA-33F60ED8F985</DefaultChildTemplateUUID>
+        </BinderItem>
+        <BinderItem UUID="57ECC98D-8199-4935-B5F1-D1F7A2D60646" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+            <Title>Front Matter</Title>
+            <MetaData>
+                <SectionType ChildDefault="C256170C-9607-4380-B84A-86A34F8D32A4"></SectionType>
+                <IncludeInCompile>Yes</IncludeInCompile>
+                <IconFileName>Front Matter.tiff</IconFileName>
+            </MetaData>
+            <TextSettings>
+                <TextSelection>0,0</TextSelection>
+            </TextSettings>
+            <Children>
+                <BinderItem UUID="3E5B46A7-2D74-46C0-9C84-D3D1B9EB378E" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                    <Title>Manuscript Format</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                    <Children>
+                        <BinderItem UUID="684ADA52-4D45-48D2-B03D-5ECB784963EE" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:10 +0100">
+                            <Title>Title Page</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+                <BinderItem UUID="4D01D8EC-C1C3-427E-88C0-602D9158FC95" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                    <Title>Paperback</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                    <Children>
+                        <BinderItem UUID="486D874A-7589-4C1E-BECE-40B465746BA1" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                            <Title>Title Page</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>11,15</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                        <BinderItem UUID="21506607-96CA-4FB1-8B5F-A1859F4DCEDE" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                            <Title>Copyright</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <NotesTextSelection>82,0</NotesTextSelection>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,0</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                        <BinderItem UUID="874592F5-2256-46A1-8434-432743846FB8" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                            <Title>Dedication</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <NotesTextSelection>55,0</NotesTextSelection>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>11,23</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                        <BinderItem UUID="EAED9F93-2779-4184-82E8-30D27307C6AC" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                            <Title>Blank Page</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <NotesTextSelection>197,0</NotesTextSelection>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>0,13</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+                <BinderItem UUID="4C4363AD-1F58-4140-A55F-DEE1298CA1C4" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                    <Title>E-book</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>0,0</TextSelection>
+                    </TextSettings>
+                    <Children>
+                        <BinderItem UUID="C88ACCC3-4FDB-4952-80E1-177623CDE141" Type="Image" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                            <Title>Cover</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <FileExtension>png</FileExtension>
+                                <ShowSynopsisImage>Yes</ShowSynopsisImage>
+                            </MetaData>
+                            <MediaSettings>
+                                <ImageScaleFactor>1.0</ImageScaleFactor>
+                                <ImageRotation>None</ImageRotation>
+                                <ImageScalesProportionally>Yes</ImageScalesProportionally>
+                            </MediaSettings>
+                        </BinderItem>
+                        <BinderItem UUID="98EA5CEF-B7B1-468C-83CD-9AB24AFAFDF3" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+                            <Title>Dedication</Title>
+                            <MetaData>
+                                <IncludeInCompile>Yes</IncludeInCompile>
+                                <NotesTextSelection>55,0</NotesTextSelection>
+                            </MetaData>
+                            <TextSettings>
+                                <TextSelection>5,21</TextSelection>
+                            </TextSettings>
+                        </BinderItem>
+                    </Children>
+                </BinderItem>
+            </Children>
+        </BinderItem>
+        <BinderItem UUID="69822417-D015-4BDD-90BD-18AAA6198D15" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+            <Title>Notes</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+                <IconFileName>Notes (Yellow Notepad).tiff</IconFileName>
+            </MetaData>
+            <TextSettings>
+                <TextSelection>0,0</TextSelection>
+            </TextSettings>
+        </BinderItem>
+        <BinderItem UUID="669D7B65-8096-4EFD-A0E2-6BDE8C1E3585" Type="ResearchFolder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+            <Title>Research</Title>
+        </BinderItem>
+        <BinderItem UUID="5C03DE09-C285-48ED-827F-78E62B7D0F72" Type="Folder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+            <Title>Template Sheets</Title>
+            <MetaData>
+                <IncludeInCompile>Yes</IncludeInCompile>
+            </MetaData>
+            <TextSettings>
+                <TextSelection>0,0</TextSelection>
+            </TextSettings>
+            <Children>
+                <BinderItem UUID="BE948F87-BDA3-4551-8E08-AC248FE89301" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:41:01 +0100">
+                    <Title>Modèle personnage</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <ShowSynopsisImage>Yes</ShowSynopsisImage>
+                        <IconFileName>Characters (Character Sheet).tiff</IconFileName>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>115,28</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+                <BinderItem UUID="87D59B4E-F1D6-4025-9FBA-33F60ED8F985" Type="Text" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:41:28 +0100">
+                    <Title>Modèle lieu</Title>
+                    <MetaData>
+                        <IncludeInCompile>Yes</IncludeInCompile>
+                        <IconFileName>Locations (Location Sheet).tiff</IconFileName>
+                    </MetaData>
+                    <TextSettings>
+                        <TextSelection>84,0</TextSelection>
+                    </TextSettings>
+                </BinderItem>
+            </Children>
+        </BinderItem>
+        <BinderItem UUID="F2DF7FDE-46C4-4962-97F3-128A46433573" Type="TrashFolder" Created="2017-12-17 17:34:09 +0100" Modified="2017-12-17 17:34:09 +0100">
+            <Title>Trash</Title>
+        </BinderItem>
+    </Binder>
+    <Collections>
+        <Collection Type="Binder" ID="48DE1CBF-217F-4B94-944D-6D8C97396DCF" Color="0.924849 0.924014 0.949681">
+            <Title>Classeur</Title>
+        </Collection>
+        <Collection Type="RecentSearch" ID="2655DDF6-4AB8-42CB-A433-1CD76FC351D2" Color="0.922176 0.818589 0.999618">
+            <Title>Résultats de la recherche</Title>
+        </Collection>
+    </Collections>
+    <SectionTypes>
+        <TypeDefinitions>
+            <Type ID="DA299D05-E212-41BE-A82B-88EA3A472C49">Part Heading</Type>
+            <Type ID="417A6CCE-D4E1-44BA-9A8D-038360B4B905">Chapter Heading</Type>
+            <Type ID="9AFECE21-8C79-45E0-9B9F-D6D62A9729D3">Scene</Type>
+            <Type ID="5770D705-B9A4-4798-AAB1-B2C56190B02E">Chapter</Type>
+            <Type ID="DFBFB5B6-D47F-4913-9E23-FC3950C10171">Heading</Type>
+            <Type ID="4BA429EF-6143-4FB6-9B43-D4E6E4F0CE1D">Section</Type>
+            <Type ID="C256170C-9607-4380-B84A-86A34F8D32A4">Front Matter</Type>
+            <Type ID="8CA56ABC-1675-44AC-B5C5-FCFBC0C6E87D">N/A</Type>
+        </TypeDefinitions>
+        <LevelTypes>
+            <Folders>
+                <Type>8CA56ABC-1675-44AC-B5C5-FCFBC0C6E87D</Type>
+                <Type>DA299D05-E212-41BE-A82B-88EA3A472C49</Type>
+                <Type>417A6CCE-D4E1-44BA-9A8D-038360B4B905</Type>
+            </Folders>
+            <Containers>
+                <Type>4BA429EF-6143-4FB6-9B43-D4E6E4F0CE1D</Type>
+                <Type>4BA429EF-6143-4FB6-9B43-D4E6E4F0CE1D</Type>
+                <Type>4BA429EF-6143-4FB6-9B43-D4E6E4F0CE1D</Type>
+            </Containers>
+            <Files>
+                <Type>4BA429EF-6143-4FB6-9B43-D4E6E4F0CE1D</Type>
+                <Type>4BA429EF-6143-4FB6-9B43-D4E6E4F0CE1D</Type>
+                <Type>4BA429EF-6143-4FB6-9B43-D4E6E4F0CE1D</Type>
+                <Type>9AFECE21-8C79-45E0-9B9F-D6D62A9729D3</Type>
+            </Files>
+        </LevelTypes>
+    </SectionTypes>
+    <LabelSettings>
+        <Title>Label</Title>
+        <DefaultLabelID>-1</DefaultLabelID>
+        <Labels>
+            <Label ID="-1">No Label</Label>
+            <Label ID="7" Color="0.993495 0.701207 0.732587">Red</Label>
+            <Label ID="8" Color="0.995418 0.790946 0.652385">Orange</Label>
+            <Label ID="9" Color="0.997722 0.89273 0.652569">Yellow</Label>
+            <Label ID="10" Color="0.715855 0.948712 0.697692">Green</Label>
+            <Label ID="11" Color="0.702319 0.888276 0.974252">Blue</Label>
+            <Label ID="12" Color="0.957566 0.766747 0.999616">Purple</Label>
+        </Labels>
+    </LabelSettings>
+    <StatusSettings>
+        <Title>Status</Title>
+        <DefaultStatusID>-1</DefaultStatusID>
+        <StatusItems>
+            <Status ID="-1">No Status</Status>
+            <Status ID="1">To Do</Status>
+            <Status ID="6">In Progress</Status>
+            <Status ID="2">First Draft</Status>
+            <Status ID="3">Revised Draft</Status>
+            <Status ID="4">Final Draft</Status>
+            <Status ID="5">Done</Status>
+        </StatusItems>
+    </StatusSettings>
+    <ProjectBookmarks>
+        <Bookmark BinderUUID="06C0455C-36DD-4F38-BB7B-F7DD2453A8A5"></Bookmark>
+        <Bookmark BinderUUID="6830B6AC-686B-4370-A979-2FD1D7288BDA"></Bookmark>
+        <Bookmark BinderUUID="69822417-D015-4BDD-90BD-18AAA6198D15"></Bookmark>
+    </ProjectBookmarks>
+    <ProjectTargets Notify="No">
+        <DraftTarget Type="Words" CountIncludedOnly="Yes" CurrentCompileGroupOnly="Yes" Deadline="2011-04-12 14:24:39 +0200" IgnoreDeadline="Yes">0</DraftTarget>
+        <SessionTarget Type="Words" CountDraftOnly="Yes" AllowNegatives="No" ResetType="Time" ResetTime="00:00" DeterminedFromDeadline="No" WritingDays="" CanWriteOnDeadlineDate="No">0</SessionTarget>
+        <PreviousSession Words="0" Characters="0" Date="2017-12-18 09:00:49 +0100"></PreviousSession>
+    </ProjectTargets>
+    <RecentWritingHistory Date="2017-12-18 00:00:00 +0100">
+        <DraftWordCount>0</DraftWordCount>
+        <DraftCharCount>0</DraftCharCount>
+        <OtherWordCount>0</OtherWordCount>
+        <OtherCharCount>0</OtherCharCount>
+    </RecentWritingHistory>
+    <TemplateFolderUUID>5C03DE09-C285-48ED-827F-78E62B7D0F72</TemplateFolderUUID>
+    <BookmarksFolderUUID>69822417-D015-4BDD-90BD-18AAA6198D15</BookmarksFolderUUID>
+    <PrintSettings PaperSize="595.275567,841.889771" LeftMargin="72.0" RightMargin="72.0" TopMargin="90.0" BottomMargin="90.0" PaperType="iso-a4" Orientation="Portrait" HorizontalPagination="Clip" VerticalPagination="Auto" ScaleFactor="1.0" HorizontallyCentered="Yes" VerticallyCentered="Yes" Collates="Yes" PagesAcross="1" PagesDown="1"></PrintSettings>
+</ScrivenerProject>

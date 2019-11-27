@@ -134,8 +134,6 @@ Object.assign(UI,{
   **/
 , build(){}
 , observeApp(){
-    WritingField.init()
-    UI.workingField.jqObj.on('keypress', WritingField.onKeyPressedInWorkingField.bind(WritingField))
   }
 })
 

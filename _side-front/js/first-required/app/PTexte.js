@@ -89,6 +89,10 @@ class PTexte {
     await this.current.save()
     this.proceedChooseText()
   }
+
+  /**
+    Pour choisir un texte dans le Finder
+  **/
   static proceedChooseText() {
     let choix = IO.choose({
       message:'Choisir le texte à analyser ou voir…',
@@ -249,10 +253,6 @@ class PTexte {
 
     // On lance tout de suite un check
     App.checkText(UI.stopWaiter.bind(UI))
-
-    // On lance la boucle de surveillance du texte qui va permettre de suivre
-    // les proximités
-    App.watchTexte()
 
     this.inited = true
 
