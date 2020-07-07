@@ -16,7 +16,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
-    "electron": "^6.0.0",
+    "electron": "^7.2.4",
     "electron-packager": "^14.0.4",
     "spectron": "^8.0.0"
   },
